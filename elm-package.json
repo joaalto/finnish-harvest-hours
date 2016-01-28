@@ -3,7 +3,7 @@
     "source-directories": [
         "src"
     ],
-    "repository": "",
+    "repository": "https://github.com/joaalto/saldot.git",
     "dependencies": {
         "elm-lang/core": "2.0.0 <= v <= 3.0.0"
     },
