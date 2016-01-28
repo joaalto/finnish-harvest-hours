@@ -1,0 +1,7 @@
+{
+  "cmd": "elm-make",
+  "name": "Elm-make",
+  "args": ["--yes", "src/Main.elm", "--output", "dist/elm.js"],
+  "sh": true,
+  "keymap": "shift-cmd-m"
+}
