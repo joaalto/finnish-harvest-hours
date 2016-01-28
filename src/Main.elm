@@ -1,15 +1,39 @@
 module Main where
 
--- MODEL
+import Model exposing (..)
+import Update exposing (Action, update)
+import View exposing (view)
 
-type alias Model = { }
+import StartApp
 
+import Signal exposing (Signal, Mailbox, Address, send)
+import Html exposing (..)
+import Task
+import Effects exposing (Effects, Never)
 
--- UPDATE
+app : StartApp.App Model
+app =
+    StartApp.start
+        { init = init
+        , update = update
+        , view = view
+        , inputs = []
+        }
 
-type Action = Reset
+main : Signal Html
+main =
+    app.html
 
-update : Action -> Model -> Model
-update action model =
-  case action of
-    Reset -> model
+port tasks : Signal (Task.Task Never ())
+port tasks =
+    app.tasks
+
+init : (Model, Effects Action)
+init =
+    ( initialModel
+    , Effects.none
+    )
+
+initialModel : Model
+initialModel =
+    { hours = 0 }
