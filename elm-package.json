@@ -1,0 +1,14 @@
+{
+    "summary": "",
+    "source-directories": [
+        "src"
+    ],
+    "repository": "",
+    "dependencies": {
+        "elm-lang/core": "2.0.0 \u003c= v \u003c 3.0.0"
+    },
+    "exposed-modules": [],
+    "version": "1.0.0",
+    "elm-version": "0.15.0 \u003c= v \u003c 0.16.0",
+    "license": "None"
+}
