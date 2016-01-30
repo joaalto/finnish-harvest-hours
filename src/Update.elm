@@ -3,10 +3,16 @@ module Update where
 import Model exposing (Model)
 import Effects exposing (Effects)
 
-type Action =
-    GetDayEntries
+type Action
+    = Login
+    | GetDayEntries
 
 update : Action -> Model -> (Model, Effects Action)
 update action model =
     case action of
-        GetDayEntries -> (model, Effects.none)
+        Login -> noFx model
+        GetDayEntries -> noFx model
+
+noFx : Model -> (Model, Effects Action)
+noFx model =
+    (model, Effects.none)

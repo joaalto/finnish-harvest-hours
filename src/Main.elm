@@ -36,4 +36,5 @@ init =
 
 initialModel : Model
 initialModel =
-    { hours = 0 }
+    { httpError = Ok ()
+    , hours = 0 }

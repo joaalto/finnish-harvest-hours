@@ -1,4 +1,8 @@
 module Model where
 
+import Http
+
 type alias Model =
-    { hours : Int }
+    { httpError : Result Http.Error ()
+    , hours : Int
+    }
