@@ -12,5 +12,10 @@
   },
   "author": "Joonas Aalto",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/aaltojoo/saldot#readme"
+  "homepage": "https://bitbucket.org/aaltojoo/saldot#readme",
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "express": "^4.13.4",
+    "superagent": "^1.7.2"
+  }
 }
