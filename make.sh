@@ -1,2 +1,2 @@
 #!/bin/bash
-elm-make --yes src/Main.elm --output dist/elm.js
+elm-make --yes src/Main.elm --output dist/index.js

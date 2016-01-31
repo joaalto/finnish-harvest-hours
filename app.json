@@ -2,7 +2,7 @@
     "name": "Tuntisaldojen laskentaa",
     "repository": "https://github.com/joaalto/saldot",
     "env": {
-        "ELM_COMPILE": "elm make src/Main.elm --output dist/elm.js"
+        "ELM_COMPILE": "elm make src/Main.elm --output dist/index.js"
     },
     "buildpacks": [
         {
