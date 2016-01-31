@@ -18,4 +18,4 @@ view address model =
         Ok _ ->
             div
                 []
-                []
+                [ text "Hello, world." ]
