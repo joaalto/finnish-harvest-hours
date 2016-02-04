@@ -16,6 +16,8 @@
   "dependencies": {
     "body-parser": "^1.14.2",
     "express": "^4.13.4",
+    "passport": "^0.3.2",
+    "passport-oauth2": "^1.1.2",
     "superagent": "^1.7.2"
   }
 }
