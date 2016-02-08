@@ -71,11 +71,11 @@ passport.use(
                                 id: harvestUser.id
                             });
 
-                            usr.save(err) => {
+                            usr.save(err => {
                                 if (err) {
                                     console.log(err)
                                 }
-                            };
+                            });
                         }
                         done(err, user);
                     });
