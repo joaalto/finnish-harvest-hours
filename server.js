@@ -3,6 +3,20 @@ const request = require('superagent');
 const jsonParser = require('body-parser').json();
 const passport = require('passport');
 const OAuth2Strategy = require('passport-oauth2');
+const mongoose = require('mongoose');
+const User = require('./model/user');
+
+const uriString =
+    process.env.MONGOLAB_URI ||
+    'mongodb://localhost/saldot';
+
+mongoose.connect(uriString, (err, res) => {
+    if (err) {
+        console.log('ERROR connecting to: ' + uriString + '. ' + err);
+    } else {
+        console.log('Connected to: ' + uriString);
+    }
+});
 
 const app = express()
 
