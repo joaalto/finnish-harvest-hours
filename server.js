@@ -66,12 +66,7 @@ passport.use(
                         if (err) {
                             console.log(err);
                         } else if (dbUser === null) {
-                            // var u = new User(user);
-                            var usr = new User({
-                                id: harvestUser.id
-                            });
-
-                            usr.save(err => {
+                            new User(user).save(err => {
                                 if (err) {
                                     console.log(err)
                                 }
