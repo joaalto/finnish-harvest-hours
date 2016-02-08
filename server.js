@@ -54,15 +54,36 @@ passport.use(
                     const user = {
                         id: harvestUser.id,
                         firstName: harvestUser.first_name,
-                        lastName: harvestUser.last_name
-                    }
-                    done(null, user);
+                        lastName: harvestUser.last_name,
+                        accessToken: accessToken
+                    };
+                    // findOrCreateUser(user, err);
+                    // done(null, user);
+
+                    User.findOne({
+                        id: user.id
+                    }, function(err, dbUser) {
+                        if (err) {
+                            console.log(err);
+                        } else if (dbUser === null) {
+                            // var u = new User(user);
+                            var usr = new User({
+                                id: harvestUser.id
+                            });
+
+                            usr.save(err) => {
+                                if (err) {
+                                    console.log(err)
+                                }
+                            };
+                        }
+                        done(err, user);
+                    });
                 });
-            // User.findOrCreate(..., function(err, user) {
-            //     done(err, user);
-            // });
         }
     ));
+
+const findOrCreateUser = function(user) {}
 
 app.get('/login', passport.authenticate('oauth2'));
 
