@@ -22,6 +22,14 @@ const app = express()
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(forceSsl);
+
+const forceSsl = function(req, res, next) {
+    if (req.headers['x-forwarded-proto'] !== 'https') {
+        return res.redirect(['https://', req.get('Host'), req.url].join(''));
+    }
+    return next();
+};
 
 passport.serializeUser(function(user, done) {
     // console.log('user: ', user);
