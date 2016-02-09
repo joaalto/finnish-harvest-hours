@@ -93,11 +93,12 @@ app.get('/login', passport.authenticate('oauth2'));
 app.get(
     '/auth/callback',
     passport.authenticate('oauth2', {
-        failureRedirect: '/error'
-    }),
-    function(req, res) {
-        res.end(`${req.user.firstName} ${req.user.lastName} logged in.`);
-    });
+        failureRedirect: '/error',
+        successRedirect: '/'
+    }));
+// function(req, res) {
+//     res.end(`${req.user.firstName} ${req.user.lastName} logged in.`);
+// });
 
 app.use('/', express.static(__dirname + '/dist'));
 
