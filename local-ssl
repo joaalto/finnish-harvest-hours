@@ -1,1 +1,3 @@
-local-ssl-proxy --source 5001 --target 5000
+./make.sh && \
+    local-ssl-proxy --source 5001 --target 5000 & \
+    heroku local
