@@ -47,7 +47,7 @@ passport.use(
             tokenURL: 'https://wunderdog.harvestapp.com/oauth2/token',
             clientID: process.env.CLIENT_ID,
             clientSecret: process.env.CLIENT_SECRET,
-            callbackURL: 'https://saldot.herokuapp.com/auth/callback'
+            callbackURL: process.env.CALLBACK_URL || 'https://saldot.herokuapp.com/auth/callback'
         },
         function(accessToken, refreshToken, profile, done) {
             request
