@@ -4,6 +4,8 @@ const jsonParser = require('body-parser').json();
 const passport = require('passport');
 const OAuth2Strategy = require('passport-oauth2');
 const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 const User = require('./model/user');
 
 const uriString =
@@ -19,6 +21,15 @@ mongoose.connect(uriString, (err, res) => {
 });
 
 const app = express()
+
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    store: new MongoStore({
+        mongooseConnection: mongoose.connection
+    })
+}));
 
 const forceSsl = function(req, res, next) {
     if (req.headers['x-forwarded-proto'] !== 'https') {
