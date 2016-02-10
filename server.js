@@ -90,8 +90,12 @@ app.get(
     }));
 
 app.get('/', function(req, res) {
-    const user = req.session.passport.user;
-    res.end(`${user.firstName} ${user.lastName} logged in.`);
+    if (req.isAuthenticated()) {
+        const user = req.session.passport.user;
+        res.end(`${user.firstName} ${user.lastName} logged in.`);
+    } else {
+        res.redirect('/login');
+    }
 });
 
 app.use('/', express.static(__dirname + '/dist'));
