@@ -43,7 +43,6 @@ app.use(passport.session());
 app.use(forceSsl);
 
 passport.serializeUser(function(user, done) {
-    // console.log('user: ', user);
     done(null, user);
 });
 
@@ -76,28 +75,10 @@ passport.use(
                         lastName: harvestUser.last_name,
                         accessToken: accessToken
                     };
-                    // findOrCreateUser(user, err);
-                    // done(null, user);
-
-                    User.findOne({
-                        id: user.id
-                    }, function(err, dbUser) {
-                        if (err) {
-                            console.log(err);
-                        } else if (dbUser === null) {
-                            new User(user).save(err => {
-                                if (err) {
-                                    console.log(err)
-                                }
-                            });
-                        }
-                        done(err, user);
-                    });
+                    done(err, user);
                 });
         }
     ));
-
-const findOrCreateUser = function(user) {}
 
 app.get('/login', passport.authenticate('oauth2'));
 
@@ -107,9 +88,11 @@ app.get(
         failureRedirect: '/error',
         successRedirect: '/'
     }));
-// function(req, res) {
-//     res.end(`${req.user.firstName} ${req.user.lastName} logged in.`);
-// });
+
+app.get('/', function(req, res) {
+    const user = req.session.passport.user;
+    res.end(`${user.firstName} ${user.lastName} logged in.`);
+});
 
 app.use('/', express.static(__dirname + '/dist'));
 
