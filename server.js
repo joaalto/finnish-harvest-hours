@@ -108,7 +108,7 @@ app.get('/', function(req, res) {
 });
 
 app.get('/projects', function(req, res) {
-    Api.get(req, '/projects');
+    console.log('Project ids:', Api.projects(req));
     res.end();
 });
 
