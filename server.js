@@ -106,6 +106,24 @@ app.get('/', function(req, res) {
     }
 });
 
+app.get('/projects', function(req, res) {
+    request
+        .get('https://wunderdog.harvestapp.com/projects')
+        .type('json')
+        .accept('json')
+        .query({
+            access_token: req.session.passport.user.accessToken
+        })
+        .end((err, projects) => {
+            if (err) {
+                console.log('error:', err);
+            } else {
+                // console.log('projects:', projects);
+            }
+        });
+    res.end();
+});
+
 app.use('/', express.static(__dirname + '/dist'));
 
 const port = process.env.PORT || 8080;
