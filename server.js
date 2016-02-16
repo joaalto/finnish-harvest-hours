@@ -6,7 +6,8 @@ const OAuth2Strategy = require('passport-oauth2');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
-const User = require('./model/user');
+const Api = require('./js/api');
+// const User = require('./model/user');
 
 const uriString =
     process.env.MONGOLAB_URI ||
@@ -107,20 +108,7 @@ app.get('/', function(req, res) {
 });
 
 app.get('/projects', function(req, res) {
-    request
-        .get('https://wunderdog.harvestapp.com/projects')
-        .type('json')
-        .accept('json')
-        .query({
-            access_token: req.session.passport.user.accessToken
-        })
-        .end((err, projects) => {
-            if (err) {
-                console.log('error:', err);
-            } else {
-                // console.log('projects:', projects);
-            }
-        });
+    Api.get(req, '/projects');
     res.end();
 });
 
@@ -129,3 +117,7 @@ app.use('/', express.static(__dirname + '/dist'));
 const port = process.env.PORT || 8080;
 app.listen(port);
 console.log('Server listening in port: ' + port);
+
+process.on('uncaughtException', function(error) {
+    console.log(error.stack);
+});
