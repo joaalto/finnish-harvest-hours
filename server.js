@@ -80,6 +80,14 @@ passport.use(
         }
     ));
 
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    } else {
+        res.redirect('/login');
+    }
+}
+
 app.get('/login', passport.authenticate('oauth2'));
 
 app.get(
@@ -89,12 +97,12 @@ app.get(
         successRedirect: '/'
     }));
 
+app.all('*', ensureAuthenticated);
+
 app.get('/', function(req, res) {
     if (req.isAuthenticated()) {
         const user = req.session.passport.user;
         res.end(`${user.firstName} ${user.lastName} logged in.`);
-    } else {
-        res.redirect('/login');
     }
 });
 
