@@ -39,14 +39,14 @@ module.exports = {
     },
 
     dayEntries(req, projectIds) {
-        return Promise.all(_.forEach(projectIds, projectId => {
+        return Promise.all(_.flatMap(projectIds, projectId => {
                 return this.get(
                         req,
                         `/projects/${projectId}/entries?from=${startDate}&to=${endDate}&user_id=${getUser(req).id}`)
                     .then(entries => {
                         return _.map(entries, row => {
                             const entry = row.day_entry;
-                            console.log('entry:', entry.spent_at);
+                            // console.log('entry:', entry.spent_at);
                             return {
                                 date: entry.spent_at,
                                 hours: entry.hours
@@ -55,7 +55,7 @@ module.exports = {
                     })
                     .catch(err => console.error('>>> error:', err));
             })).then(res => {
-                console.log('>>> res', res);
+                _.forEach(res, () => console.log('>>> res', res));
                 return res;
             })
             .catch(err => console.error('ERR:', err));
