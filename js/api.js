@@ -44,7 +44,9 @@ module.exports = {
                         req,
                         `/projects/${projectId}/entries?from=${startDate}&to=${endDate}&user_id=${getUser(req).id}`)
                     .then(entries => {
-                        return _.map(entries, entry => {
+                        return _.map(entries, row => {
+                            const entry = row.day_entry;
+                            console.log('entry:', entry.spent_at);
                             return {
                                 date: entry.spent_at,
                                 hours: entry.hours
