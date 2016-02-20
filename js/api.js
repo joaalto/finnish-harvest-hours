@@ -30,14 +30,14 @@ module.exports = {
             });
     },
 
-    projectEntries(req) {
+    fetchHourEntries(req) {
         return this.get(req, '/projects')
             .then(projects => _.map(projects, row => row.project.id))
             .then(projectIds => this.dayEntries(req, projectIds));
     },
 
-    dayEntries(req, projectIds) {
-        const projectsAndEntries = _.map(projectIds, projectId => {
+    fetchProjectsAndEntries(req, projectIds) {
+        return _.map(projectIds, projectId => {
             return this.get(
                     req,
                     `/projects/${projectId}/entries?from=${startDate}&to=${endDate}&user_id=${getUser(req).id}`)
@@ -51,8 +51,10 @@ module.exports = {
                 })
                 .catch(err => console.error('>>> error:', err));
         });
+    },
 
-        return Promise.all(projectsAndEntries)
+    dayEntries(req, projectIds) {
+        return Promise.all(this.fetchProjectsAndEntries(req, projectIds))
             .then(results => _(results)
                 .flatten()
                 .groupBy('date')

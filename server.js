@@ -108,7 +108,7 @@ app.get('/', function(req, res) {
 });
 
 app.get('/entries', function(req, res) {
-    Api.projectEntries(req)
+    Api.fetchHourEntries(req)
         .then(entries => res.send(entries));
 });
 
