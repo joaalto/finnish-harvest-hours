@@ -53,7 +53,19 @@ module.exports = {
         });
 
         return Promise.all(projectsAndEntries)
-            .then(results => _.flatten(results))
+            .then(results => _(results)
+                .flatten()
+                .groupBy('date')
+                .mapValues(dayEntries => {
+                    return dayEntries.reduce((a, b) => {
+                        return {
+                            date: a.date,
+                            hours: a.hours + b.hours
+                        };
+                    })
+                })
+                .values()
+                .value())
             .catch(err => console.error('ERR:', err));
     }
 };
