@@ -47,7 +47,7 @@ module.exports = {
                     req,
                     `/projects/${projectId}/entries?from=${startDate}&to=${endDate}&user_id=${getUser(req).id}`)
                 .then(projectEntries => {
-                    return _.flatMap(projectEntries, row => {
+                    return _.map(projectEntries, row => {
                         return {
                             date: row.day_entry.spent_at,
                             hours: row.day_entry.hours
