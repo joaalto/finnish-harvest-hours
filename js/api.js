@@ -31,14 +31,9 @@ module.exports = {
     },
 
     projects(req) {
-        const proj = this.get(req, '/projects')
+        return this.get(req, '/projects')
             .then(projects => _.map(projects, row => row.project.id))
             .then(projectIds => this.dayEntries(req, projectIds));
-
-        return proj.then(entries => {
-            _.forEach(entries, entry => console.log('>>> entry:', entry));
-            return entries;
-        });
     },
 
     dayEntries(req, projectIds) {

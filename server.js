@@ -108,8 +108,8 @@ app.get('/', function(req, res) {
 });
 
 app.get('/projects', function(req, res) {
-    console.log('Project ids:', Api.projects(req));
-    res.end();
+    Api.projects(req)
+        .then(entries => res.send(entries));
 });
 
 app.use('/', express.static(__dirname + '/dist'));
