@@ -30,7 +30,7 @@ module.exports = {
             });
     },
 
-    projects(req) {
+    projectEntries(req) {
         return this.get(req, '/projects')
             .then(projects => _.map(projects, row => row.project.id))
             .then(projectIds => this.dayEntries(req, projectIds));

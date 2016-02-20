@@ -107,8 +107,8 @@ app.get('/', function(req, res) {
     }
 });
 
-app.get('/projects', function(req, res) {
-    Api.projects(req)
+app.get('/entries', function(req, res) {
+    Api.projectEntries(req)
         .then(entries => res.send(entries));
 });
 
