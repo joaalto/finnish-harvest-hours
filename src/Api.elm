@@ -18,5 +18,5 @@ decodeEntries =
     (object2
       Entry
       ("date" := customDecoder string Date.fromString)
-      ("hours" := int)
+      ("hours" := float)
     )

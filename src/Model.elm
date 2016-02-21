@@ -7,11 +7,11 @@ import Http
 type alias Model =
   { httpError : Result Http.Error ()
   , entries : List Entry
-  , hours : Int
+  , hours : Float
   }
 
 
 type alias Entry =
   { date : Date
-  , hours : Int
+  , hours : Float
   }
