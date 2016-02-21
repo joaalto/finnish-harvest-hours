@@ -4,3 +4,4 @@ index.js
 node_modules/
 heroku_logs
 .env
+tmp
