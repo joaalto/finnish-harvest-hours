@@ -98,7 +98,7 @@ app.get('/', function(req, res) {
 });
 
 app.get('/entries', function(req, res) {
-    Api.fetchHourEntries(req)
+    Api.fetchHourEntries(req, res)
         .then(entries => res.send(entries));
 });
 

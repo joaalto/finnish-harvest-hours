@@ -12,7 +12,7 @@ const baseUrl = 'https://wunderdog.harvestapp.com';
 
 module.exports = {
 
-    get(req, url) {
+    get(req, res, url) {
         return promise = agent.get(baseUrl + url)
             .type('json')
             .accept('json')
@@ -23,23 +23,23 @@ module.exports = {
             .then(resp => resp.body)
             .catch(err => {
                 if (err.response.status === 401) {
-                    // TODO: login again, add ttl to session
                     req.session.destroy();
+                    res.redirect('/login');
                 }
                 console.error('error:', err.response);
             });
     },
 
-    fetchHourEntries(req) {
-        return this.get(req, '/projects')
+    fetchHourEntries(req, res) {
+        return this.get(req, res, '/projects')
             .then(projects => _.map(projects, row => row.project.id))
-            .then(projectIds => this.dayEntries(req, projectIds));
+            .then(projectIds => this.dayEntries(req, res, projectIds));
     },
 
-    fetchProjectsAndEntries(req, projectIds) {
+    fetchProjectsAndEntries(req, res, projectIds) {
         return _.map(projectIds, projectId => {
             return this.get(
-                    req,
+                    req, res,
                     `/projects/${projectId}/entries?from=${startDate}&to=${endDate}&user_id=${getUser(req).id}`)
                 .then(projectEntries => {
                     return _.map(projectEntries, row => {
@@ -53,8 +53,8 @@ module.exports = {
         });
     },
 
-    dayEntries(req, projectIds) {
-        return Promise.all(this.fetchProjectsAndEntries(req, projectIds))
+    dayEntries(req, res, projectIds) {
+        return Promise.all(this.fetchProjectsAndEntries(req, res, projectIds))
             .then(results => _(results)
                 .flatten()
                 .groupBy('date')
