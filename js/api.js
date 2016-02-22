@@ -66,6 +66,7 @@ module.exports = {
                         };
                     })
                 })
+                .orderBy('date')
                 .values()
                 .value())
             .catch(err => console.error('ERR:', err));
