@@ -4,6 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Signal exposing (Address)
+import Date exposing (..)
 import Model exposing (..)
 import Update exposing (..)
 
@@ -19,4 +20,4 @@ view address model =
     Ok _ ->
       div
         []
-        [ text "Hello, world." ]
+        [ text (toString (Date.dayOfWeek model.currentDate)) ]

@@ -8,8 +8,11 @@ import Signal exposing (Signal, Mailbox, Address, send)
 import Html exposing (..)
 import Task
 import Effects exposing (Effects, Never)
+import Time exposing (Time)
+import Date exposing (fromTime)
 
 
+port currentTime : Time
 app : StartApp.App Model
 app =
   StartApp.start
@@ -40,6 +43,7 @@ init =
 initialModel : Model
 initialModel =
   { httpError = Ok ()
+  , currentDate = Date.fromTime currentTime
   , entries = []
   , hours = 0
   }

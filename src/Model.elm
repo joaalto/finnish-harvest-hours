@@ -6,6 +6,7 @@ import Http
 
 type alias Model =
   { httpError : Result Http.Error ()
+  , currentDate : Date
   , entries : List Entry
   , hours : Float
   }
