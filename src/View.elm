@@ -4,6 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Signal exposing (Address)
+import DateUtils exposing (..)
 import Date exposing (..)
 import Model exposing (..)
 import Update exposing (..)
@@ -20,4 +21,24 @@ view address model =
     Ok _ ->
       div
         []
-        [ text (toString (Date.dayOfWeek model.currentDate)) ]
+        [ text (toString (Date.dayOfWeek model.currentDate))
+        , text (toString (List.length (totalDaysForYear model.currentDate)))
+        , calendarTable model
+        ]
+
+
+calendarTable : Model -> Html
+calendarTable model =
+  table
+    []
+    [ thead
+        []
+        [ tr
+            []
+            []
+        ]
+    ]
+
+
+
+-- weekHeader
