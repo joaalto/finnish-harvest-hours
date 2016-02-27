@@ -39,3 +39,12 @@ isSameDate date1 date2 =
     Compare.Same
     (Df.floor Df.Day date1)
     (Df.floor Df.Day date2)
+
+
+isWorkDay : Date -> Bool
+isWorkDay date =
+  let
+    dow =
+      dayOfWeek date
+  in
+    not (dow == Sat || dow == Sun)
