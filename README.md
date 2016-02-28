@@ -2,6 +2,7 @@
 
 - display user name
 - only render hours when the request is finished
+- take national holidays into account
 - handle login and redirects properly
 - calendar view for hours
 - tests
