@@ -7,6 +7,19 @@ import Date exposing (Date)
 import Model exposing (..)
 
 
+getUser : Task Error User
+getUser =
+  Http.get decodeUser "/user"
+
+
+decodeUser : Json.Decoder User
+decodeUser =
+  object2
+    User
+    ("firstName" := string)
+    ("lastName" := string)
+
+
 getEntries : Task Error (List DateEntries)
 getEntries =
   Http.get decodeDayEntries "/entries"
