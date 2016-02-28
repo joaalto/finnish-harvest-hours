@@ -5,6 +5,7 @@ import Task exposing (Task)
 import Http
 import Model exposing (..)
 import Api exposing (getEntries)
+import DateUtils exposing (enteredHoursVsTotal)
 
 
 type Action
@@ -25,7 +26,11 @@ update action model =
     EntryList results ->
       case results of
         Ok entries ->
-          noFx { model | entries = entries }
+          let
+            newModel =
+              { model | entries = entries }
+          in
+            noFx { model | totalHours = enteredHoursVsTotal newModel }
 
         Err error ->
           noFx { model | httpError = Err error }

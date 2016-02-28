@@ -27,7 +27,7 @@ view address model =
               ", "
               [ (toString (Date.dayOfWeek model.currentDate))
               , (toString (List.length (totalDaysForYear model.currentDate)))
-              , (toString (enteredHoursVsTotal model))
+              , (toString model.totalHours)
               ]
             )
         , calendarTable model
