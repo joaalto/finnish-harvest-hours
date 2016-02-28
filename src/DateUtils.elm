@@ -10,12 +10,14 @@ import Date.Format exposing (isoString)
 import Date.Floor as Df exposing (floor)
 
 
--- totalHoursForYear : Date -> Float
+totalHoursForYear : Date -> Float
+totalHoursForYear currentDate =
+  toFloat (List.length (totalDaysForYear currentDate)) * 7.5
 
 
 totalDaysForYear : Date -> List Date
 totalDaysForYear currentDate =
-  workDays (Debug.log "firstDay" (isoWeekOne (year currentDate))) currentDate []
+  workDays (isoWeekOne (year currentDate)) currentDate []
 
 
 workDays : Date -> Date -> List Date -> List Date
