@@ -13,12 +13,31 @@ import Model exposing (..)
 
 enteredHoursVsTotal : Model -> Float
 enteredHoursVsTotal model =
-  totalHoursForYear model.currentDate - totalEntryHours model.entries
+  let
+    enteredHours =
+      List.foldl
+        (\dateEntries -> totalHoursForDate dateEntries)
+        0
+        model.entries
+  in
+    totalHoursForYear model.currentDate - enteredHours
 
 
-totalEntryHours : List Entry -> Float
-totalEntryHours entries =
-  List.foldl (+) 0 (List.map (\e -> e.hours) entries)
+totalHoursForDate : DateEntries -> Float -> Float
+totalHoursForDate dateEntries hours =
+  let
+    hourList =
+      List.map
+        (\entry ->
+          if entry.taskId == 4905852 then
+            -- Vuosiloma
+            0
+          else
+            entry.hours
+        )
+        dateEntries.entries
+  in
+    hours + List.sum hourList
 
 
 totalHoursForYear : Date -> Float

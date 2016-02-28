@@ -10,7 +10,7 @@ import Api exposing (getEntries)
 type Action
   = Login
   | GetDayEntries
-  | EntryList (Result Http.Error (List Entry))
+  | EntryList (Result Http.Error (List DateEntries))
 
 
 update : Action -> Model -> ( Model, Effects Action )

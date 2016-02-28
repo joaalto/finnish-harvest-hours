@@ -60,13 +60,15 @@ module.exports = {
                 .flatten()
                 .groupBy('date')
                 .mapValues(dayEntries => {
-                    return dayEntries.reduce((a, b) => {
-                        return {
-                            date: a.date,
-                            hours: a.hours + b.hours,
-                            taskId: a.taskId
-                        };
-                    })
+                    return {
+                        date: dayEntries[0].date,
+                        entries: dayEntries.map(entry => {
+                            return {
+                                hours: entry.hours,
+                                taskId: entry.taskId
+                            };
+                        })
+                    }
                 })
                 .orderBy('date')
                 .values()

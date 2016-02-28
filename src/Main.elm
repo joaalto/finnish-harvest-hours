@@ -45,5 +45,5 @@ initialModel =
   { httpError = Ok ()
   , currentDate = Date.fromTime currentTime
   , entries = []
-  , hours = 0
+  , totalHours = 0
   }

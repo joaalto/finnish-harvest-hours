@@ -4,20 +4,27 @@ import Http exposing (Error)
 import Json.Decode as Json exposing (..)
 import Task exposing (Task)
 import Date exposing (Date)
-import Model exposing (Entry)
+import Model exposing (..)
 
 
-getEntries : Task Error (List Entry)
+getEntries : Task Error (List DateEntries)
 getEntries =
-  Http.get decodeEntries "/entries"
+  Http.get decodeDayEntries "/entries"
 
 
-decodeEntries : Json.Decoder (List Entry)
-decodeEntries =
+decodeDayEntries : Json.Decoder (List DateEntries)
+decodeDayEntries =
   list
-    (object3
-      Entry
+    (object2
+      DateEntries
       ("date" := customDecoder string Date.fromString)
-      ("hours" := float)
-      ("taskId" := int)
+      ("entries" := list decodeEntry)
     )
+
+
+decodeEntry : Json.Decoder Entry
+decodeEntry =
+  object2
+    Entry
+    ("hours" := float)
+    ("taskId" := int)

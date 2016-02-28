@@ -7,13 +7,18 @@ import Http
 type alias Model =
   { httpError : Result Http.Error ()
   , currentDate : Date
+  , entries : List DateEntries
+  , totalHours : Float
+  }
+
+
+type alias DateEntries =
+  { date : Date
   , entries : List Entry
-  , hours : Float
   }
 
 
 type alias Entry =
-  { date : Date
-  , hours : Float
+  { hours : Float
   , taskId : Int
   }
