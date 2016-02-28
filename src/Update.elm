@@ -12,6 +12,7 @@ type Action
   = Login
   | GetDayEntries
   | EntryList (Result Http.Error (List DateEntries))
+  | FetchedUser (Result Http.Error (User))
 
 
 update : Action -> Model -> ( Model, Effects Action )
@@ -33,7 +34,15 @@ update action model =
             noFx { model | totalHours = enteredHoursVsTotal newModel }
 
         Err error ->
-          noFx { model | httpError = Err error }
+          handleError model error
+
+    FetchedUser result ->
+      case result of
+        Ok user ->
+          noFx { model | user = user }
+
+        Err error ->
+          handleError model error
 
 
 noFx : Model -> ( Model, Effects Action )
@@ -41,9 +50,22 @@ noFx model =
   ( model, Effects.none )
 
 
+handleError : Model -> Http.Error -> ( Model, Effects Action )
+handleError model error =
+  noFx { model | httpError = Err error }
+
+
 getEntries : Effects Action
 getEntries =
   Api.getEntries
     |> Task.toResult
     |> Task.map EntryList
+    |> Effects.task
+
+
+getUser : Effects Action
+getUser =
+  Api.getUser
+    |> Task.toResult
+    |> Task.map FetchedUser
     |> Effects.task
