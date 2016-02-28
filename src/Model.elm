@@ -9,6 +9,13 @@ type alias Model =
   , currentDate : Date
   , entries : List DateEntries
   , totalHours : Float
+  , user : User
+  }
+
+
+type alias User =
+  { firstName : String
+  , lastName : String
   }
 
 

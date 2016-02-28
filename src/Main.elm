@@ -46,4 +46,5 @@ initialModel =
   , currentDate = Date.fromTime currentTime
   , entries = []
   , totalHours = 0
+  , user = { firstName = "", lastName = "" }
   }
