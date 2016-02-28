@@ -6,6 +6,7 @@ import Html.Events exposing (..)
 import Signal exposing (Address)
 import DateUtils exposing (..)
 import Date exposing (..)
+import String
 import Model exposing (..)
 import Update exposing (..)
 
@@ -21,8 +22,14 @@ view address model =
     Ok _ ->
       div
         []
-        [ text (toString (Date.dayOfWeek model.currentDate))
-        , text (toString (List.length (totalDaysForYear model.currentDate)))
+        [ text
+            (String.join
+              ", "
+              [ (toString (Date.dayOfWeek model.currentDate))
+              , (toString (List.length (totalDaysForYear model.currentDate)))
+              , (toString (enteredHoursVsTotal model))
+              ]
+            )
         , calendarTable model
         ]
 

@@ -11,6 +11,11 @@ import Date.Floor as Df exposing (floor)
 import Model exposing (..)
 
 
+enteredHoursVsTotal : Model -> Float
+enteredHoursVsTotal model =
+  totalHoursForYear model.currentDate - totalEntryHours model.entries
+
+
 totalEntryHours : List Entry -> Float
 totalEntryHours entries =
   List.foldl (+) 0 (List.map (\e -> e.hours) entries)
@@ -35,10 +40,13 @@ workDays date currentDate days =
       nextDay =
         add Period.Day 1 date
 
-      isoStr =
-        (Debug.log "nextDay" (isoString nextDay))
+      dayList =
+        if isWorkDay nextDay then
+          nextDay :: days
+        else
+          days
     in
-      workDays nextDay currentDate (nextDay :: days)
+      workDays nextDay currentDate dayList
 
 
 isSameDate : Date -> Date -> Bool
