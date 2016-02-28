@@ -76,10 +76,6 @@ isSameDate date1 date2 =
     (Df.floor Df.Day date2)
 
 
-
--- TODO: Take the user's holidays into account!
-
-
 isWorkDay : Date -> Bool
 isWorkDay date =
   let
