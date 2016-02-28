@@ -5,6 +5,7 @@ const passport = require('passport');
 const OAuth2Strategy = require('passport-oauth2');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+const _ = require('lodash');
 const Api = require('./js/api');
 
 const mongoUrl =
@@ -91,10 +92,12 @@ app.get(
 
 app.all('*', ensureAuthenticated);
 
-app.get('/', function(req, res) {
+app.use('/', express.static(__dirname + '/dist'));
+
+app.get('/user', function(req, res) {
     if (req.isAuthenticated()) {
         const user = req.session.passport.user;
-        res.end(`${user.firstName} ${user.lastName} logged in.`);
+        res.send(_.pick(user, 'firstName', 'lastName'));
     }
 });
 
@@ -102,8 +105,6 @@ app.get('/entries', function(req, res) {
     Api.fetchHourEntries(req, res)
         .then(entries => res.send(entries));
 });
-
-app.use('/', express.static(__dirname + '/dist'));
 
 const port = process.env.PORT || 8080;
 app.listen(port);
