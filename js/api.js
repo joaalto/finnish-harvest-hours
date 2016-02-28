@@ -45,7 +45,8 @@ module.exports = {
                     return _.map(projectEntries, row => {
                         return {
                             date: row.day_entry.spent_at,
-                            hours: row.day_entry.hours
+                            hours: row.day_entry.hours,
+                            taskId: row.day_entry.task_id
                         };
                     });
                 })
@@ -62,7 +63,8 @@ module.exports = {
                     return dayEntries.reduce((a, b) => {
                         return {
                             date: a.date,
-                            hours: a.hours + b.hours
+                            hours: a.hours + b.hours,
+                            taskId: a.taskId
                         };
                     })
                 })

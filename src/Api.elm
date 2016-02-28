@@ -15,8 +15,9 @@ getEntries =
 decodeEntries : Json.Decoder (List Entry)
 decodeEntries =
   list
-    (object2
+    (object3
       Entry
       ("date" := customDecoder string Date.fromString)
       ("hours" := float)
+      ("taskId" := int)
     )

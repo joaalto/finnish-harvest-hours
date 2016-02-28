@@ -15,4 +15,5 @@ type alias Model =
 type alias Entry =
   { date : Date
   , hours : Float
+  , taskId : Int
   }
