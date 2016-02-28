@@ -8,6 +8,12 @@ import Date.Period as Period exposing (add, diff)
 import Date.Compare as Compare exposing (is, Compare2)
 import Date.Format exposing (isoString)
 import Date.Floor as Df exposing (floor)
+import Model exposing (..)
+
+
+totalEntryHours : List Entry -> Float
+totalEntryHours entries =
+  List.foldl (+) 0 (List.map (\e -> e.hours) entries)
 
 
 totalHoursForYear : Date -> Float
@@ -41,6 +47,10 @@ isSameDate date1 date2 =
     Compare.Same
     (Df.floor Df.Day date1)
     (Df.floor Df.Day date2)
+
+
+
+-- TODO: Take the user's holidays into account!
 
 
 isWorkDay : Date -> Bool
