@@ -1,22 +1,22 @@
 [{
     "date": "2016-01-01",
-    "name": "Uudenvuodenpäivä",
+    "name": "Uudenvuodenpäivä"
 }, {
     "date": "2016-01-06",
-    "name": "Loppiainen",
+    "name": "Loppiainen"
 }, {
     "date": "2016-03-25",
-    "name": "Pitkäperjantai",
+    "name": "Pitkäperjantai"
 }, {
     "date": "2016-03-28",
-    "name": "Toinen pääsiäispäivä",
+    "name": "Toinen pääsiäispäivä"
 }, {
     "date": "2016-05-05",
-    "name": "Helatorstai",
+    "name": "Helatorstai"
 }, {
     "date": "2016-12-06",
-    "name": "Itsenäisyyspäivä",
+    "name": "Itsenäisyyspäivä"
 }, {
     "date": "2016-12-26",
-    "name": "Tapaninpäivä",
+    "name": "Tapaninpäivä"
 }]
