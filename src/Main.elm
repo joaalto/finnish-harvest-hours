@@ -36,7 +36,10 @@ port tasks =
 init : ( Model, Effects Action )
 init =
   ( initialModel
-  , Update.getEntries
+  , Effects.batch
+      [ Update.getUser
+      , Update.getEntries
+      ]
   )
 
 

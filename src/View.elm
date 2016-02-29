@@ -27,6 +27,7 @@ view address model =
               ", "
               [ (toString (Date.dayOfWeek model.currentDate))
               , (toString (List.length (totalDaysForYear model.currentDate)))
+              , (String.join " " [ model.user.firstName, model.user.lastName ])
               , (toString model.totalHours)
               ]
             )
