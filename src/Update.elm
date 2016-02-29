@@ -64,25 +64,24 @@ handleError model error =
   noFx { model | httpError = Err error }
 
 
+getResult : Task Http.Error a -> (Result Http.Error a -> Action) -> Effects Action
+getResult httpGet action =
+  httpGet
+    |> Task.toResult
+    |> Task.map action
+    |> Effects.task
+
+
 getEntries : Effects Action
 getEntries =
-  Api.getEntries
-    |> Task.toResult
-    |> Task.map EntryList
-    |> Effects.task
+  getResult Api.getEntries EntryList
 
 
 getUser : Effects Action
 getUser =
-  Api.getUser
-    |> Task.toResult
-    |> Task.map FetchedUser
-    |> Effects.task
+  getResult Api.getUser FetchedUser
 
 
 getHolidays : Effects Action
 getHolidays =
-  Api.getNationalHolidays
-    |> Task.toResult
-    |> Task.map FetchedHolidays
-    |> Effects.task
+  getResult Api.getNationalHolidays FetchedHolidays
