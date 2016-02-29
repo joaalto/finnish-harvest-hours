@@ -13,6 +13,7 @@ type Action
   | GetDayEntries
   | EntryList (Result Http.Error (List DateEntries))
   | FetchedUser (Result Http.Error (User))
+  | FetchedHolidays (Result Http.Error (List Holiday))
 
 
 update : Action -> Model -> ( Model, Effects Action )
@@ -44,6 +45,14 @@ update action model =
         Err error ->
           handleError model error
 
+    FetchedHolidays result ->
+      case result of
+        Ok holidays ->
+          noFx { model | holidays = holidays }
+
+        Err error ->
+          handleError model error
+
 
 noFx : Model -> ( Model, Effects Action )
 noFx model =
@@ -68,4 +77,12 @@ getUser =
   Api.getUser
     |> Task.toResult
     |> Task.map FetchedUser
+    |> Effects.task
+
+
+getHolidays : Effects Action
+getHolidays =
+  Api.getNationalHolidays
+    |> Task.toResult
+    |> Task.map FetchedHolidays
     |> Effects.task

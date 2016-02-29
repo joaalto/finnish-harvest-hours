@@ -10,6 +10,7 @@ type alias Model =
   , entries : List DateEntries
   , totalHours : Float
   , user : User
+  , holidays : List Holiday
   }
 
 
@@ -28,4 +29,10 @@ type alias DateEntries =
 type alias Entry =
   { hours : Float
   , taskId : Int
+  }
+
+
+type alias Holiday =
+  { date : Date
+  , name : String
   }

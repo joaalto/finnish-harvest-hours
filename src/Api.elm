@@ -41,3 +41,18 @@ decodeEntry =
     Entry
     ("hours" := float)
     ("taskId" := int)
+
+
+getNationalHolidays : Task Error (List Holiday)
+getNationalHolidays =
+  Http.get decodeHolidays "/holidays"
+
+
+decodeHolidays : Json.Decoder (List Holiday)
+decodeHolidays =
+  list
+    (object2
+      Holiday
+      ("date" := customDecoder string Date.fromString)
+      ("name" := string)
+    )

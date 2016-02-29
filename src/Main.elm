@@ -39,6 +39,7 @@ init =
   , Effects.batch
       [ Update.getUser
       , Update.getEntries
+      , Update.getHolidays
       ]
   )
 
@@ -50,4 +51,5 @@ initialModel =
   , entries = []
   , totalHours = 0
   , user = { firstName = "", lastName = "" }
+  , holidays = []
   }
