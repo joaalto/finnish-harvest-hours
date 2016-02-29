@@ -101,6 +101,13 @@ app.get('/user', function(req, res) {
     }
 });
 
+app.get('/holidays', function(req, res) {
+    const options = {
+        root: __dirname + '/dist'
+    };
+    res.sendFile('finnish_holidays_2016.json', options);
+});
+
 app.get('/entries', function(req, res) {
     Api.fetchHourEntries(req, res)
         .then(entries => res.send(entries));
