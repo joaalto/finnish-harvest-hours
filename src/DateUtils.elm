@@ -20,7 +20,7 @@ enteredHoursVsTotal model =
         0
         model.entries
   in
-    totalHoursForYear model.currentDate - enteredHours
+    enteredHours - totalHoursForYear model.currentDate
 
 
 totalHoursForDate : DateEntries -> Float -> Float
