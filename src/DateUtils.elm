@@ -20,7 +20,7 @@ enteredHoursVsTotal model =
         0
         model.entries
   in
-    enteredHours - totalHoursForYear model.currentDate
+    enteredHours - totalHoursForYear model
 
 
 totalHoursForDate : DateEntries -> Float -> Float
@@ -40,19 +40,19 @@ totalHoursForDate dateEntries hours =
     hours + List.sum hourList
 
 
-totalHoursForYear : Date -> Float
-totalHoursForYear currentDate =
-  toFloat (List.length (totalDaysForYear currentDate)) * 7.5
+totalHoursForYear : Model -> Float
+totalHoursForYear model =
+  toFloat (List.length (totalDaysForYear model)) * 7.5
 
 
-totalDaysForYear : Date -> List Date
-totalDaysForYear currentDate =
-  workDays (isoWeekOne (year currentDate)) currentDate []
+totalDaysForYear : Model -> List Date
+totalDaysForYear model =
+  workDays (isoWeekOne (year model.currentDate)) model []
 
 
-workDays : Date -> Date -> List Date -> List Date
-workDays date currentDate days =
-  if isSameDate date currentDate then
+workDays : Date -> Model -> List Date -> List Date
+workDays date model days =
+  if isSameDate date model.currentDate then
     days
   else
     let
@@ -65,7 +65,7 @@ workDays date currentDate days =
         else
           days
     in
-      workDays nextDay currentDate dayList
+      workDays nextDay model dayList
 
 
 isSameDate : Date -> Date -> Bool
