@@ -1,5 +1,6 @@
 module Update (..) where
 
+import List exposing (isEmpty)
 import Effects exposing (Effects)
 import Task exposing (Task)
 import Http
@@ -14,6 +15,7 @@ type Action
   | EntryList (Result Http.Error (List DateEntries))
   | FetchedUser (Result Http.Error (User))
   | FetchedHolidays (Result Http.Error (List Holiday))
+  | UpdateHours
 
 
 update : Action -> Model -> ( Model, Effects Action )
@@ -28,11 +30,7 @@ update action model =
     EntryList results ->
       case results of
         Ok entries ->
-          let
-            newModel =
-              { model | entries = entries }
-          in
-            noFx { model | totalHours = enteredHoursVsTotal newModel }
+          update UpdateHours { model | entries = entries }
 
         Err error ->
           handleError model error
@@ -48,10 +46,16 @@ update action model =
     FetchedHolidays result ->
       case result of
         Ok holidays ->
-          noFx { model | holidays = holidays }
+          update UpdateHours { model | holidays = holidays }
 
         Err error ->
           handleError model error
+
+    UpdateHours ->
+      if not (isEmpty model.entries || isEmpty model.holidays) then
+        noFx { model | totalHours = enteredHoursVsTotal model }
+      else
+        noFx model
 
 
 noFx : Model -> ( Model, Effects Action )
