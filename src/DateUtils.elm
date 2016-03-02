@@ -60,7 +60,15 @@ workDays date model days =
         add Period.Day 1 date
 
       dayList =
-        if isWorkDay nextDay then
+        if
+          isWorkDay nextDay
+            && List.length
+                (List.filter
+                  (\holiday -> isSameDate holiday.date nextDay)
+                  model.holidays
+                )
+            == 0
+        then
           nextDay :: days
         else
           days
