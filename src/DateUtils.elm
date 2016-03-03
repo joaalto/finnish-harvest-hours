@@ -6,7 +6,10 @@ import Date.Core exposing (..)
 import Date.Utils exposing (..)
 import Date.Period as Period exposing (add, diff)
 import Date.Compare as Compare exposing (is, Compare2)
-import Date.Format exposing (isoString)
+
+
+-- import Date.Format exposing (isoString)
+
 import Date.Floor as Df exposing (floor)
 import Model exposing (..)
 
@@ -47,7 +50,7 @@ totalHoursForYear model =
 
 totalDaysForYear : Model -> List Date
 totalDaysForYear model =
-  workDays (isoWeekOne (year model.currentDate)) model []
+  workDays (Df.floor Df.Year model.currentDate) model []
 
 
 workDays : Date -> Model -> List Date -> List Date
@@ -60,20 +63,22 @@ workDays date model days =
         add Period.Day 1 date
 
       dayList =
-        if
-          isWorkDay nextDay
-            && List.length
-                (List.filter
-                  (\holiday -> isSameDate holiday.date nextDay)
-                  model.holidays
-                )
-            == 0
-        then
+        if isWorkDay nextDay && isNotHoliday nextDay model then
           nextDay :: days
         else
           days
     in
       workDays nextDay model dayList
+
+
+isNotHoliday : Date -> Model -> Bool
+isNotHoliday date model =
+  List.length
+    (List.filter
+      (\holiday -> isSameDate holiday.date date)
+      model.holidays
+    )
+    == 0
 
 
 isSameDate : Date -> Date -> Bool
