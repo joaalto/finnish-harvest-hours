@@ -9,6 +9,7 @@ import Date exposing (..)
 import String
 import Model exposing (..)
 import Update exposing (..)
+import Date.Core exposing (daysInMonthDate, isoDayOfWeek)
 
 
 view : Address Action -> Model -> Html
@@ -48,5 +49,19 @@ calendarTable model =
     ]
 
 
+{-| How many week rows do we need to render for the current month
+-}
+calRowCount : Model -> Int
+calRowCount model =
+  ceiling
+    (toFloat
+      (dayOfWeekInt model + (daysInMonthDate model.currentDate))
+      / 7
+    )
 
--- weekHeader
+
+{-| Day of week as Int, from 0 (Mon) to 6 (Sun).
+-}
+dayOfWeekInt : Model -> Int
+dayOfWeekInt model =
+  isoDayOfWeek (dayOfWeek model.currentDate) - 1
