@@ -111,5 +111,11 @@ monthEntries model date =
 entryRange : Model -> Date -> Date -> List DateEntries
 entryRange model startDate endDate =
   List.filter
-    (\e -> Compare.is3 Compare.BetweenOpen (floorDay e.date) (floorDay startDate) (floorDay endDate))
+    (\e ->
+      Compare.is3
+        Compare.BetweenOpen
+        (floorDay e.date)
+        (floorDay startDate)
+        (floorDay endDate)
+    )
     model.entries
