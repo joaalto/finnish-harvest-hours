@@ -85,8 +85,8 @@ isSameDate : Date -> Date -> Bool
 isSameDate date1 date2 =
   is
     Compare.Same
-    (Df.floor Df.Day date1)
-    (Df.floor Df.Day date2)
+    (floorDay date1)
+    (floorDay date2)
 
 
 isWorkDay : Date -> Bool
@@ -96,3 +96,20 @@ isWorkDay date =
       dayOfWeek date
   in
     not (dow == Sat || dow == Sun)
+
+
+floorDay : Date -> Date
+floorDay date =
+  Df.floor Df.Day date
+
+
+monthEntries : Model -> Date -> List DateEntries
+monthEntries model date =
+  entryRange model (toFirstOfMonth date) (lastOfMonthDate date)
+
+
+entryRange : Model -> Date -> Date -> List DateEntries
+entryRange model startDate endDate =
+  List.filter
+    (\e -> Compare.is3 Compare.BetweenOpen (floorDay e.date) (floorDay startDate) (floorDay endDate))
+    model.entries
