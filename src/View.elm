@@ -1,5 +1,6 @@
 module View (..) where
 
+import List exposing (take)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -10,6 +11,7 @@ import String
 import Model exposing (..)
 import Update exposing (..)
 import Date.Core exposing (daysInMonthDate, isoDayOfWeek)
+import Date.Format exposing (isoString)
 
 
 view : Address Action -> Model -> Html
@@ -46,7 +48,23 @@ calendarTable model =
             []
             []
         ]
+    , tbody
+        []
+        (List.map
+          (\week -> weekRow week)
+          (monthView model)
+        )
     ]
+
+
+weekRow : List DateEntries -> Html
+weekRow dateEntries =
+  tr
+    []
+    (List.map
+      (\day -> td [ value (isoString day.date) ] [])
+      dateEntries
+    )
 
 
 {-| How many week rows do we need to render for the current month
@@ -55,13 +73,6 @@ calRowCount : Model -> Int
 calRowCount model =
   ceiling
     (toFloat
-      (dayOfWeekInt model + (daysInMonthDate model.currentDate))
+      (firstOfMonthDayOfWeek model + (daysInMonthDate model.currentDate))
       / 7
     )
-
-
-{-| Day of week as Int, from 0 (Mon) to 6 (Sun).
--}
-dayOfWeekInt : Model -> Int
-dayOfWeekInt model =
-  isoDayOfWeek (dayOfWeek model.currentDate) - 1

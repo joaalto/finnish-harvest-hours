@@ -1,11 +1,12 @@
 module DateUtils (..) where
 
-import List exposing (head)
+import List exposing (head, isEmpty, reverse, drop, take)
 import Date exposing (..)
 import Date.Core exposing (..)
 import Date.Utils exposing (..)
 import Date.Period as Period exposing (add, diff)
 import Date.Compare as Compare exposing (is, Compare2)
+import Date.Duration as Duration
 
 
 -- import Date.Format exposing (isoString)
@@ -31,13 +32,7 @@ totalHoursForDate dateEntries hours =
   let
     hourList =
       List.map
-        (\entry ->
-          if entry.taskId == 4905852 then
-            -- Vuosiloma
-            0
-          else
-            entry.hours
-        )
+        (\entry -> entry.hours)
         dateEntries.entries
   in
     hours + List.sum hourList
@@ -103,9 +98,27 @@ floorDay date =
   Df.floor Df.Day date
 
 
-monthEntries : Model -> Date -> List DateEntries
-monthEntries model date =
-  entryRange model (toFirstOfMonth date) (lastOfMonthDate date)
+monthView : Model -> List (List DateEntries)
+monthView model =
+  weekRows (monthEntries model) []
+
+
+weekRows : List DateEntries -> List (List DateEntries) -> List (List DateEntries)
+weekRows entryList result =
+  if (isEmpty entryList) then
+    reverse result
+  else
+    weekRows (drop 7 entryList) ((take 7 entryList) :: result)
+
+
+{-| Entries for the current month (and end of the previous month).
+-}
+monthEntries : Model -> List DateEntries
+monthEntries model =
+  entryRange
+    model
+    (Duration.add Duration.Day -(firstOfMonthDayOfWeek model) (toFirstOfMonth model.currentDate))
+    (lastOfMonthDate model.currentDate)
 
 
 entryRange : Model -> Date -> Date -> List DateEntries
@@ -119,3 +132,10 @@ entryRange model startDate endDate =
         (floorDay endDate)
     )
     model.entries
+
+
+{-| Day of week of the first day of the month as Int, from 0 (Mon) to 6 (Sun).
+-}
+firstOfMonthDayOfWeek : Model -> Int
+firstOfMonthDayOfWeek model =
+  isoDayOfWeek (dayOfWeek (toFirstOfMonth model.currentDate)) - 1
