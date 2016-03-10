@@ -7,10 +7,8 @@ import Date.Utils exposing (..)
 import Date.Period as Period exposing (add, diff)
 import Date.Compare as Compare exposing (is, Compare2)
 import Date.Duration as Duration
-
-
--- import Date.Format exposing (isoString)
-
+import Date.Format exposing (format)
+import Date.Config.Configs as DateConfigs
 import Date.Floor as Df exposing (floor)
 import Model exposing (..)
 
@@ -139,3 +137,8 @@ entryRange model startDate endDate =
 firstOfMonthDayOfWeek : Model -> Int
 firstOfMonthDayOfWeek model =
   isoDayOfWeek (dayOfWeek (toFirstOfMonth model.currentDate)) - 1
+
+
+dateFormat : Date -> String
+dateFormat date =
+  format (DateConfigs.getConfig "en_us") "%d.%m." date

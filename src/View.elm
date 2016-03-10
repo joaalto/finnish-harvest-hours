@@ -62,17 +62,10 @@ weekRow dateEntries =
   tr
     []
     (List.map
-      (\day -> td [ value (isoString day.date) ] [])
+      (\day ->
+        td
+          []
+          [ text (dateFormat day.date) ]
+      )
       dateEntries
-    )
-
-
-{-| How many week rows do we need to render for the current month
--}
-calRowCount : Model -> Int
-calRowCount model =
-  ceiling
-    (toFloat
-      (firstOfMonthDayOfWeek model + (daysInMonthDate model.currentDate))
-      / 7
     )
