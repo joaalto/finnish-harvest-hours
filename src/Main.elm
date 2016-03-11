@@ -47,12 +47,12 @@ init =
 initialModel : Model
 initialModel =
   let
-    currentDate =
+    today =
       Date.fromTime currentTime
   in
     { httpError = Ok ()
-    , currentDate = currentDate
-    , currentMonth = Date.month currentDate
+    , today = today
+    , currentMonth = Date.month today
     , entries = []
     , totalHours = 0
     , user = { firstName = "", lastName = "" }

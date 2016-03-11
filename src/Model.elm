@@ -6,7 +6,7 @@ import Http
 
 type alias Model =
   { httpError : Result Http.Error ()
-  , currentDate : Date
+  , today : Date
   , currentMonth : Month
   , entries : List DateEntries
   , totalHours : Float
