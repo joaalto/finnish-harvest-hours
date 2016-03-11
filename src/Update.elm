@@ -7,6 +7,7 @@ import Http
 import Model exposing (..)
 import Api exposing (getEntries)
 import DateUtils exposing (enteredHoursVsTotal)
+import Date.Core exposing (prevMonth, nextMonth)
 
 
 type Action
@@ -16,6 +17,8 @@ type Action
   | FetchedUser (Result Http.Error (User))
   | FetchedHolidays (Result Http.Error (List Holiday))
   | UpdateHours
+  | PreviousMonth
+  | NextMonth
 
 
 update : Action -> Model -> ( Model, Effects Action )
@@ -56,6 +59,12 @@ update action model =
         noFx { model | totalHours = enteredHoursVsTotal model }
       else
         noFx model
+
+    PreviousMonth ->
+      noFx { model | currentMonth = prevMonth model.currentMonth }
+
+    NextMonth ->
+      noFx { model | currentMonth = nextMonth model.currentMonth }
 
 
 noFx : Model -> ( Model, Effects Action )

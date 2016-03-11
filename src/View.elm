@@ -22,7 +22,7 @@ view address model =
 
     Ok _ ->
       div
-        []
+        [ class "header" ]
         [ text
             (String.join
               ", "
@@ -32,8 +32,28 @@ view address model =
               , (toString model.totalHours)
               ]
             )
+        , navigationPane address model
         , calendarTable model
         ]
+
+
+navigationPane : Address Action -> Model -> Html
+navigationPane address model =
+  div
+    [ class "navigation" ]
+    [ div
+        []
+        [ button
+            [ onClick address PreviousMonth ]
+            [ text "<" ]
+        ]
+    , div
+        []
+        [ button
+            [ onClick address NextMonth ]
+            [ text ">" ]
+        ]
+    ]
 
 
 calendarTable : Model -> Html
