@@ -1,12 +1,13 @@
 module Model (..) where
 
-import Date exposing (Date)
+import Date exposing (Date, Month)
 import Http
 
 
 type alias Model =
   { httpError : Result Http.Error ()
   , currentDate : Date
+  , currentMonth : Month
   , entries : List DateEntries
   , totalHours : Float
   , user : User

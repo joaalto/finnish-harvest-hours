@@ -46,10 +46,15 @@ init =
 
 initialModel : Model
 initialModel =
-  { httpError = Ok ()
-  , currentDate = Date.fromTime currentTime
-  , entries = []
-  , totalHours = 0
-  , user = { firstName = "", lastName = "" }
-  , holidays = []
-  }
+  let
+    currentDate =
+      Date.fromTime currentTime
+  in
+    { httpError = Ok ()
+    , currentDate = currentDate
+    , currentMonth = Date.month currentDate
+    , entries = []
+    , totalHours = 0
+    , user = { firstName = "", lastName = "" }
+    , holidays = []
+    }
