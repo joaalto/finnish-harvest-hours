@@ -51,6 +51,7 @@ initialModel =
       Date.fromTime currentTime
   in
     { httpError = Ok ()
+    , today = currentDate
     , currentDate = currentDate
     , currentMonth = Date.month currentDate
     , entries = []

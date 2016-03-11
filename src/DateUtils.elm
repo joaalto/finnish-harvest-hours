@@ -44,7 +44,7 @@ totalHoursForYear model =
 
 totalDaysForYear : Model -> List Date
 totalDaysForYear model =
-  workDays (Df.floor Df.Year model.currentDate) model []
+  workDays (Df.floor Df.Year model.today) model []
 
 
 workDays : Date -> Model -> List Date -> List Date
