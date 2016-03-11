@@ -63,7 +63,12 @@ weekRow dateEntries =
       (\day ->
         td
           []
-          [ text (dateFormat day.date) ]
+          [ text
+              (String.join
+                " "
+                [ (dateFormat day.date), "|", (toString day.hours) ]
+              )
+          ]
       )
       dateEntries
     )
