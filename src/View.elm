@@ -10,8 +10,6 @@ import Date exposing (..)
 import String
 import Model exposing (..)
 import Update exposing (..)
-import Date.Core exposing (daysInMonthDate, isoDayOfWeek)
-import Date.Format exposing (isoString)
 
 
 view : Address Action -> Model -> Html
@@ -57,7 +55,7 @@ calendarTable model =
     ]
 
 
-weekRow : List DateEntries -> Html
+weekRow : List DateHours -> Html
 weekRow dateEntries =
   tr
     []

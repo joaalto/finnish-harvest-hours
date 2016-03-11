@@ -96,12 +96,12 @@ floorDay date =
   Df.floor Df.Day date
 
 
-monthView : Model -> List (List DateEntries)
+monthView : Model -> List (List DateHours)
 monthView model =
-  weekRows (monthEntries model) []
+  weekRows (monthDays model) []
 
 
-weekRows : List DateEntries -> List (List DateEntries) -> List (List DateEntries)
+weekRows : List DateHours -> List (List DateHours) -> List (List DateHours)
 weekRows entryList result =
   if (isEmpty entryList) then
     reverse result
@@ -109,27 +109,76 @@ weekRows entryList result =
     weekRows (drop 7 entryList) ((take 7 entryList) :: result)
 
 
-{-| Entries for the current month (and end of the previous month).
--}
-monthEntries : Model -> List DateEntries
-monthEntries model =
-  entryRange
+monthDays : Model -> List DateHours
+monthDays model =
+  dateRange
     model
     (Duration.add Duration.Day -(firstOfMonthDayOfWeek model) (toFirstOfMonth model.currentDate))
     (lastOfMonthDate model.currentDate)
+    []
 
 
-entryRange : Model -> Date -> Date -> List DateEntries
-entryRange model startDate endDate =
-  List.filter
-    (\e ->
-      Compare.is3
-        Compare.BetweenOpen
-        (floorDay e.date)
-        (floorDay startDate)
-        (floorDay endDate)
-    )
-    model.entries
+type alias DateHours =
+  { date : Date
+  , hours : Float
+  }
+
+
+{-| Build a list of days with entered hours.
+-}
+dateRange : Model -> Date -> Date -> List DateHours -> List DateHours
+dateRange model startDate endDate dateList =
+  if Compare.is Compare.After startDate endDate then
+    reverse dateList
+  else
+    dateRange
+      model
+      (add Period.Day 1 startDate)
+      endDate
+      ({ date = startDate, hours = (sumDateHours model startDate) } :: dateList)
+
+
+{-| Total entered hours for a date.
+-}
+sumDateHours : Model -> Date -> Float
+sumDateHours model date =
+  let
+    dateEntries =
+      List.filter
+        (\dateEntries -> isSameDate date dateEntries.date)
+        model.entries
+  in
+    List.foldl
+      (\dateEntries -> totalHoursForDate dateEntries)
+      0
+      dateEntries
+
+
+{-| Entries for the current month (and end of the previous month).
+-}
+
+
+
+-- monthEntries : Model -> List DateEntries
+-- monthEntries model =
+--   entryRange
+--     model
+--     (Duration.add Duration.Day -(firstOfMonthDayOfWeek model) (toFirstOfMonth model.currentDate))
+--     (lastOfMonthDate model.currentDate)
+--
+--
+-- entryRange : Model -> Date -> Date -> List DateEntries
+-- entryRange model startDate endDate =
+--   List.filter
+--     (\e ->
+--       Compare.is3
+--         Compare.BetweenOpen
+--         (floorDay e.date)
+--         (floorDay startDate)
+--         (floorDay endDate)
+--     )
+--     model.entries
+--
 
 
 {-| Day of week of the first day of the month as Int, from 0 (Mon) to 6 (Sun).
