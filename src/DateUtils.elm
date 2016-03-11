@@ -155,33 +155,6 @@ sumDateHours model date =
       dateEntries
 
 
-{-| Entries for the current month (and end of the previous month).
--}
-
-
-
--- monthEntries : Model -> List DateEntries
--- monthEntries model =
---   entryRange
---     model
---     (Duration.add Duration.Day -(firstOfMonthDayOfWeek model) (toFirstOfMonth model.currentDate))
---     (lastOfMonthDate model.currentDate)
---
---
--- entryRange : Model -> Date -> Date -> List DateEntries
--- entryRange model startDate endDate =
---   List.filter
---     (\e ->
---       Compare.is3
---         Compare.BetweenOpen
---         (floorDay e.date)
---         (floorDay startDate)
---         (floorDay endDate)
---     )
---     model.entries
---
-
-
 {-| Day of week of the first day of the month as Int, from 0 (Mon) to 6 (Sun).
 -}
 firstOfMonthDayOfWeek : Model -> Int
