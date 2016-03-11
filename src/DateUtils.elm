@@ -44,12 +44,12 @@ totalHoursForYear model =
 
 totalDaysForYear : Model -> List Date
 totalDaysForYear model =
-  workDays (Df.floor Df.Year model.today) model []
+  workDays (Df.floor Df.Year model.currentDate) model []
 
 
 workDays : Date -> Model -> List Date -> List Date
 workDays date model days =
-  if isSameDate date model.today then
+  if isSameDate date model.currentDate then
     days
   else
     let
@@ -114,8 +114,8 @@ monthDays : Model -> List DateHours
 monthDays model =
   dateRange
     model
-    (Duration.add Duration.Day -(firstOfMonthDayOfWeek model) (toFirstOfMonth model.today))
-    (lastOfMonthDate model.today)
+    (Duration.add Duration.Day -(firstOfMonthDayOfWeek model) (toFirstOfMonth model.currentDate))
+    (lastOfMonthDate model.currentDate)
     []
 
 
@@ -164,8 +164,8 @@ sumDateHours model date =
 -- monthEntries model =
 --   entryRange
 --     model
---     (Duration.add Duration.Day -(firstOfMonthDayOfWeek model) (toFirstOfMonth model.today))
---     (lastOfMonthDate model.today)
+--     (Duration.add Duration.Day -(firstOfMonthDayOfWeek model) (toFirstOfMonth model.currentDate))
+--     (lastOfMonthDate model.currentDate)
 --
 --
 -- entryRange : Model -> Date -> Date -> List DateEntries
@@ -186,7 +186,7 @@ sumDateHours model date =
 -}
 firstOfMonthDayOfWeek : Model -> Int
 firstOfMonthDayOfWeek model =
-  isoDayOfWeek (dayOfWeek (toFirstOfMonth model.today)) - 1
+  isoDayOfWeek (dayOfWeek (toFirstOfMonth model.currentDate)) - 1
 
 
 dateFormat : Date -> String
