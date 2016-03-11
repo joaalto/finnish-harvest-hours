@@ -8,6 +8,7 @@ import Model exposing (..)
 import Api exposing (getEntries)
 import DateUtils exposing (enteredHoursVsTotal)
 import Date.Core exposing (prevMonth, nextMonth)
+import Date.Duration as Duration
 
 
 type Action
@@ -61,10 +62,10 @@ update action model =
         noFx model
 
     PreviousMonth ->
-      noFx { model | currentMonth = prevMonth model.currentMonth }
+      noFx { model | currentDate = Duration.add Duration.Month -1 model.currentDate }
 
     NextMonth ->
-      noFx { model | currentMonth = nextMonth model.currentMonth }
+      noFx { model | currentDate = Duration.add Duration.Month 1 model.currentDate }
 
 
 noFx : Model -> ( Model, Effects Action )
