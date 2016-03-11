@@ -49,7 +49,7 @@ totalDaysForYear model =
 
 workDays : Date -> Model -> List Date -> List Date
 workDays date model days =
-  if isSameDate date model.currentDate then
+  if isSameDate date model.today then
     days
   else
     let
