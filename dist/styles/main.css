@@ -16,8 +16,13 @@ body {
 }
 
 button {
-    font-size: x-large;
+    border-style: none;
+    font-size: 1.6em;
     border-radius: 4px;
-    border-style: solid;
     margin-right: 6px;
+    outline: none;
+}
+
+button:hover {
+    background-color: #B7CA56;
 }
