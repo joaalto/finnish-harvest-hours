@@ -3,11 +3,8 @@ module DateUtils (..) where
 import List exposing (head, isEmpty, reverse, drop, take)
 import Date exposing (..)
 import Date.Core exposing (..)
-import Date.Utils exposing (..)
-import Date.Field exposing (fieldToDateClamp)
 import Date.Period as Period exposing (add, diff)
 import Date.Compare as Compare exposing (is, Compare2)
-import Date.Duration as Duration
 import Date.Format exposing (format)
 import Date.Config.Configs as DateConfigs
 import Date.Floor as Df exposing (floor)
@@ -114,7 +111,7 @@ monthDays : Model -> List DateHours
 monthDays model =
   dateRange
     model
-    (Duration.add Duration.Day -(firstOfMonthDayOfWeek model) (toFirstOfMonth model.currentDate))
+    (add Period.Day -(firstOfMonthDayOfWeek model) (toFirstOfMonth model.currentDate))
     (lastOfMonthDate model.currentDate)
     []
 

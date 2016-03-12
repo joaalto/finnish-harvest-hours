@@ -89,7 +89,6 @@ weekRow model dateEntries =
           [ class (dayCellClass model day) ]
           [ div [] [ text (dateFormat day.date) ]
           , div [] [ text (toString day.hours) ]
-          , div [] [ text (toString (dayOfWeek day.date)) ]
           ]
       )
       dateEntries
