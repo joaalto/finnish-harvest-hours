@@ -51,7 +51,7 @@ passport.use(
             clientSecret: process.env.CLIENT_SECRET,
             callbackURL: process.env.CALLBACK_URL || 'https://saldot.herokuapp.com/auth/callback'
         },
-        // TODO: handle refresth tokens
+        // TODO: handle refresh tokens
         function(accessToken, refreshToken, profile, done) {
             request
                 .get('https://wunderdog.harvestapp.com/account/who_am_i')
