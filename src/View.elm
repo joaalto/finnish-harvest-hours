@@ -48,14 +48,14 @@ navigationPane address model =
     [ div
         []
         [ button
-            [ onClick address PreviousMonth ]
-            [ text "<" ]
+            [ onClick address PreviousMonth, class "float-left" ]
+            [ i [ class "fa fa-arrow-left" ] [] ]
         ]
     , div
         []
         [ button
             [ onClick address NextMonth ]
-            [ text ">" ]
+            [ i [ class "fa fa-arrow-right" ] [] ]
         ]
     ]
 
@@ -63,7 +63,7 @@ navigationPane address model =
 calendarTable : Model -> Html
 calendarTable model =
   table
-    []
+    [ class "calendar" ]
     [ thead
         []
         [ tr

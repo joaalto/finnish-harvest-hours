@@ -1,3 +1,21 @@
 body {
     font-family: sans-serif;
 }
+
+.main {
+    margin-left: 14em;
+    margin-top: 5em;
+}
+
+.float-left {
+    float: left;
+}
+
+.calendar {
+    clear: left;
+}
+
+button {
+    border-radius: 4px;
+    border-style: solid;
+}
