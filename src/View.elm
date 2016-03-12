@@ -73,23 +73,34 @@ calendarTable model =
     , tbody
         []
         (List.map
-          (\week -> weekRow week)
+          (\week -> weekRow model week)
           (monthView model)
         )
     ]
 
 
-weekRow : List DateHours -> Html
-weekRow dateEntries =
+weekRow : Model -> List DateHours -> Html
+weekRow model dateEntries =
   tr
     []
     (List.map
       (\day ->
         td
-          []
+          [ class (dayCellClass model day) ]
           [ div [] [ text (dateFormat day.date) ]
           , div [] [ text (toString day.hours) ]
+          , div [] [ text (toString (dayOfWeek day.date)) ]
           ]
       )
       dateEntries
     )
+
+
+dayCellClass : Model -> DateHours -> String
+dayCellClass model dateHours =
+  if List.member (dayOfWeek dateHours.date) [ Date.Sat, Date.Sun ] then
+    "weekend"
+  else if month dateHours.date == month model.currentDate then
+    "current-month"
+  else
+    "other-month"

@@ -26,3 +26,18 @@ button {
 button:hover {
     background-color: #B7CA56;
 }
+
+td {
+    border-radius: 4px;
+    padding-right: 1em;
+    padding-bottom: 1em;
+    background-color: #DAE7E4;
+}
+
+td.weekend {
+    background-color: #B7CA56;
+}
+
+td.other-month {
+    color: gray;
+}
