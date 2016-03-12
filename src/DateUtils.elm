@@ -131,7 +131,7 @@ dateRange model startDate endDate dateList =
   else
     dateRange
       model
-      (add Period.Day 1 startDate)
+      (add Period.Day 1 (floorDay startDate))
       endDate
       ({ date = startDate, hours = (sumDateHours model startDate) } :: dateList)
 
