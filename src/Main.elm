@@ -53,7 +53,6 @@ initialModel =
     { httpError = Ok ()
     , today = currentDate
     , currentDate = currentDate
-    , currentMonth = Date.month currentDate
     , entries = []
     , totalHours = 0
     , user = { firstName = "", lastName = "" }
