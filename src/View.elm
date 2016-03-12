@@ -22,18 +22,22 @@ view address model =
 
     Ok _ ->
       div
-        [ class "header" ]
-        [ text
-            (String.join
-              ", "
-              [ (toString (Date.dayOfWeek model.currentDate))
-              , (toString (List.length (totalDaysForYear model)))
-              , (String.join " " [ model.user.firstName, model.user.lastName ])
-              , (toString model.totalHours)
-              ]
-            )
-        , navigationPane address model
-        , calendarTable model
+        [ class "main" ]
+        [ div
+            [ class "header" ]
+            [ text
+                (String.join
+                  " | "
+                  [ (toString (Date.dayOfWeek model.currentDate))
+                  , dateFormat model.currentDate
+                  , (toString (List.length (totalDaysForYear model)))
+                  , (String.join " " [ model.user.firstName, model.user.lastName ])
+                  , (toString model.totalHours)
+                  ]
+                )
+            , navigationPane address model
+            , calendarTable model
+            ]
         ]
 
 
