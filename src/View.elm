@@ -1,6 +1,6 @@
 module View (..) where
 
-import List exposing (take)
+import List
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
