@@ -12,11 +12,11 @@ body {
 .header {
     font-size: 1.4em;
     margin-bottom: 1em;
-    padding-left: 2px;
+    padding-left: 0.2em;
 }
 
 .navigation {
-    padding-left: 2px;
+    padding-left: 0.2em;
 }
 
 .float-left {
@@ -37,6 +37,10 @@ button {
 
 button:hover {
     background-color: #B7CA56;
+}
+
+table {
+    border-spacing: 0.2em;
 }
 
 td {
