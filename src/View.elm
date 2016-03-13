@@ -112,7 +112,7 @@ dayHours day =
 dayCellClass : Model -> DateHours -> String
 dayCellClass model dateHours =
   if not (isWorkDay dateHours.date model) then
-    "weekend"
+    "day-off"
   else if month dateHours.date == month model.currentDate then
     "current-month"
   else
