@@ -12,6 +12,11 @@ body {
 .header {
     font-size: 1.4em;
     margin-bottom: 1em;
+    padding-left: 2px;
+}
+
+.navigation {
+    padding-left: 2px;
 }
 
 .float-left {
