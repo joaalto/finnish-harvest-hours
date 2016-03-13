@@ -96,6 +96,9 @@ floorDay date =
   Df.floor Df.Day date
 
 
+{-|
+  Set up calendar table data.
+-}
 monthView : Model -> List (List DateHours)
 monthView model =
   weekRows (monthDays model) []
