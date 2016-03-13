@@ -97,11 +97,19 @@ weekRow model dateEntries =
         td
           [ class (dayCellClass model day) ]
           [ div [] [ text (dateFormat day.date) ]
-          , div [] [ text (toString day.hours) ]
+          , div [] [ dayHours day ]
           ]
       )
       dateEntries
     )
+
+
+dayHours : DateHours -> Html
+dayHours day =
+  if day.hours == 0 then
+    text ""
+  else
+    text (toString day.hours)
 
 
 dayCellClass : Model -> DateHours -> String
