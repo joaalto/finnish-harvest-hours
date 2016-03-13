@@ -7,6 +7,11 @@ body {
     margin-top: 5em;
 }
 
+.header {
+    font-size: 1.4em;
+    margin-bottom: 1em;
+}
+
 .float-left {
     float: left;
 }
