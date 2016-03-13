@@ -118,7 +118,9 @@ monthDays model =
     []
 
 
-{-| Build a list of days with sum of entered hours.
+{-|
+  Build a list of days with sum of entered hours.
+  Set hour at 3 hours past midnight to avoid DST problems.
 -}
 dateRange : Model -> Date -> Date -> List DateHours -> List DateHours
 dateRange model startDate endDate dateList =
