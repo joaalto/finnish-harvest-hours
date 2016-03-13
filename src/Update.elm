@@ -7,7 +7,6 @@ import Http
 import Model exposing (..)
 import Api exposing (getEntries)
 import DateUtils exposing (enteredHoursVsTotal)
-import Date.Core exposing (prevMonth, nextMonth)
 import Date.Duration as Duration
 
 
