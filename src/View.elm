@@ -54,17 +54,17 @@ navigationPane address model =
     , div
         []
         [ button
-            [ onClick address NextMonth ]
+            [ onClick address NextMonth, class "float-left" ]
             [ i [ class "fa fa-arrow-right" ] [] ]
         ]
-    , div [] [ i [ class (spinnerClass model) ] [] ]
+    , div [ class "spinner" ] [ i [ class (spinnerClass model) ] [] ]
     ]
 
 
 spinnerClass : Model -> String
 spinnerClass model =
-  if (Debug.log "loading" model.loading) then
-    "fa fa-spinner fa-pulse"
+  if model.loading then
+    "fa fa-spinner fa-pulse spinner"
   else
     ""
 

@@ -41,3 +41,7 @@ td.weekend {
 td.other-month {
     color: gray;
 }
+
+.spinner {
+    font-size: 1.6em;
+}
