@@ -45,12 +45,18 @@ table {
 }
 
 td {
-    height: 4em;
     border-radius: 4px;
     padding-top: 0.3em;
     padding-right: 1em;
     padding-bottom: 1em;
+    padding-left: 0.3em;
     background-color: #DAE7E4;
+}
+
+.hours {
+    padding-top: 0.2em;
+    font-size: 1.2em;
+    height: 1.2em;
 }
 
 td.day-off {

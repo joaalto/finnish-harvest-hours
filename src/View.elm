@@ -94,7 +94,7 @@ weekRow model dateEntries =
         td
           [ class (dayCellClass model day) ]
           [ div [] [ text (dateFormat day.date) ]
-          , div [] [ dayHours day ]
+          , div [ class "hours" ] [ dayHours day ]
           ]
       )
       dateEntries
