@@ -82,11 +82,7 @@ isSameDate date1 date2 =
 
 isWorkDay : Date -> Bool
 isWorkDay date =
-  let
-    dow =
-      dayOfWeek date
-  in
-    not (dow == Sat || dow == Sun)
+  not (List.member (dayOfWeek date) [ Sat, Sun ])
 
 
 floorDay : Date -> Date
