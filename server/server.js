@@ -6,7 +6,7 @@ const OAuth2Strategy = require('passport-oauth2');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const _ = require('lodash');
-const Api = require('./js/api');
+const Api = require('./api');
 
 const mongoUrl =
     process.env.MONGOLAB_URI ||
@@ -92,7 +92,7 @@ app.get(
 
 app.all('*', ensureAuthenticated);
 
-app.use('/', express.static(__dirname + '/dist'));
+app.use('/', express.static(__dirname + '/static'));
 
 app.get('/user', function(req, res) {
     if (req.isAuthenticated()) {
@@ -103,7 +103,7 @@ app.get('/user', function(req, res) {
 
 app.get('/holidays', function(req, res) {
     const options = {
-        root: __dirname + '/dist'
+        root: __dirname + '/static'
     };
     res.sendFile('finnish_holidays_2016.json', options);
 });
