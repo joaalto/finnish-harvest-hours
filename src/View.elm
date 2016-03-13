@@ -29,7 +29,7 @@ view address model =
                 (String.join
                   " | "
                   [ (String.join " " [ model.user.firstName, model.user.lastName ])
-                  , String.join " " [ "Tuntisaldo:", (toString model.totalHours), "h" ]
+                  , String.join " " [ "Tuntisaldo:", (hourString model.totalHours), "h" ]
                   ]
                 )
             ]
@@ -94,19 +94,19 @@ weekRow model dateEntries =
         td
           [ class (dayCellClass model day) ]
           [ div [] [ text (dateFormat day.date) ]
-          , div [ class "hours" ] [ dayHours day ]
+          , div [ class "hours" ] [ text (hourString day.hours) ]
           ]
       )
       dateEntries
     )
 
 
-dayHours : DateHours -> Html
-dayHours day =
-  if day.hours == 0 then
-    text ""
+hourString : Float -> String
+hourString hours =
+  if hours == 0 then
+    ""
   else
-    text (toString day.hours)
+    toString hours
 
 
 dayCellClass : Model -> DateHours -> String
