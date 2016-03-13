@@ -11,6 +11,12 @@ import Date.Floor as Df exposing (floor)
 import Model exposing (..)
 
 
+type alias DateHours =
+  { date : Date
+  , hours : Float
+  }
+
+
 enteredHoursVsTotal : Model -> Float
 enteredHoursVsTotal model =
   let
@@ -112,13 +118,7 @@ monthDays model =
     []
 
 
-type alias DateHours =
-  { date : Date
-  , hours : Float
-  }
-
-
-{-| Build a list of days with entered hours.
+{-| Build a list of days with sum of entered hours.
 -}
 dateRange : Model -> Date -> Date -> List DateHours -> List DateHours
 dateRange model startDate endDate dateList =
@@ -127,7 +127,7 @@ dateRange model startDate endDate dateList =
   else
     dateRange
       model
-      (add Period.Day 1 (floorDay startDate))
+      (add Period.Hour 3 (add Period.Day 1 (floorDay startDate)))
       endDate
       ({ date = startDate, hours = (sumDateHours model startDate) } :: dateList)
 
