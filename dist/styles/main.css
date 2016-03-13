@@ -3,7 +3,9 @@ body {
 }
 
 .main {
-    margin-left: 14em;
+    margin-left: auto;
+    margin-right: auto;
+    width: 30em;
     margin-top: 5em;
 }
 
