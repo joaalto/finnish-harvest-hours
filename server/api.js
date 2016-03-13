@@ -31,48 +31,42 @@ module.exports = {
     },
 
     fetchHourEntries(req, res) {
-        return this.get(req, res, '/projects')
-            .then(projects => _.map(projects, row => row.project.id))
-            .then(projectIds => this.dayEntries(req, res, projectIds));
+        return this.fetchEntries(req, res)
+            .then(entries => this.dayEntries(req, res, entries));
     },
 
-    fetchProjectsAndEntries(req, res, projectIds) {
-        return _.map(projectIds, projectId => {
-            return this.get(
-                    req, res,
-                    `/projects/${projectId}/entries?from=${startDate}&to=${endDate}&user_id=${getUser(req).id}`)
-                .then(projectEntries => {
-                    return _.map(projectEntries, row => {
-                        return {
-                            date: row.day_entry.spent_at,
-                            hours: row.day_entry.hours,
-                            taskId: row.day_entry.task_id
-                        };
-                    });
-                })
-                .catch(err => console.error('>>> error:', err));
-        });
-    },
-
-    dayEntries(req, res, projectIds) {
-        return Promise.all(this.fetchProjectsAndEntries(req, res, projectIds))
-            .then(results => _(results)
-                .flatten()
-                .groupBy('date')
-                .mapValues(dayEntries => {
+    fetchEntries(req, res) {
+        return this.get(
+                req, res,
+                `/people/${getUser(req).id}/entries?from=${startDate}&to=${endDate}`)
+            .then(entries => {
+                return _.map(entries, row => {
                     return {
-                        date: dayEntries[0].date,
-                        entries: dayEntries.map(entry => {
-                            return {
-                                hours: entry.hours,
-                                taskId: entry.taskId
-                            };
-                        })
-                    }
-                })
-                .orderBy('date')
-                .values()
-                .value())
-            .catch(err => console.error('ERR:', err));
+                        date: row.day_entry.spent_at,
+                        hours: row.day_entry.hours,
+                        taskId: row.day_entry.task_id
+                    };
+                });
+            })
+            .catch(err => console.error('>>> error:', err));
+    },
+
+    dayEntries(req, res, entries) {
+        return _(entries)
+            .groupBy('date')
+            .mapValues(dayEntries => {
+                return {
+                    date: dayEntries[0].date,
+                    entries: dayEntries.map(entry => {
+                        return {
+                            hours: entry.hours,
+                            taskId: entry.taskId
+                        };
+                    })
+                }
+            })
+            .orderBy('date')
+            .values()
+            .value();
     }
 };
