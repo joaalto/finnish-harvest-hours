@@ -51,6 +51,7 @@ initialModel =
       Date.fromTime currentTime
   in
     { httpError = Ok ()
+    , loading = True
     , today = currentDate
     , currentDate = currentDate
     , entries = []

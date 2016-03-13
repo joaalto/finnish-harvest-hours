@@ -6,6 +6,7 @@ import Http
 
 type alias Model =
   { httpError : Result Http.Error ()
+  , loading : Bool
   , today : Date
   , currentDate : Date
   , entries : List DateEntries

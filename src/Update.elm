@@ -32,12 +32,16 @@ update action model =
       ( model, getEntries )
 
     EntryList results ->
-      case results of
-        Ok entries ->
-          update UpdateHours { model | entries = entries }
+      let
+        newModel =
+          { model | loading = False }
+      in
+        case results of
+          Ok entries ->
+            update UpdateHours { newModel | entries = entries }
 
-        Err error ->
-          handleError model error
+          Err error ->
+            handleError newModel error
 
     FetchedUser result ->
       case result of

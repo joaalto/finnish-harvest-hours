@@ -35,9 +35,9 @@ view address model =
                   , (toString model.totalHours)
                   ]
                 )
-            , navigationPane address model
-            , calendarTable model
             ]
+        , navigationPane address model
+        , calendarTable model
         ]
 
 
@@ -57,7 +57,16 @@ navigationPane address model =
             [ onClick address NextMonth ]
             [ i [ class "fa fa-arrow-right" ] [] ]
         ]
+    , div [] [ i [ class (spinnerClass model) ] [] ]
     ]
+
+
+spinnerClass : Model -> String
+spinnerClass model =
+  if (Debug.log "loading" model.loading) then
+    "fa fa-spinner fa-pulse"
+  else
+    ""
 
 
 calendarTable : Model -> Html
