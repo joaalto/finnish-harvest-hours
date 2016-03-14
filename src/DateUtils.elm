@@ -42,17 +42,6 @@ hoursForDate dateEntries model =
     dateEntries.entries
 
 
-totalHoursForDate : DateEntries -> Float -> Float
-totalHoursForDate dateEntries hours =
-  let
-    hourList =
-      List.map
-        (\entry -> entry.hours)
-        dateEntries.entries
-  in
-    hours + List.sum hourList
-
-
 isAbsence : Entry -> Model -> Bool
 isAbsence entry model =
   let
@@ -174,10 +163,11 @@ sumDateHours model date =
         (\dateEntries -> isSameDate date dateEntries.date)
         model.entries
   in
-    List.foldl
-      (\dateEntries -> totalHoursForDate dateEntries)
-      0
-      dateEntries
+    List.sum
+      (List.concatMap
+        (\dateEntries -> hoursForDate dateEntries model)
+        dateEntries
+      )
 
 
 {-| Day of week of the first day of the month as Int, from 0 (Mon) to 6 (Sun).
