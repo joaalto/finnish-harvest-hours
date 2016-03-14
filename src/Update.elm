@@ -74,7 +74,7 @@ update action model =
     FetchedAbsenceTaskList result ->
       case result of
         Ok tasks ->
-          noFx { model | absenceTasks = tasks }
+          update UpdateHours { model | absenceTasks = tasks }
 
         Err error ->
           handleError model error
