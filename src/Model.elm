@@ -13,6 +13,7 @@ type alias Model =
   , totalHours : Float
   , user : User
   , holidays : List Holiday
+  , absenceTasks : List HarvestTask
   }
 
 
@@ -36,5 +37,11 @@ type alias Entry =
 
 type alias Holiday =
   { date : Date
+  , name : String
+  }
+
+
+type alias HarvestTask =
+  { id : Int
   , name : String
   }

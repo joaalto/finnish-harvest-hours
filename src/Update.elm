@@ -19,6 +19,7 @@ type Action
   | UpdateHours
   | PreviousMonth
   | NextMonth
+  | FetchedAbsenceTaskList (Result Http.Error (List HarvestTask))
 
 
 update : Action -> Model -> ( Model, Effects Action )
@@ -70,6 +71,14 @@ update action model =
     NextMonth ->
       noFx { model | currentDate = Duration.add Duration.Month 1 model.currentDate }
 
+    FetchedAbsenceTaskList result ->
+      case result of
+        Ok tasks ->
+          noFx { model | absenceTasks = tasks }
+
+        Err error ->
+          handleError model error
+
 
 noFx : Model -> ( Model, Effects Action )
 noFx model =
@@ -102,3 +111,8 @@ getUser =
 getHolidays : Effects Action
 getHolidays =
   getResult Api.getNationalHolidays FetchedHolidays
+
+
+getAbsenceTasks : Effects Action
+getAbsenceTasks =
+  getResult Api.getAbsenceTasks FetchedAbsenceTaskList

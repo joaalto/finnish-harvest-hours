@@ -56,3 +56,18 @@ decodeHolidays =
       ("date" := customDecoder string Date.fromString)
       ("name" := string)
     )
+
+
+getAbsenceTasks : Task Error (List HarvestTask)
+getAbsenceTasks =
+  Http.get decodeTasks "/absence_tasks.json"
+
+
+decodeTasks : Json.Decoder (List HarvestTask)
+decodeTasks =
+  list
+    (object2
+      HarvestTask
+      ("id" := int)
+      ("name" := string)
+    )

@@ -21,12 +21,25 @@ enteredHoursVsTotal : Model -> Float
 enteredHoursVsTotal model =
   let
     enteredHours =
-      List.foldl
-        (\dateEntries -> totalHoursForDate dateEntries)
-        0
-        model.entries
+      List.sum
+        (List.concatMap
+          (\dateEntries -> hoursForDate dateEntries model)
+          model.entries
+        )
   in
     enteredHours - totalHoursForYear model
+
+
+hoursForDate : DateEntries -> Model -> List Float
+hoursForDate dateEntries model =
+  List.map
+    (\entry ->
+      if not (isAbsence entry model) then
+        entry.hours
+      else
+        0
+    )
+    dateEntries.entries
 
 
 totalHoursForDate : DateEntries -> Float -> Float
@@ -38,6 +51,15 @@ totalHoursForDate dateEntries hours =
         dateEntries.entries
   in
     hours + List.sum hourList
+
+
+isAbsence : Entry -> Model -> Bool
+isAbsence entry model =
+  let
+    taskIds =
+      List.map (\t -> t.id) model.absenceTasks
+  in
+    List.member entry.taskId taskIds
 
 
 totalHoursForYear : Model -> Float

@@ -40,6 +40,7 @@ init =
       [ Update.getUser
       , Update.getEntries
       , Update.getHolidays
+      , Update.getAbsenceTasks
       ]
   )
 
@@ -58,4 +59,5 @@ initialModel =
     , totalHours = 0
     , user = { firstName = "", lastName = "" }
     , holidays = []
+    , absenceTasks = []
     }
