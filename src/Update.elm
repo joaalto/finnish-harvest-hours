@@ -60,7 +60,13 @@ update action model =
           handleError model error
 
     UpdateHours ->
-      if not (isEmpty model.entries || isEmpty model.holidays) then
+      if
+        not
+          (isEmpty model.entries
+            || isEmpty model.holidays
+            || isEmpty model.absenceTasks
+          )
+      then
         noFx { model | totalHours = enteredHoursVsTotal model }
       else
         noFx model
