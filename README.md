@@ -10,6 +10,8 @@
 
 `./run-local`
 
+Go to https://localhost:5001/
+
 ### TODO  
 
 - proper error messages
