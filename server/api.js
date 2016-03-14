@@ -6,8 +6,17 @@ function getUser(req) {
     return req.session.passport.user;
 };
 
-const startDate = '20160101';
-const endDate = '20161231';
+function addZeroToDateOrMonth(n) {
+  return n < 10 ? '0' + n : '' + n;
+}
+
+function formatDateForHarvest(date) {
+  return `${date.getFullYear}${addZeroToDateOrMonth(date.getFullYear)}${addZeroToDateOrMonth(date.getDate())}`;
+}
+
+firstDayOfYear = new Date(new Date().getFullYear(), 0, 1)
+const startDate = formatDateForHarvest(firstDayOfYear);
+const endDate = formatDateForHarvest(new Date());
 const baseUrl = 'https://wunderdog.harvestapp.com';
 
 module.exports = {
