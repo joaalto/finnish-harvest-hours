@@ -6,15 +6,15 @@ function getUser(req) {
     return req.session.passport.user;
 };
 
-function addZeroToDateOrMonth(n) {
-  return n < 10 ? '0' + n : '' + n;
-}
+function padWithZero(n) {
+    return _.padStart(n, 2, '0');
+};
 
 function formatDateForHarvest(date) {
-  return `${date.getFullYear}${addZeroToDateOrMonth(date.getFullYear)}${addZeroToDateOrMonth(date.getDate())}`;
-}
+    return `${date.getFullYear()}${padWithZero(date.getMonth() + 1)}${padWithZero(date.getDate())}`;
+};
 
-firstDayOfYear = new Date(new Date().getFullYear(), 0, 1)
+const firstDayOfYear = new Date(new Date().getFullYear(), 0, 1);
 const startDate = formatDateForHarvest(firstDayOfYear);
 const endDate = formatDateForHarvest(new Date());
 const baseUrl = 'https://wunderdog.harvestapp.com';
