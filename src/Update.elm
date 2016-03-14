@@ -32,16 +32,12 @@ update action model =
       ( model, getEntries )
 
     EntryList results ->
-      let
-        newModel =
-          { model | loading = False }
-      in
-        case results of
-          Ok entries ->
-            update UpdateHours { newModel | entries = entries }
+      case results of
+        Ok entries ->
+          update UpdateHours { model | entries = entries }
 
-          Err error ->
-            handleError newModel error
+        Err error ->
+          handleError model error
 
     FetchedUser result ->
       case result of
@@ -60,16 +56,20 @@ update action model =
           handleError model error
 
     UpdateHours ->
-      if
-        not
-          (isEmpty model.entries
-            || isEmpty model.holidays
-            || isEmpty model.absenceTasks
-          )
-      then
-        noFx { model | totalHours = enteredHoursVsTotal model }
-      else
-        noFx model
+      let
+        newModel =
+          { model | loading = False }
+      in
+        if
+          not
+            (isEmpty model.entries
+              || isEmpty model.holidays
+              || isEmpty model.absenceTasks
+            )
+        then
+          noFx { newModel | totalHours = enteredHoursVsTotal model }
+        else
+          noFx model
 
     PreviousMonth ->
       noFx { model | currentDate = Duration.add Duration.Month -1 model.currentDate }
