@@ -1,3 +1,7 @@
+### Setup:
+
+npm install -g local-ssl-proxy
+
 ### TODO:  
 
 - proper error messages
