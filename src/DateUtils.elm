@@ -20,6 +20,16 @@ type alias DateHours =
 enteredHoursVsTotal : Model -> Float
 enteredHoursVsTotal model =
   let
+    debug =
+      Debug.log
+        "dataAvailable"
+        (not
+          (isEmpty model.entries
+            || isEmpty model.holidays
+            || isEmpty model.absenceTasks
+          )
+        )
+
     enteredHours =
       List.sum
         (List.concatMap
