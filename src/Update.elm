@@ -56,20 +56,20 @@ update action model =
           handleError model error
 
     UpdateHours ->
-      let
-        newModel =
-          { model | loading = False }
-      in
-        if
-          not
-            (isEmpty model.entries
-              || isEmpty model.holidays
-              || isEmpty model.absenceTasks
-            )
-        then
+      if
+        not
+          (isEmpty model.entries
+            || isEmpty model.holidays
+            || isEmpty model.absenceTasks
+          )
+      then
+        let
+          newModel =
+            { model | loading = False }
+        in
           noFx { newModel | totalHours = enteredHoursVsTotal model }
-        else
-          noFx model
+      else
+        noFx model
 
     PreviousMonth ->
       noFx { model | currentDate = Duration.add Duration.Month -1 model.currentDate }
