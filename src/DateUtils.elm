@@ -56,7 +56,7 @@ isAbsence : Entry -> Model -> Bool
 isAbsence entry model =
   let
     taskIds =
-      List.map (\t -> t.id) model.absenceTasks
+      List.map .id model.absenceTasks
   in
     List.member entry.taskId taskIds
 
