@@ -4,6 +4,7 @@
 - Node JS with ES6 support
 - MongoDB (for storing user sessions)
 - local-ssl-proxy: `npm install -g local-ssl-proxy`  
+- nodemon: `npm install -g nodemon`
 - `.env` file in project root with the required environment variables
 
 ### Running locally
