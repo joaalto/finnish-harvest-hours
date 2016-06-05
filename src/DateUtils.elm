@@ -58,7 +58,18 @@ totalHoursForYear model =
 
 totalDaysForYear : Model -> List Date
 totalDaysForYear model =
-  workDays (Df.floor Df.Year model.today) model []
+  let
+    firstEntry =
+      List.head model.entries
+  in
+    case
+      firstEntry
+    of
+      Nothing ->
+        []
+
+      Just entry ->
+        workDays entry.date model []
 
 
 workDays : Date -> Model -> List Date -> List Date
