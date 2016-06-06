@@ -1,13 +1,13 @@
-module DateUtils (..) where
+module DateUtils exposing (..)
 
 import List exposing (head, isEmpty, reverse, drop, take)
 import Date exposing (..)
-import Date.Core exposing (..)
-import Date.Period as Period exposing (add, diff)
-import Date.Compare as Compare exposing (is, Compare2)
-import Date.Format exposing (format)
-import Date.Config.Configs as DateConfigs
-import Date.Floor as Df exposing (floor)
+import Date.Extra.Core exposing (..)
+import Date.Extra.Period as Period exposing (add, diff)
+import Date.Extra.Compare as Compare exposing (is, Compare2)
+import Date.Extra.Format exposing (format)
+import Date.Extra.Config.Configs as DateConfigs
+import Date.Extra.TimeUnit as Df exposing (startOfTime)
 import Model exposing (..)
 
 
@@ -120,7 +120,7 @@ isWeekDay date =
 
 floorDay : Date -> Date
 floorDay date =
-  Df.floor Df.Day date
+  Df.startOfTime Df.Day date
 
 
 {-|

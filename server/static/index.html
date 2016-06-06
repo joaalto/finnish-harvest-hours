@@ -9,7 +9,8 @@
 <body>
   <script type="text/javascript">
     window.addEventListener("DOMContentLoaded", function (){
-      Elm.fullscreen(Elm.Main, { currentTime: Date.now() });
-    })
+      var app = Elm.Main.fullscreen();
+      app.ports.currentTime.send(Date.now());
+    });
   </script>
 </body>

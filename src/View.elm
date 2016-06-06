@@ -1,10 +1,9 @@
-module View (..) where
+module View exposing  (..)
 
 import List
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Signal exposing (Address)
 import DateUtils exposing (..)
 import Date exposing (..)
 import String
@@ -12,8 +11,8 @@ import Model exposing (..)
 import Update exposing (..)
 
 
-view : Address Action -> Model -> Html
-view address model =
+view : Model -> Html Msg
+view model =
   case model.httpError of
     Err err ->
       div
@@ -33,25 +32,25 @@ view address model =
                   ]
                 )
             ]
-        , navigationPane address model
+        , navigationPane model
         , calendarTable model
         ]
 
 
-navigationPane : Address Action -> Model -> Html
-navigationPane address model =
+navigationPane : Model -> Html Msg
+navigationPane model =
   div
     [ class "navigation" ]
     [ div
         []
         [ button
-            [ onClick address PreviousMonth, class "float-left" ]
+            [ onClick PreviousMonth, class "float-left" ]
             [ i [ class "fa fa-arrow-left" ] [] ]
         ]
     , div
         []
         [ button
-            [ onClick address NextMonth, class "float-left" ]
+            [ onClick NextMonth, class "float-left" ]
             [ i [ class "fa fa-arrow-right" ] [] ]
         ]
     , div [ class "spinner" ] [ i [ class (spinnerClass model) ] [] ]
@@ -66,7 +65,7 @@ spinnerClass model =
     ""
 
 
-calendarTable : Model -> Html
+calendarTable : Model -> Html Msg
 calendarTable model =
   table
     [ class "calendar" ]
@@ -85,7 +84,7 @@ calendarTable model =
     ]
 
 
-weekRow : Model -> List DateHours -> Html
+weekRow : Model -> List DateHours -> Html Msg
 weekRow model dateEntries =
   tr
     []

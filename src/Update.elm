@@ -1,16 +1,18 @@
-module Update (..) where
+module Update exposing (..)
 
 import List exposing (isEmpty)
-import Effects exposing (Effects)
 import Task exposing (Task)
 import Http
 import Model exposing (..)
 import Api exposing (getEntries)
 import DateUtils exposing (enteredHoursVsTotal)
-import Date.Duration as Duration
+import Date.Extra.Duration as Duration
+import Date exposing (fromTime)
+import Basics.Extra exposing (never)
+import Time
 
 
-type Action
+type Msg
   = Login
   | GetDayEntries
   | EntryList (Result Http.Error (List DateEntries))
@@ -20,9 +22,10 @@ type Action
   | PreviousMonth
   | NextMonth
   | FetchedAbsenceTaskList (Result Http.Error (List HarvestTask))
+  | GetCurrentTime (Time.Time)
 
 
-update : Action -> Model -> ( Model, Effects Action )
+update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
   case action of
     Login ->
@@ -85,40 +88,42 @@ update action model =
         Err error ->
           handleError model error
 
+    GetCurrentTime currentTime ->
+      noFx { model | currentDate = Date.fromTime currentTime, today = Date.fromTime currentTime }
 
-noFx : Model -> ( Model, Effects Action )
+
+noFx : Model -> ( Model, Cmd Msg )
 noFx model =
-  ( model, Effects.none )
+  ( model, Cmd.none )
 
 
-handleError : Model -> Http.Error -> ( Model, Effects Action )
+handleError : Model -> Http.Error -> ( Model, Cmd Msg )
 handleError model error =
   noFx { model | httpError = Err error }
 
 
-getResult : Task Http.Error a -> (Result Http.Error a -> Action) -> Effects Action
+getResult : Task Http.Error a -> (Result Http.Error a -> Msg) -> Cmd Msg
 getResult httpGet action =
   httpGet
     |> Task.toResult
-    |> Task.map action
-    |> Effects.task
+    |> Task.perform never action
 
 
-getEntries : Effects Action
+getEntries : Cmd Msg
 getEntries =
   getResult Api.getEntries EntryList
 
 
-getUser : Effects Action
+getUser : Cmd Msg
 getUser =
   getResult Api.getUser FetchedUser
 
 
-getHolidays : Effects Action
+getHolidays : Cmd Msg
 getHolidays =
   getResult Api.getNationalHolidays FetchedHolidays
 
 
-getAbsenceTasks : Effects Action
+getAbsenceTasks : Cmd Msg
 getAbsenceTasks =
   getResult Api.getAbsenceTasks FetchedAbsenceTaskList

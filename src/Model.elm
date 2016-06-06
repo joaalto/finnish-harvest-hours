@@ -1,4 +1,4 @@
-module Model (..) where
+module Model exposing (..)
 
 import Date exposing (Date, Month)
 import Http

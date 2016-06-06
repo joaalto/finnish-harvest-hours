@@ -1,42 +1,30 @@
-module Main (..) where
+module Main exposing (..)
 
 import Model exposing (..)
-import Update exposing (Action, update)
+import Update exposing (Msg, update)
 import View exposing (view)
-import StartApp
-import Signal exposing (Signal, Mailbox, Address, send)
-import Html exposing (..)
-import Task
-import Effects exposing (Effects, Never)
-import Time exposing (Time)
-import Date exposing (fromTime)
+import Html.App as Html
+import Ports exposing (currentTime)
+import Date.Extra.Create exposing (dateFromFields)
+import Date exposing (..)
 
-
-port currentTime : Time
-app : StartApp.App Model
-app =
-  StartApp.start
-    { init = init
-    , update = update
-    , view = view
-    , inputs = []
-    }
-
-
-main : Signal Html
+main : Program Never
 main =
-  app.html
+    Html.program
+      { init = init
+      , update = update
+      , view = view
+      , subscriptions = subscriptions
+      }
 
+subscriptions : Model -> Sub Msg
+subscriptions model =
+  currentTime Update.GetCurrentTime
 
-port tasks : Signal (Task.Task Never ())
-port tasks =
-  app.tasks
-
-
-init : ( Model, Effects Action )
+init : ( Model, Cmd Msg )
 init =
   ( initialModel
-  , Effects.batch
+  , Cmd.batch
       [ Update.getUser
       , Update.getEntries
       , Update.getHolidays
@@ -47,14 +35,10 @@ init =
 
 initialModel : Model
 initialModel =
-  let
-    currentDate =
-      Date.fromTime currentTime
-  in
     { httpError = Ok ()
     , loading = True
-    , today = currentDate
-    , currentDate = currentDate
+    , today = Date.Extra.Create.dateFromFields 2016 Date.Jan 1 1 1 1 1
+    , currentDate = Date.Extra.Create.dateFromFields 2016 Date.Jan 1 1 1 1 1
     , entries = []
     , totalHours = 0
     , user = { firstName = "", lastName = "" }
