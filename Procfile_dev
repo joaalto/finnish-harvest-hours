@@ -1,1 +1,2 @@
 web: nodemon server/server.js
+mongo: mongod --config /usr/local/etc/mongod.conf
