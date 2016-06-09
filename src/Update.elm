@@ -22,7 +22,7 @@ type Msg
     | PreviousMonth
     | NextMonth
     | FetchedAbsenceTaskList (Result Http.Error (List HarvestTask))
-    | GetCurrentTime (Time.Time)
+    | SetCurrentTime (Time.Time)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -88,8 +88,13 @@ update action model =
                 Err error ->
                     handleError model error
 
-        GetCurrentTime currentTime ->
+        SetCurrentTime currentTime ->
             noFx { model | currentDate = Date.fromTime currentTime, today = Date.fromTime currentTime }
+
+
+currentTime : Cmd Msg
+currentTime =
+    Task.perform never SetCurrentTime Time.now
 
 
 noFx : Model -> ( Model, Cmd Msg )
