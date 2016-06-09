@@ -8,29 +8,32 @@ import Ports exposing (currentTime)
 import Date.Extra.Create exposing (dateFromFields)
 import Date exposing (..)
 
+
 main : Program Never
 main =
     Html.program
-      { init = init
-      , update = update
-      , view = view
-      , subscriptions = subscriptions
-      }
+        { init = init
+        , update = update
+        , view = view
+        , subscriptions = subscriptions
+        }
+
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  currentTime Update.GetCurrentTime
+    currentTime Update.GetCurrentTime
+
 
 init : ( Model, Cmd Msg )
 init =
-  ( initialModel
-  , Cmd.batch
-      [ Update.getUser
-      , Update.getEntries
-      , Update.getHolidays
-      , Update.getAbsenceTasks
-      ]
-  )
+    ( initialModel
+    , Cmd.batch
+        [ Update.getUser
+        , Update.getEntries
+        , Update.getHolidays
+        , Update.getAbsenceTasks
+        ]
+    )
 
 
 initialModel : Model

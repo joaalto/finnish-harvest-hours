@@ -13,117 +13,117 @@ import Time
 
 
 type Msg
-  = Login
-  | GetDayEntries
-  | EntryList (Result Http.Error (List DateEntries))
-  | FetchedUser (Result Http.Error (User))
-  | FetchedHolidays (Result Http.Error (List Holiday))
-  | UpdateHours
-  | PreviousMonth
-  | NextMonth
-  | FetchedAbsenceTaskList (Result Http.Error (List HarvestTask))
-  | GetCurrentTime (Time.Time)
+    = Login
+    | GetDayEntries
+    | EntryList (Result Http.Error (List DateEntries))
+    | FetchedUser (Result Http.Error (User))
+    | FetchedHolidays (Result Http.Error (List Holiday))
+    | UpdateHours
+    | PreviousMonth
+    | NextMonth
+    | FetchedAbsenceTaskList (Result Http.Error (List HarvestTask))
+    | GetCurrentTime (Time.Time)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
-  case action of
-    Login ->
-      noFx model
+    case action of
+        Login ->
+            noFx model
 
-    GetDayEntries ->
-      ( model, getEntries )
+        GetDayEntries ->
+            ( model, getEntries )
 
-    EntryList results ->
-      case results of
-        Ok entries ->
-          update UpdateHours { model | entries = entries }
+        EntryList results ->
+            case results of
+                Ok entries ->
+                    update UpdateHours { model | entries = entries }
 
-        Err error ->
-          handleError model error
+                Err error ->
+                    handleError model error
 
-    FetchedUser result ->
-      case result of
-        Ok user ->
-          noFx { model | user = user }
+        FetchedUser result ->
+            case result of
+                Ok user ->
+                    noFx { model | user = user }
 
-        Err error ->
-          handleError model error
+                Err error ->
+                    handleError model error
 
-    FetchedHolidays result ->
-      case result of
-        Ok holidays ->
-          update UpdateHours { model | holidays = holidays }
+        FetchedHolidays result ->
+            case result of
+                Ok holidays ->
+                    update UpdateHours { model | holidays = holidays }
 
-        Err error ->
-          handleError model error
+                Err error ->
+                    handleError model error
 
-    UpdateHours ->
-      if
-        not
-          (isEmpty model.entries
-            || isEmpty model.holidays
-            || isEmpty model.absenceTasks
-          )
-      then
-        let
-          newModel =
-            { model | loading = False }
-        in
-          noFx { newModel | totalHours = enteredHoursVsTotal model }
-      else
-        noFx model
+        UpdateHours ->
+            if
+                not
+                    (isEmpty model.entries
+                        || isEmpty model.holidays
+                        || isEmpty model.absenceTasks
+                    )
+            then
+                let
+                    newModel =
+                        { model | loading = False }
+                in
+                    noFx { newModel | totalHours = enteredHoursVsTotal model }
+            else
+                noFx model
 
-    PreviousMonth ->
-      noFx { model | currentDate = Duration.add Duration.Month -1 model.currentDate }
+        PreviousMonth ->
+            noFx { model | currentDate = Duration.add Duration.Month -1 model.currentDate }
 
-    NextMonth ->
-      noFx { model | currentDate = Duration.add Duration.Month 1 model.currentDate }
+        NextMonth ->
+            noFx { model | currentDate = Duration.add Duration.Month 1 model.currentDate }
 
-    FetchedAbsenceTaskList result ->
-      case result of
-        Ok tasks ->
-          update UpdateHours { model | absenceTasks = tasks }
+        FetchedAbsenceTaskList result ->
+            case result of
+                Ok tasks ->
+                    update UpdateHours { model | absenceTasks = tasks }
 
-        Err error ->
-          handleError model error
+                Err error ->
+                    handleError model error
 
-    GetCurrentTime currentTime ->
-      noFx { model | currentDate = Date.fromTime currentTime, today = Date.fromTime currentTime }
+        GetCurrentTime currentTime ->
+            noFx { model | currentDate = Date.fromTime currentTime, today = Date.fromTime currentTime }
 
 
 noFx : Model -> ( Model, Cmd Msg )
 noFx model =
-  ( model, Cmd.none )
+    ( model, Cmd.none )
 
 
 handleError : Model -> Http.Error -> ( Model, Cmd Msg )
 handleError model error =
-  noFx { model | httpError = Err error }
+    noFx { model | httpError = Err error }
 
 
 getResult : Task Http.Error a -> (Result Http.Error a -> Msg) -> Cmd Msg
 getResult httpGet action =
-  httpGet
-    |> Task.toResult
-    |> Task.perform never action
+    httpGet
+        |> Task.toResult
+        |> Task.perform never action
 
 
 getEntries : Cmd Msg
 getEntries =
-  getResult Api.getEntries EntryList
+    getResult Api.getEntries EntryList
 
 
 getUser : Cmd Msg
 getUser =
-  getResult Api.getUser FetchedUser
+    getResult Api.getUser FetchedUser
 
 
 getHolidays : Cmd Msg
 getHolidays =
-  getResult Api.getNationalHolidays FetchedHolidays
+    getResult Api.getNationalHolidays FetchedHolidays
 
 
 getAbsenceTasks : Cmd Msg
 getAbsenceTasks =
-  getResult Api.getAbsenceTasks FetchedAbsenceTaskList
+    getResult Api.getAbsenceTasks FetchedAbsenceTaskList
