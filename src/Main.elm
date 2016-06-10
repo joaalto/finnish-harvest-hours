@@ -4,7 +4,6 @@ import Model exposing (..)
 import Update exposing (Msg, update)
 import View exposing (view)
 import Html.App as Html
-import Date.Extra.Create exposing (dateFromFields)
 import Date exposing (..)
 
 
@@ -35,8 +34,8 @@ initialModel : Model
 initialModel =
     { httpError = Ok ()
     , loading = True
-    , today = Date.Extra.Create.dateFromFields 2016 Date.Jan 1 1 1 1 1
-    , currentDate = Date.Extra.Create.dateFromFields 2016 Date.Jan 1 1 1 1 1
+    , today = Date.fromTime 0
+    , currentDate = Date.fromTime 0
     , entries = []
     , totalHours = 0
     , user = { firstName = "", lastName = "" }
