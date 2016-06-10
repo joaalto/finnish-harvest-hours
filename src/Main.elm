@@ -4,10 +4,8 @@ import Model exposing (..)
 import Update exposing (Msg, update)
 import View exposing (view)
 import Html.App as Html
-import Ports exposing (currentTime)
 import Date.Extra.Create exposing (dateFromFields)
 import Date exposing (..)
-import Time exposing (now)
 
 
 main : Program Never
