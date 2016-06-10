@@ -7,7 +7,7 @@ import Date.Extra.Period as Period exposing (add, diff)
 import Date.Extra.Compare as Compare exposing (is, Compare2)
 import Date.Extra.Format exposing (format)
 import Date.Extra.Config.Configs as DateConfigs
-import Date.Extra.TimeUnit as Df exposing (startOfTime)
+import Date.Extra.TimeUnit as TimeUnit
 import Model exposing (..)
 
 
@@ -106,8 +106,8 @@ isHoliday date model =
 isSameDate : Date -> Date -> Bool
 isSameDate date1 date2 =
     is Compare.Same
-        (floorDay date1)
-        (floorDay date2)
+        (startOfDate date1)
+        (startOfDate date2)
 
 
 isWeekDay : Date -> Bool
@@ -115,9 +115,9 @@ isWeekDay date =
     not (List.member (dayOfWeek date) [ Sat, Sun ])
 
 
-floorDay : Date -> Date
-floorDay date =
-    Df.startOfTime Df.Day date
+startOfDate : Date -> Date
+startOfDate date =
+    TimeUnit.startOfTime TimeUnit.Day date
 
 
 {-|
@@ -154,7 +154,7 @@ dateRange model startDate endDate dateList =
         reverse dateList
     else
         dateRange model
-            (add Period.Hour 3 (add Period.Day 1 (floorDay startDate)))
+            (add Period.Hour 3 (add Period.Day 1 (startOfDate startDate)))
             endDate
             ({ date = startDate, hours = (sumDateHours model startDate) } :: dateList)
 
