@@ -24,7 +24,7 @@ view model =
                     [ text
                         (String.join " | "
                             [ (String.join " " [ model.user.firstName, model.user.lastName ])
-                            , String.join " " [ "Tuntisaldo:", (hourString model.totalHours), "h" ]
+                            , String.join " " [ "Tuntisaldo:", (toString model.totalHours), "h" ]
                             ]
                         )
                     ]
