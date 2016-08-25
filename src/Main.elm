@@ -1,5 +1,7 @@
 module Main exposing (..)
 
+import Material
+import Material.Dialog
 import Model exposing (..)
 import Update exposing (Msg, update)
 import View exposing (view)
@@ -41,4 +43,5 @@ initialModel =
     , user = { firstName = "", lastName = "" }
     , holidays = []
     , absenceTasks = []
+    , mdl = Material.model
     }

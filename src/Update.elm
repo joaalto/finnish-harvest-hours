@@ -1,5 +1,6 @@
 module Update exposing (..)
 
+import Material
 import List exposing (isEmpty)
 import Task exposing (Task)
 import Http
@@ -23,6 +24,7 @@ type Msg
     | NextMonth
     | FetchedAbsenceTaskList (Result Http.Error (List HarvestTask))
     | SetCurrentTime (Time.Time)
+    | Mdl (Material.Msg Msg)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -90,6 +92,9 @@ update action model =
 
         SetCurrentTime currentTime ->
             noFx { model | currentDate = Date.fromTime currentTime, today = Date.fromTime currentTime }
+
+        Mdl msg' ->
+            Material.update msg' model
 
 
 currentTime : Cmd Msg

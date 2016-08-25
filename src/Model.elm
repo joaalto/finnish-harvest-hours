@@ -1,5 +1,6 @@
 module Model exposing (..)
 
+import Material
 import Date exposing (Date, Month)
 import Http
 
@@ -14,6 +15,7 @@ type alias Model =
     , user : User
     , holidays : List Holiday
     , absenceTasks : List HarvestTask
+    , mdl : Material.Model
     }
 
 
