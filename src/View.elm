@@ -1,5 +1,7 @@
 module View exposing (..)
 
+import Material.Dialog as Dialog
+import Material.Button as Button
 import List
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -20,17 +22,36 @@ view model =
 
         Ok _ ->
             div [ class "main" ]
-                [ div [ class "header" ]
-                    [ text
-                        (String.join " | "
-                            [ (String.join " " [ model.user.firstName, model.user.lastName ])
-                            , String.join " " [ "Tuntisaldo:", (toString model.totalHours), "h" ]
-                            ]
-                        )
+                [ div []
+                    [ element model ]
+                , div [ class "header" ]
+                    [ Button.render Mdl
+                        [ 1 ]
+                        model.mdl
+                        [ Dialog.openOn "click" ]
+                        [ text (String.join " " [ model.user.firstName, model.user.lastName ]) ]
+                    , text (String.join " " [ "Tuntisaldo:", (toString model.totalHours), "h" ])
                     ]
                 , navigationPane model
                 , calendarTable model
                 ]
+
+
+element : Model -> Html Msg
+element model =
+    Dialog.view []
+        [ Dialog.title [] [ text "Vanha saldo" ]
+        , Dialog.content []
+            [ p [] [ text "Aseta vanha saldo" ]
+            ]
+        , Dialog.actions []
+            [ Button.render Mdl
+                [ 0 ]
+                model.mdl
+                [ Dialog.closeOn "click" ]
+                [ text "Sulje" ]
+            ]
+        ]
 
 
 navigationPane : Model -> Html Msg

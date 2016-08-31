@@ -93,8 +93,8 @@ update action model =
         SetCurrentTime currentTime ->
             noFx { model | currentDate = Date.fromTime currentTime, today = Date.fromTime currentTime }
 
-        Mdl msg' ->
-            Material.update msg' model
+        Mdl action' ->
+            Material.update action' model
 
 
 currentTime : Cmd Msg
