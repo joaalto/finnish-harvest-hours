@@ -25,11 +25,13 @@ view model =
                 [ div []
                     [ element model ]
                 , div [ class "header" ]
-                    [ Button.render Mdl
+                    [ span [ class "name" ]
+                        [ text (String.join " " [ model.user.firstName, model.user.lastName ]) ]
+                    , Button.render Mdl
                         [ 1 ]
                         model.mdl
                         [ Dialog.openOn "click" ]
-                        [ text (String.join " " [ model.user.firstName, model.user.lastName ]) ]
+                        [ i [ class "fa settings fa-calendar" ] [] ]
                     , text (String.join " " [ "Tuntisaldo:", (toString model.totalHours), "h" ])
                     ]
                 , navigationPane model
