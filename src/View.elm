@@ -23,7 +23,7 @@ view model =
         Ok _ ->
             div [ class "main" ]
                 [ div []
-                    [ element model ]
+                    [ dialog model ]
                 , div [ class "header" ]
                     [ span [ class "name" ]
                         [ text (String.join " " [ model.user.firstName, model.user.lastName ]) ]
@@ -39,12 +39,20 @@ view model =
                 ]
 
 
-element : Model -> Html Msg
-element model =
+dialog : Model -> Html Msg
+dialog model =
     Dialog.view []
         [ Dialog.title [] [ text "Vanha saldo" ]
         , Dialog.content []
-            [ p [] [ text "Aseta vanha saldo" ]
+            [ p []
+                [ text "Aseta vanha saldo" ]
+            , input
+                [ class "balance-input"
+                , onInput UpdatePreviousBalance
+                , onBlur (SavePreviousBalance model.previousBalance)
+                , value model.previousBalance
+                ]
+                []
             ]
         , Dialog.actions []
             [ Button.render Mdl

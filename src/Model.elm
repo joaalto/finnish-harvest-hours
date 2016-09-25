@@ -15,6 +15,7 @@ type alias Model =
     , user : User
     , holidays : List Holiday
     , absenceTasks : List HarvestTask
+    , previousBalance : String
     , mdl : Material.Model
     }
 

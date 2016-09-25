@@ -24,6 +24,9 @@ type Msg
     | NextMonth
     | FetchedAbsenceTaskList (Result Http.Error (List HarvestTask))
     | SetCurrentTime (Time.Time)
+    | UpdatePreviousBalance String
+    | SavePreviousBalance String
+    | PreviousBalanceSaved (Result Http.Error (List String))
     | Mdl (Material.Msg Msg)
 
 
@@ -93,8 +96,22 @@ update action model =
         SetCurrentTime currentTime ->
             noFx { model | currentDate = Date.fromTime currentTime, today = Date.fromTime currentTime }
 
+        UpdatePreviousBalance balance ->
+            noFx { model | previousBalance = balance }
+
+        SavePreviousBalance balance ->
+            ( model, setPreviousBalance balance )
+
+        PreviousBalanceSaved result ->
+            noFx model
+
         Mdl action' ->
             Material.update action' model
+
+
+setPreviousBalance : String -> Cmd Msg
+setPreviousBalance balance =
+    getResult (Api.setPreviousBalance balance) PreviousBalanceSaved
 
 
 currentTime : Cmd Msg
