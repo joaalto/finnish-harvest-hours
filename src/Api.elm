@@ -2,6 +2,7 @@ module Api exposing (..)
 
 import Http exposing (Error)
 import Json.Decode as Json exposing (..)
+import Json.Encode exposing (encode)
 import Task exposing (Task)
 import Date exposing (Date)
 import Model exposing (..)
@@ -70,4 +71,16 @@ decodeTasks =
 
 setPreviousBalance : String -> Task Error (List String)
 setPreviousBalance balance =
-    Http.post (list string) "/balance" (Http.string balance)
+    httpPost "/balance"
+        (Http.string ("""{ "balance":""" ++ balance ++ """}"""))
+
+
+httpPost : String -> Http.Body -> Task Error (List String)
+httpPost url body =
+    Http.send Http.defaultSettings
+        { verb = "POST"
+        , headers = [ ( "Content-type", "application/json" ) ]
+        , url = url
+        , body = body
+        }
+        |> Http.fromJson (Json.list Json.string)

@@ -1,6 +1,6 @@
 const express = require('express');
 const request = require('superagent');
-const jsonParser = require('body-parser').json();
+const bodyParser = require('body-parser');
 const passport = require('passport');
 const OAuth2Strategy = require('passport-oauth2');
 const session = require('express-session');
@@ -30,6 +30,7 @@ const forceSsl = function(req, res, next) {
     return next();
 };
 
+app.use(bodyParser.json());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(forceSsl);
@@ -111,6 +112,11 @@ app.get('/holidays', function(req, res) {
 app.get('/entries', function(req, res) {
     Api.fetchHourEntries(req, res)
         .then(entries => res.send(entries));
+});
+
+app.post('/balance', function(req, res) {
+    console.log('>>>', req.body.balance);
+    res.send('OK');
 });
 
 const port = process.env.PORT || 8080;
