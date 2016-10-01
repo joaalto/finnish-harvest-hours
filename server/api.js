@@ -2,6 +2,12 @@ const _ = require('lodash');
 const Promise = this.Promise || require('promise');
 const agent = require('superagent-promise')(require('superagent'), Promise);
 
+const harvestUrl = `https://${process.env.ORGANIZATION}.harvestapp.com`;
+
+module.exports = {
+    harvestUrl: harvestUrl
+};
+
 function getUser(req) {
     return req.session.passport.user;
 };
@@ -17,12 +23,11 @@ function formatDateForHarvest(date) {
 const firstDayOfYear = new Date(new Date().getFullYear(), 0, 1);
 const startDate = formatDateForHarvest(firstDayOfYear);
 const endDate = formatDateForHarvest(new Date());
-const baseUrl = 'https://wunderdog.harvestapp.com';
 
 module.exports = {
 
     get(req, res, url) {
-        return promise = agent.get(baseUrl + url)
+        return promise = agent.get(harvestUrl + url)
             .type('json')
             .accept('json')
             .query({
