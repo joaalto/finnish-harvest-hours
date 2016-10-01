@@ -50,7 +50,7 @@ dialog model =
                 [ class "balance-input"
                 , onInput UpdatePreviousBalance
                 , onBlur (SavePreviousBalance model.previousBalance)
-                , value model.previousBalance
+                , value model.previousBalanceString
                 ]
                 []
             ]

@@ -1,6 +1,7 @@
 module Update exposing (..)
 
 import Material
+import String
 import List exposing (isEmpty)
 import Task exposing (Task)
 import Http
@@ -25,7 +26,7 @@ type Msg
     | FetchedAbsenceTaskList (Result Http.Error (List HarvestTask))
     | SetCurrentTime (Time.Time)
     | UpdatePreviousBalance String
-    | SavePreviousBalance String
+    | SavePreviousBalance Float
     | PreviousBalanceSaved (Result Http.Error (List String))
     | Mdl (Material.Msg Msg)
 
@@ -97,7 +98,7 @@ update action model =
             noFx { model | currentDate = Date.fromTime currentTime, today = Date.fromTime currentTime }
 
         UpdatePreviousBalance balance ->
-            noFx { model | previousBalance = balance }
+            updatePreviousBalance model balance
 
         SavePreviousBalance balance ->
             ( model, setPreviousBalance balance )
@@ -109,7 +110,17 @@ update action model =
             Material.update action' model
 
 
-setPreviousBalance : String -> Cmd Msg
+updatePreviousBalance : Model -> String -> ( Model, Cmd Msg )
+updatePreviousBalance model balance =
+    case String.toFloat balance of
+        Err error ->
+            noFx { model | previousBalanceString = balance }
+
+        Ok value ->
+            noFx { model | previousBalance = value, previousBalanceString = balance }
+
+
+setPreviousBalance : Float -> Cmd Msg
 setPreviousBalance balance =
     getResult (Api.setPreviousBalance balance) PreviousBalanceSaved
 

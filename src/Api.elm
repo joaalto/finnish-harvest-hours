@@ -69,10 +69,10 @@ decodeTasks =
         )
 
 
-setPreviousBalance : String -> Task Error (List String)
+setPreviousBalance : Float -> Task Error (List String)
 setPreviousBalance balance =
     httpPost "/balance"
-        (Http.string ("""{ "balance":""" ++ balance ++ """}"""))
+        (Http.string ("""{ "balance":""" ++ (toString balance) ++ """}"""))
 
 
 httpPost : String -> Http.Body -> Task Error (List String)
