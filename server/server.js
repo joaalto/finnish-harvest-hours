@@ -52,7 +52,7 @@ passport.use(
             tokenURL: `${harvestUrl}/oauth2/token`,
             clientID: process.env.CLIENT_ID,
             clientSecret: process.env.CLIENT_SECRET,
-            callbackURL: process.env.CALLBACK_URL || 'https://saldot.herokuapp.com/auth/callback'
+            callbackURL: process.env.CALLBACK_URL
         },
         // TODO: handle refresh tokens
         function(accessToken, refreshToken, profile, done) {
