@@ -12,6 +12,8 @@ const mongoUrl =
     process.env.MONGOLAB_URI ||
     'mongodb://localhost/saldot';
 
+const harvestUrl = `https://${process.env.ORGANIZATION}.harvestapp.com`;
+
 const app = express()
 
 app.use(session({
@@ -46,8 +48,8 @@ passport.deserializeUser(function(user, done) {
 passport.use(
     'oauth2',
     new OAuth2Strategy({
-            authorizationURL: 'https://wunderdog.harvestapp.com/oauth2/authorize',
-            tokenURL: 'https://wunderdog.harvestapp.com/oauth2/token',
+            authorizationURL: `${harvestUrl}/oauth2/authorize`,
+            tokenURL: `${harvestUrl}/oauth2/token`,
             clientID: process.env.CLIENT_ID,
             clientSecret: process.env.CLIENT_SECRET,
             callbackURL: process.env.CALLBACK_URL || 'https://saldot.herokuapp.com/auth/callback'
@@ -55,7 +57,7 @@ passport.use(
         // TODO: handle refresh tokens
         function(accessToken, refreshToken, profile, done) {
             request
-                .get('https://wunderdog.harvestapp.com/account/who_am_i')
+                .get(`${harvestUrl}/account/who_am_i`)
                 .type('json')
                 .accept('json')
                 .query({
