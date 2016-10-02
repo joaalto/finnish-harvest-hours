@@ -5,8 +5,10 @@ const passport = require('passport');
 const OAuth2Strategy = require('passport-oauth2');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+const mongoose = require('mongoose');
 const _ = require('lodash');
 const Api = require('./api');
+const User = require('./schema/user');
 
 const mongoUrl =
     process.env.MONGOLAB_URI ||
@@ -14,6 +16,8 @@ const mongoUrl =
 
 
 const app = express()
+
+mongoose.connect(mongoUrl);
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -116,9 +120,35 @@ app.get('/entries', function(req, res) {
 });
 
 app.post('/balance', function(req, res) {
+    if (req.isAuthenticated()) {
+        const sessionUser = req.session.passport.user;
+
+        User.findOne({ id: sessionUser.id }, (err, user) => {
+            if(err) {
+                console.error(err);
+            }
+            console.log('>>> found user:', user);
+        });
+        
+        upsertUser(sessionUser.id, req.body.balance);
+    }
     console.log('>>>', req.body.balance);
     res.send('OK');
 });
+
+const upsertUser = (id, balance) => {
+    User.findOneAndUpdate(
+        { id: id },
+        // { $set: { balance: balance }},
+        { balance: balance },
+        { new: true, upsert: true },
+        (err, res) => {
+            if(err) {
+                console.error(err);
+            }
+        }
+    );
+}
 
 const port = process.env.PORT || 8080;
 app.listen(port);
