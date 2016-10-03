@@ -27,9 +27,20 @@ body {
     clear: left;
 }
 
+.nav-button {
+    font-size: 1.6em;
+}
+
+.calendar-button {
+    font-size: 1.2em;
+}
+
+.close-button {
+    font-size: 1.2em;
+}
+
 button {
     border-style: none;
-    font-size: 1.6em;
     border-radius: 4px;
     margin-right: 6px;
     outline: none;
@@ -73,4 +84,9 @@ td.other-month {
 
 .header .name {
     margin-right: 0.5em;
+}
+
+.balance-input {
+    padding: 0.5em;
+    margin-bottom: 2em;
 }

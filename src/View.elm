@@ -2,6 +2,7 @@ module View exposing (..)
 
 import Material.Dialog as Dialog
 import Material.Button as Button
+import Material.Options as Options
 import List
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -30,7 +31,9 @@ view model =
                     , Button.render Mdl
                         [ 1 ]
                         model.mdl
-                        [ Dialog.openOn "click" ]
+                        [ Dialog.openOn "click"
+                        , Options.cs "calendar-button"
+                        ]
                         [ i [ class "fa settings fa-calendar" ] [] ]
                     , text (String.join " " [ "Tuntisaldo:", (toString model.totalHours), "h" ])
                     ]
@@ -42,11 +45,9 @@ view model =
 dialog : Model -> Html Msg
 dialog model =
     Dialog.view []
-        [ Dialog.title [] [ text "Vanha saldo" ]
+        [ Dialog.title [] [ h3 [] [ text "Aseta vanha saldo" ] ]
         , Dialog.content []
-            [ p []
-                [ text "Aseta vanha saldo" ]
-            , input
+            [ input
                 [ class "balance-input"
                 , onInput UpdatePreviousBalance
                 , onBlur (SavePreviousBalance model.previousBalance)
@@ -58,7 +59,9 @@ dialog model =
             [ Button.render Mdl
                 [ 0 ]
                 model.mdl
-                [ Dialog.closeOn "click" ]
+                [ Dialog.closeOn "click"
+                , Options.cs "close-button"
+                ]
                 [ text "Sulje" ]
             ]
         ]
@@ -68,11 +71,11 @@ navigationPane : Model -> Html Msg
 navigationPane model =
     div [ class "navigation" ]
         [ div []
-            [ button [ onClick PreviousMonth, class "float-left" ]
+            [ button [ onClick PreviousMonth, class "nav-button float-left" ]
                 [ i [ class "fa fa-arrow-left" ] [] ]
             ]
         , div []
-            [ button [ onClick NextMonth, class "float-left" ]
+            [ button [ onClick NextMonth, class "nav-button float-left" ]
                 [ i [ class "fa fa-arrow-right" ] [] ]
             ]
         , div [ class "spinner" ] [ i [ class (spinnerClass model) ] [] ]
