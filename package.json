@@ -1,6 +1,9 @@
 {
   "name": "saldot",
   "version": "0.0.1",
+  "engines": {
+      "node": "6.7.0"
+  },
   "description": "Tuntisaldojen laskentaa",
   "main": "index.js",
   "scripts": {
