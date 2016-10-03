@@ -102,8 +102,20 @@ app.use('/', express.static(__dirname + '/static'));
 
 app.get('/user', function(req, res) {
     if (req.isAuthenticated()) {
-        const user = req.session.passport.user;
-        res.send(_.pick(user, 'firstName', 'lastName'));
+        const sessionUser = req.session.passport.user;
+        User.findOne(
+            { id: sessionUser.id },
+            (err, doc) => {
+                if(err) {
+                    console.error(err);
+                }
+                res.send({
+                    firstName: sessionUser.firstName,
+                    lastName: sessionUser.lastName,
+                    previousBalance: doc.previousBalance
+                });
+            }
+        );
     }
 });
 
@@ -122,13 +134,6 @@ app.get('/entries', function(req, res) {
 app.post('/balance', function(req, res) {
     if (req.isAuthenticated()) {
         const sessionUser = req.session.passport.user;
-
-        User.findOne({ id: sessionUser.id }, (err, user) => {
-            if(err) {
-                console.error(err);
-            }
-        });
-
         upsertUser(sessionUser.id, req.body.balance);
     }
     res.send('OK');

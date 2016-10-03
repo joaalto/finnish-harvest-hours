@@ -39,7 +39,7 @@ initialModel =
     , currentDate = Date.fromTime 0
     , entries = []
     , totalHours = 0
-    , user = { firstName = "", lastName = "" }
+    , user = { firstName = "", lastName = "", previousBalance = 0 }
     , holidays = []
     , absenceTasks = []
     , previousBalanceString = ""

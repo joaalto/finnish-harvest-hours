@@ -15,9 +15,10 @@ getUser =
 
 decodeUser : Json.Decoder User
 decodeUser =
-    object2 User
+    object3 User
         ("firstName" := string)
         ("lastName" := string)
+        ("previousBalance" := float)
 
 
 getEntries : Task Error (List DateEntries)
