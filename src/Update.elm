@@ -51,7 +51,12 @@ update action model =
         FetchedUser result ->
             case result of
                 Ok user ->
-                    noFx { model | user = user }
+                    update UpdateHours
+                        { model
+                            | user = user
+                            , previousBalanceString = toString user.previousBalance
+                            , previousBalance = user.previousBalance
+                        }
 
                 Err error ->
                     handleError model error

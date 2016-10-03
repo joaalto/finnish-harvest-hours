@@ -26,7 +26,7 @@ enteredHoursVsTotal model =
                     model.entries
                 )
     in
-        enteredHours - totalHoursForYear model
+        enteredHours - totalHoursForYear model + model.previousBalance
 
 
 hoursForDate : DateEntries -> Model -> List Float
