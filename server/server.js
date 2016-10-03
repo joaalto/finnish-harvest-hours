@@ -109,10 +109,13 @@ app.get('/user', function(req, res) {
                 if(err) {
                     console.error(err);
                 }
+                
+                const previousBalance = doc ? doc.previousBalance : 0;
+
                 res.send({
                     firstName: sessionUser.firstName,
                     lastName: sessionUser.lastName,
-                    previousBalance: doc.previousBalance
+                    previousBalance: previousBalance
                 });
             }
         );
