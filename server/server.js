@@ -127,22 +127,19 @@ app.post('/balance', function(req, res) {
             if(err) {
                 console.error(err);
             }
-            console.log('>>> found user:', user);
         });
-        
+
         upsertUser(sessionUser.id, req.body.balance);
     }
-    console.log('>>>', req.body.balance);
     res.send('OK');
 });
 
 const upsertUser = (id, balance) => {
     User.findOneAndUpdate(
         { id: id },
-        // { $set: { balance: balance }},
-        { balance: balance },
+        { previousBalance: balance },
         { new: true, upsert: true },
-        (err, res) => {
+        (err, doc) => {
             if(err) {
                 console.error(err);
             }
