@@ -109,7 +109,7 @@ update action model =
             ( model, setPreviousBalance balance )
 
         PreviousBalanceSaved result ->
-            noFx model
+            update UpdateHours model
 
         Mdl action' ->
             Material.update action' model
