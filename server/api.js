@@ -4,10 +4,6 @@ const agent = require('superagent-promise')(require('superagent'), Promise);
 
 const harvestUrl = `https://${process.env.ORGANIZATION}.harvestapp.com`;
 
-module.exports = {
-    harvestUrl: harvestUrl
-};
-
 function getUser(req) {
     return req.session.passport.user;
 };
@@ -25,6 +21,8 @@ const startDate = formatDateForHarvest(firstDayOfYear);
 const endDate = formatDateForHarvest(new Date());
 
 module.exports = {
+
+    harvestUrl: harvestUrl,
 
     get(req, res, url) {
         return promise = agent.get(harvestUrl + url)
