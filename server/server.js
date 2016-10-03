@@ -109,8 +109,11 @@ app.get('/user', function(req, res) {
                 if(err) {
                     console.error(err);
                 }
-                
-                const previousBalance = doc ? doc.previousBalance : 0;
+
+                let previousBalance = 0;
+                if(doc && doc.previousBalance) {
+                    previousBalance = doc.previousBalance;
+                }
 
                 res.send({
                     firstName: sessionUser.firstName,
