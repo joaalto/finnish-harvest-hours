@@ -1,3 +1,5 @@
+'use strict';
+
 const express = require('express');
 const request = require('superagent');
 const bodyParser = require('body-parser');
