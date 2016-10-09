@@ -26,7 +26,7 @@ init =
         , Update.getUser
         , Update.getEntries
         , Update.getHolidays
-        , Update.getAbsenceTasks
+        , Update.getIgnoredTasks
         ]
     )
 

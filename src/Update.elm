@@ -167,6 +167,6 @@ getHolidays =
     getResult Api.getNationalHolidays FetchedHolidays
 
 
-getAbsenceTasks : Cmd Msg
-getAbsenceTasks =
-    getResult Api.getAbsenceTasks FetchedAbsenceTaskList
+getIgnoredTasks : Cmd Msg
+getIgnoredTasks =
+    getResult Api.getIgnoredTasks FetchedAbsenceTaskList

@@ -56,8 +56,8 @@ decodeHolidays =
         )
 
 
-getAbsenceTasks : Task Error (List HarvestTask)
-getAbsenceTasks =
+getIgnoredTasks : Task Error (List HarvestTask)
+getIgnoredTasks =
     Http.get decodeTasks "/ignored_tasks"
 
 
