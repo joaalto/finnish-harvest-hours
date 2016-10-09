@@ -58,15 +58,14 @@ decodeHolidays =
 
 getAbsenceTasks : Task Error (List HarvestTask)
 getAbsenceTasks =
-    Http.get decodeTasks "/absence_tasks.json"
+    Http.get decodeTasks "/ignored_tasks"
 
 
 decodeTasks : Json.Decoder (List HarvestTask)
 decodeTasks =
     list
-        (object2 HarvestTask
-            ("id" := int)
-            ("name" := string)
+        (object1 HarvestTask
+            ("taskId" := int)
         )
 
 

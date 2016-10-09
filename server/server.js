@@ -139,6 +139,15 @@ app.get('/entries', function(req, res) {
         .then(entries => res.send(entries));
 });
 
+app.get('/ignored_tasks', function(req, res) {
+    res.send(process.env.IGNORE_TASK_IDS
+        .split(',')
+        .map(taskId => {
+            return { taskId: parseInt(taskId) }
+        })
+    );
+});
+
 app.post('/balance', function(req, res) {
     if (req.isAuthenticated()) {
         const sessionUser = req.session.passport.user;

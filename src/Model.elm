@@ -47,6 +47,4 @@ type alias Holiday =
 
 
 type alias HarvestTask =
-    { id : Int
-    , name : String
-    }
+    { id : Int }
