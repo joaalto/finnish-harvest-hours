@@ -1,10 +1,10 @@
 {
-  "name": "saldot",
+  "name": "finnish-harvest-hours",
   "version": "0.0.1",
   "engines": {
       "node": "6.7.0"
   },
-  "description": "Tuntisaldojen laskentaa",
+  "description": "Compare your total logged hours in Harvest with standard Finnish working hours",
   "main": "index.js",
   "scripts": {
     "start": "node server/server.js",
@@ -13,11 +13,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@bitbucket.org/aaltojoo/saldot.git"
+    "url": "https://github.com/joaalto/finnish-harvest-hours"
   },
   "author": "Joonas Aalto",
-  "license": "ISC",
-  "homepage": "https://bitbucket.org/aaltojoo/saldot#readme",
+  "license": "MIT",
+  "homepage": "https://github.com/joaalto/finnish-harvest-hours",
   "dependencies": {
     "body-parser": "^1.14.2",
     "connect-mongo": "^1.1.0",

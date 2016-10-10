@@ -1,6 +1,6 @@
 {
-    "name": "Tuntisaldojen laskentaa",
-    "repository": "https://github.com/joaalto/saldot",
+    "name": "Compare your total logged hours in Harvest with standard Finnish working hours",
+    "repository": "https://github.com/joaalto/finnish-harvest-hours",
     "env": {
         "ELM_COMPILE": "elm make src/Main.elm --output server/static/index.js"
     },
