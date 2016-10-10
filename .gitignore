@@ -5,3 +5,4 @@ node_modules/
 heroku_logs
 .env
 tmp
+.idea
