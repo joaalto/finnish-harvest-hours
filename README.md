@@ -2,6 +2,8 @@
 
 In Finland the standard work week is 37.5 hours. In the long term you are supposed to keep your logged hours within a reasonable margin of that standard. This app sums up the total amount of hours you have logged to [Harvest](https://www.getharvest.com/) and compares it to the standard hours, taking any national holidays into account (currently holidays for 2016 are included).
 
+![Screenshot](screenshot.png)
+
 ### Requirements for local development
 
 - [Elm](http://elm-lang.org/) 0.17.1
