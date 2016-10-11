@@ -1,7 +1,7 @@
 {
     "version": "1.0.0",
     "summary": "",
-    "repository": "https://github.com/joaalto/finnish-harvest-hours",
+    "repository": "https://github.com/joaalto/finnish-harvest-hours.git",
     "license": "None",
     "source-directories": [
         "src"
