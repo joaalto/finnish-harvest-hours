@@ -31,19 +31,16 @@ enteredHoursVsTotal model =
 
 hoursForDate : DateEntries -> Model -> List Float
 hoursForDate dateEntries model =
-    List.map
-        (\entry ->
-            if (taskIgnored entry model.ignoredTasks) then
-                0
-            else
-                entry.hours
-        )
+    List.map (\entry -> entryHours entry model.ignoredTasks)
         dateEntries.entries
 
 
-taskIgnored : Entry -> List HarvestTask -> Bool
-taskIgnored entry ignoredTasks =
-    List.any (\t -> t.id == entry.taskId) ignoredTasks
+entryHours : Entry -> List HarvestTask -> Float
+entryHours entry ignoredTasks =
+    if List.any (\t -> t.id == entry.taskId) ignoredTasks then
+        0
+    else
+        entry.hours
 
 
 totalHoursForYear : Model -> Float
