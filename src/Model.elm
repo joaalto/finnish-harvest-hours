@@ -14,7 +14,7 @@ type alias Model =
     , totalHours : Float
     , user : User
     , holidays : List Holiday
-    , absenceTasks : List HarvestTask
+    , ignoredTasks : List HarvestTask
     , previousBalanceString : String
     , previousBalance : Float
     , mdl : Material.Model

@@ -41,7 +41,7 @@ initialModel =
     , totalHours = 0
     , user = { firstName = "", lastName = "", previousBalance = 0 }
     , holidays = []
-    , absenceTasks = []
+    , ignoredTasks = []
     , previousBalanceString = ""
     , previousBalance = 0
     , mdl = Material.model

@@ -23,7 +23,7 @@ type Msg
     | UpdateHours
     | PreviousMonth
     | NextMonth
-    | FetchedAbsenceTaskList (Result Http.Error (List HarvestTask))
+    | FetchedIgnoredTaskList (Result Http.Error (List HarvestTask))
     | SetCurrentTime (Time.Time)
     | UpdatePreviousBalance String
     | SavePreviousBalance Float
@@ -74,7 +74,7 @@ update action model =
                 not
                     (isEmpty model.entries
                         || isEmpty model.holidays
-                        || isEmpty model.absenceTasks
+                        || isEmpty model.ignoredTasks
                     )
             then
                 let
@@ -91,10 +91,10 @@ update action model =
         NextMonth ->
             noFx { model | currentDate = Duration.add Duration.Month 1 model.currentDate }
 
-        FetchedAbsenceTaskList result ->
+        FetchedIgnoredTaskList result ->
             case result of
                 Ok tasks ->
-                    update UpdateHours { model | absenceTasks = tasks }
+                    update UpdateHours { model | ignoredTasks = tasks }
 
                 Err error ->
                     handleError model error
@@ -169,4 +169,4 @@ getHolidays =
 
 getIgnoredTasks : Cmd Msg
 getIgnoredTasks =
-    getResult Api.getIgnoredTasks FetchedAbsenceTaskList
+    getResult Api.getIgnoredTasks FetchedIgnoredTaskList
