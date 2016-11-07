@@ -79,6 +79,15 @@ navigationPane model =
                 [ i [ class "fa fa-arrow-right" ] [] ]
             ]
         , div [ class "spinner" ] [ i [ class (spinnerClass model) ] [] ]
+        , div []
+            [ text
+                (String.join " "
+                    [ "Kuluvan kuun tuntisaldo: "
+                    , toString (hourBalanceOfCurrentMonth model)
+                    , "h"
+                    ]
+                )
+            ]
         ]
 
 
@@ -128,7 +137,7 @@ hourString hours =
 
 dayCellClass : Model -> DateHours -> String
 dayCellClass model dateHours =
-    if not (isWorkDay dateHours.date model) then
+    if not (isWorkDay dateHours.date model.holidays) then
         "day-off"
     else if month dateHours.date == month model.currentDate then
         "current-month"

@@ -4,7 +4,7 @@ import List exposing (head, isEmpty, reverse, drop, take)
 import Date exposing (..)
 import Date.Extra.Core exposing (..)
 import Date.Extra.Period as Period exposing (add, diff)
-import Date.Extra.Compare as Compare exposing (is, Compare2)
+import Date.Extra.Compare as Compare exposing (is, Compare2, Compare3)
 import Date.Extra.Format exposing (format)
 import Date.Extra.Config.Configs as DateConfigs
 import Date.Extra.TimeUnit as TimeUnit
@@ -29,6 +29,30 @@ enteredHoursVsTotal model =
         enteredHours - totalHoursForYear model + model.previousBalance
 
 
+hourBalanceOfCurrentMonth : Model -> Float
+hourBalanceOfCurrentMonth model =
+    let
+        currentMonthEntries =
+            List.filter (\entry -> dateInCurrentMonth entry.date model.currentDate)
+                model.entries
+
+        enteredHours =
+            List.sum
+                (List.concatMap (\dateEntries -> hoursForDate dateEntries model)
+                    currentMonthEntries
+                )
+    in
+        Debug.log "entered h" enteredHours - Debug.log "total for month" (totalHoursForMonth model)
+
+
+dateInCurrentMonth : Date -> Date -> Bool
+dateInCurrentMonth date currentDate =
+    Compare.is3 Compare.BetweenOpen
+        date
+        (toFirstOfMonth currentDate)
+        (lastOfMonthDate currentDate)
+
+
 hoursForDate : DateEntries -> Model -> List Float
 hoursForDate dateEntries model =
     List.map (\entry -> entryHours entry model.ignoredTasks)
@@ -43,6 +67,27 @@ entryHours entry ignoredTasks =
         entry.hours
 
 
+totalHoursForMonth : Model -> Float
+totalHoursForMonth model =
+    let
+        endDate =
+            if dateInCurrentMonth model.currentDate model.today then
+                model.today
+            else
+                lastOfMonthDate model.currentDate
+
+        logStartDate =
+            Debug.log "startDate" (toFirstOfMonth model.currentDate)
+
+        logEndDate =
+            Debug.log "endDate" endDate
+
+        dayList =
+            workDays (toFirstOfMonth model.currentDate) endDate model.holidays []
+    in
+        toFloat (Date.day model.currentDate) * 7.5
+
+
 totalHoursForYear : Model -> Float
 totalHoursForYear model =
     toFloat (List.length (totalDaysForYear model)) * 7.5
@@ -52,38 +97,38 @@ totalDaysForYear : Model -> List Date
 totalDaysForYear model =
     model.entries
         |> List.head
-        |> Maybe.map (\entry -> workDays entry.date model [])
+        |> Maybe.map (\entry -> workDays entry.date model.today model.holidays [])
         |> Maybe.withDefault []
 
 
-workDays : Date -> Model -> List Date -> List Date
-workDays date model days =
-    if isSameDate date model.today then
+workDays : Date -> Date -> List Holiday -> List Date -> List Date
+workDays startDate endDate holidays days =
+    if isSameDate startDate endDate then
         days
     else
         let
             nextDay =
-                add Period.Day 1 date
+                add Period.Day 1 startDate
 
             dayList =
-                if isWorkDay nextDay model then
+                if isWorkDay nextDay holidays then
                     nextDay :: days
                 else
                     days
         in
-            workDays nextDay model dayList
+            workDays nextDay endDate holidays dayList
 
 
-isWorkDay : Date -> Model -> Bool
-isWorkDay date model =
-    isWeekDay date && not (isHoliday date model)
+isWorkDay : Date -> List Holiday -> Bool
+isWorkDay date holidays =
+    isWeekDay date && not (isHoliday date holidays)
 
 
-isHoliday : Date -> Model -> Bool
-isHoliday date model =
+isHoliday : Date -> List Holiday -> Bool
+isHoliday date holidays =
     List.length
         (List.filter (\holiday -> isSameDate holiday.date date)
-            model.holidays
+            holidays
         )
         > 0
 
