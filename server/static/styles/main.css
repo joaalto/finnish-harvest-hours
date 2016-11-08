@@ -90,3 +90,7 @@ td.other-month {
     padding: 0.5em;
     margin-bottom: 2em;
 }
+
+.monthly-balance {
+    padding-right: 1em;
+}

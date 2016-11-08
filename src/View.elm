@@ -78,7 +78,7 @@ navigationPane model =
             [ button [ onClick NextMonth, class "nav-button float-left" ]
                 [ i [ class "fa fa-arrow-right" ] [] ]
             ]
-        , div [ class "float-left" ]
+        , div [ class "monthly-balance float-left" ]
             [ text
                 (String.join " "
                     [ "Kuukauden tuntisaldo: "
