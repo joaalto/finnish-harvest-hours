@@ -78,16 +78,16 @@ navigationPane model =
             [ button [ onClick NextMonth, class "nav-button float-left" ]
                 [ i [ class "fa fa-arrow-right" ] [] ]
             ]
-        , div [ class "spinner" ] [ i [ class (spinnerClass model) ] [] ]
-        , div []
+        , div [ class "float-left" ]
             [ text
                 (String.join " "
-                    [ "Kuluvan kuun tuntisaldo: "
+                    [ "Kuukauden tuntisaldo: "
                     , toString (hourBalanceOfCurrentMonth model)
                     , "h"
                     ]
                 )
             ]
+        , div [ class "spinner" ] [ i [ class (spinnerClass model) ] [] ]
         ]
 
 

@@ -42,7 +42,7 @@ hourBalanceOfCurrentMonth model =
                     currentMonthEntries
                 )
     in
-        Debug.log "entered h" enteredHours - Debug.log "total for month" (totalHoursForMonth model)
+        enteredHours - (totalHoursForMonth model)
 
 
 dateInCurrentMonth : Date -> Date -> Bool
@@ -76,16 +76,10 @@ totalHoursForMonth model =
             else
                 lastOfMonthDate model.currentDate
 
-        logStartDate =
-            Debug.log "startDate" (toFirstOfMonth model.currentDate)
-
-        logEndDate =
-            Debug.log "endDate" endDate
-
         dayList =
             workDays (toFirstOfMonth model.currentDate) endDate model.holidays []
     in
-        toFloat (Date.day model.currentDate) * 7.5
+        toFloat (List.length dayList) * 7.5
 
 
 totalHoursForYear : Model -> Float
