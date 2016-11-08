@@ -82,7 +82,7 @@ navigationPane model =
             [ text
                 (String.join " "
                     [ "Kuukauden tuntisaldo: "
-                    , toString (hourBalanceOfCurrentMonth model)
+                    , toString (model.hourBalanceOfCurrentMonth)
                     , "h"
                     ]
                 )

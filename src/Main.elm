@@ -39,6 +39,7 @@ initialModel =
     , currentDate = Date.fromTime 0
     , entries = []
     , totalHours = 0
+    , hourBalanceOfCurrentMonth = 0
     , user = { firstName = "", lastName = "", previousBalance = 0 }
     , holidays = []
     , ignoredTasks = []

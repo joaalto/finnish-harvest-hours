@@ -12,6 +12,7 @@ type alias Model =
     , currentDate : Date
     , entries : List DateEntries
     , totalHours : Float
+    , hourBalanceOfCurrentMonth : Float
     , user : User
     , holidays : List Holiday
     , ignoredTasks : List HarvestTask

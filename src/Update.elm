@@ -7,7 +7,7 @@ import Task exposing (Task)
 import Http
 import Model exposing (..)
 import Api exposing (getEntries)
-import DateUtils exposing (enteredHoursVsTotal)
+import DateUtils exposing (enteredHoursVsTotal, hourBalanceOfCurrentMonth)
 import Date.Extra.Duration as Duration
 import Date exposing (fromTime)
 import Basics.Extra exposing (never)
@@ -23,6 +23,7 @@ type Msg
     | UpdateHours
     | PreviousMonth
     | NextMonth
+    | UpdateHourBalanceOfCurrentMonth
     | FetchedIgnoredTaskList (Result Http.Error (List HarvestTask))
     | SetCurrentTime (Time.Time)
     | UpdatePreviousBalance String
@@ -81,15 +82,18 @@ update action model =
                     newModel =
                         { model | loading = False }
                 in
-                    noFx { newModel | totalHours = enteredHoursVsTotal model }
+                    update UpdateHourBalanceOfCurrentMonth { newModel | totalHours = enteredHoursVsTotal model }
             else
                 noFx model
 
         PreviousMonth ->
-            noFx { model | currentDate = Duration.add Duration.Month -1 model.currentDate }
+            update UpdateHourBalanceOfCurrentMonth { model | currentDate = Duration.add Duration.Month -1 model.currentDate }
 
         NextMonth ->
-            noFx { model | currentDate = Duration.add Duration.Month 1 model.currentDate }
+            update UpdateHourBalanceOfCurrentMonth { model | currentDate = Duration.add Duration.Month 1 model.currentDate }
+
+        UpdateHourBalanceOfCurrentMonth ->
+            noFx { model | hourBalanceOfCurrentMonth = hourBalanceOfCurrentMonth model }
 
         FetchedIgnoredTaskList result ->
             case result of
