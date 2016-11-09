@@ -47,9 +47,9 @@ hourBalanceOfCurrentMonth model =
 
 dateInCurrentMonth : Date -> Date -> Bool
 dateInCurrentMonth date currentDate =
-    Compare.is3 Compare.BetweenOpen
+    Compare.is3 Compare.BetweenOpenEnd
         date
-        (toFirstOfMonth currentDate)
+        (lastOfPrevMonthDate currentDate)
         (lastOfMonthDate currentDate)
 
 
@@ -97,7 +97,7 @@ totalDaysForYear model =
 
 workDays : Date -> Date -> List Holiday -> List Date -> List Date
 workDays startDate endDate holidays days =
-    if isSameDate startDate endDate then
+    if Compare.is Compare.After startDate endDate then
         days
     else
         let
@@ -105,8 +105,8 @@ workDays startDate endDate holidays days =
                 add Period.Day 1 startDate
 
             dayList =
-                if isWorkDay nextDay holidays then
-                    nextDay :: days
+                if isWorkDay startDate holidays then
+                    startDate :: days
                 else
                     days
         in
