@@ -133,7 +133,7 @@ hourString hours =
     if hours == 0 then
         ""
     else
-        toString hours
+        Round.round 1 hours
 
 
 dayCellClass : Model -> DateHours -> String
