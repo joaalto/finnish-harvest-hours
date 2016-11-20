@@ -38,8 +38,8 @@ initialModel =
     , today = Date.fromTime 0
     , currentDate = Date.fromTime 0
     , entries = []
-    , totalHours = 0
-    , hourBalanceOfCurrentMonth = 0
+    , totalHours = Nothing
+    , hourBalanceOfCurrentMonth = Nothing
     , user = { firstName = "", lastName = "", previousBalance = 0 }
     , holidays = []
     , ignoredTasks = []

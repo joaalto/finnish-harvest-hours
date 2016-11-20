@@ -36,11 +36,21 @@ view model =
                         , Options.cs "calendar-button"
                         ]
                         [ i [ class "fa settings fa-calendar" ] [] ]
-                    , text (String.join " " [ "Tuntisaldo:", (Round.round 2 model.totalHours), "h" ])
+                    , text (String.join " " [ "Tuntisaldo:", (roundHours 2 model.totalHours) ])
                     ]
                 , navigationPane model
                 , calendarTable model
                 ]
+
+
+roundHours : Int -> Maybe Float -> String
+roundHours decimals hours =
+    case hours of
+        Nothing ->
+            ""
+
+        Just val ->
+            String.join " " [ Round.round decimals val, "h" ]
 
 
 dialog : Model -> Html Msg
@@ -83,8 +93,7 @@ navigationPane model =
             [ text
                 (String.join " "
                     [ "Kuukauden tuntisaldo: "
-                    , Round.round 2 model.hourBalanceOfCurrentMonth
-                    , "h"
+                    , roundHours 2 model.hourBalanceOfCurrentMonth
                     ]
                 )
             ]
