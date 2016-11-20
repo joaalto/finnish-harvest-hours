@@ -82,7 +82,7 @@ update action model =
                     newModel =
                         { model | loading = False }
                 in
-                    update UpdateHourBalanceOfCurrentMonth { newModel | totalHours = enteredHoursVsTotal model }
+                    update UpdateHourBalanceOfCurrentMonth { newModel | totalHours = Just (enteredHoursVsTotal model) }
             else
                 noFx model
 
@@ -93,7 +93,7 @@ update action model =
             update UpdateHourBalanceOfCurrentMonth { model | currentDate = Duration.add Duration.Month 1 model.currentDate }
 
         UpdateHourBalanceOfCurrentMonth ->
-            noFx { model | hourBalanceOfCurrentMonth = hourBalanceOfCurrentMonth model }
+            noFx { model | hourBalanceOfCurrentMonth = Just (hourBalanceOfCurrentMonth model) }
 
         FetchedIgnoredTaskList result ->
             case result of
