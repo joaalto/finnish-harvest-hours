@@ -131,7 +131,7 @@ app.get('/holidays', function(req, res) {
     const options = {
         root: __dirname + '/static'
     };
-    res.sendFile('finnish_holidays_2016.json', options);
+    res.sendFile('finnish_holidays.json', options);
 });
 
 app.get('/entries', function(req, res) {
