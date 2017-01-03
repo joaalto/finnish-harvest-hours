@@ -16,8 +16,7 @@ function formatDateForHarvest(date) {
     return `${date.getFullYear()}${padWithZero(date.getMonth() + 1)}${padWithZero(date.getDate())}`;
 };
 
-const firstDayOfYear = new Date(new Date().getFullYear(), 0, 1);
-const startDate = formatDateForHarvest(firstDayOfYear);
+const startDate = process.env.START_DATE;
 const endDate = formatDateForHarvest(new Date());
 
 module.exports = {
@@ -49,8 +48,8 @@ module.exports = {
 
     fetchEntries(req, res) {
         return this.get(
-                req, res,
-                `/people/${getUser(req).id}/entries?from=${startDate}&to=${endDate}`)
+            req, res,
+            `/people/${getUser(req).id}/entries?from=${startDate}&to=${endDate}`)
             .then(entries => {
                 return _.map(entries, row => {
                     return {
