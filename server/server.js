@@ -140,11 +140,15 @@ app.get('/entries', function (req, res) {
 });
 
 function idStringToTasks(taskIds) {
-    return taskIds
-        .split(',')
-        .map(taskId => {
-            return { taskId: parseInt(taskId) }
-        })
+    if (!taskIds) {
+        return []
+    } else {
+        return taskIds
+            .split(',')
+            .map(taskId => {
+                return { taskId: parseInt(taskId) }
+            })
+    }
 }
 
 app.get('/special_tasks', function (req, res) {
