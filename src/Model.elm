@@ -15,7 +15,7 @@ type alias Model =
     , hourBalanceOfCurrentMonth : Maybe Float
     , user : User
     , holidays : List Holiday
-    , ignoredTasks : List HarvestTask
+    , specialTasks : SpecialTasks
     , previousBalanceString : String
     , previousBalance : Float
     , mdl : Material.Model
@@ -49,3 +49,9 @@ type alias Holiday =
 
 type alias HarvestTask =
     { id : Int }
+
+
+type alias SpecialTasks =
+    { ignore : List HarvestTask
+    , subtract : List HarvestTask
+    }

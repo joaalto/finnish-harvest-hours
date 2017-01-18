@@ -56,16 +56,25 @@ decodeHolidays =
         )
 
 
-getIgnoredTasks : Task Error (List HarvestTask)
-getIgnoredTasks =
-    Http.get decodeTasks "/ignored_tasks"
+getSpecialTasks : Task Error SpecialTasks
+getSpecialTasks =
+    Http.get decodeTasks "/special_tasks"
 
 
-decodeTasks : Json.Decoder (List HarvestTask)
+decodeTasks : Json.Decoder SpecialTasks
 decodeTasks =
-    list
-        (object1 HarvestTask
-            ("taskId" := int)
+    object2 SpecialTasks
+        ("ignore"
+            := list
+                (object1 HarvestTask
+                    ("taskId" := int)
+                )
+        )
+        ("subtract"
+            := list
+                (object1 HarvestTask
+                    ("taskId" := int)
+                )
         )
 
 

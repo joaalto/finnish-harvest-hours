@@ -26,7 +26,7 @@ init =
         , Update.getUser
         , Update.getEntries
         , Update.getHolidays
-        , Update.getIgnoredTasks
+        , Update.getSpecialTasks
         ]
     )
 
@@ -42,7 +42,10 @@ initialModel =
     , hourBalanceOfCurrentMonth = Nothing
     , user = { firstName = "", lastName = "", previousBalance = 0 }
     , holidays = []
-    , ignoredTasks = []
+    , specialTasks =
+        { ignore = []
+        , subtract = []
+        }
     , previousBalanceString = ""
     , previousBalance = 0
     , mdl = Material.model
