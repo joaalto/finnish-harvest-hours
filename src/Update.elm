@@ -24,7 +24,7 @@ type Msg
     | PreviousMonth
     | NextMonth
     | UpdateHourBalanceOfCurrentMonth
-    | FetchedIgnoredTaskList (Result Http.Error (List HarvestTask))
+    | FetchedSpecialTaskList (Result Http.Error SpecialTasks)
     | SetCurrentTime (Time.Time)
     | UpdatePreviousBalance String
     | SavePreviousBalance Float
@@ -75,7 +75,7 @@ update action model =
                 not
                     (isEmpty model.entries
                         || isEmpty model.holidays
-                        || isEmpty model.ignoredTasks
+                        || isEmpty model.specialTasks.ignore
                     )
             then
                 let
@@ -95,10 +95,10 @@ update action model =
         UpdateHourBalanceOfCurrentMonth ->
             noFx { model | hourBalanceOfCurrentMonth = Just (hourBalanceOfCurrentMonth model) }
 
-        FetchedIgnoredTaskList result ->
+        FetchedSpecialTaskList result ->
             case result of
                 Ok tasks ->
-                    update UpdateHours { model | ignoredTasks = tasks }
+                    update UpdateHours { model | specialTasks = tasks }
 
                 Err error ->
                     handleError model error
@@ -171,6 +171,6 @@ getHolidays =
     getResult Api.getNationalHolidays FetchedHolidays
 
 
-getIgnoredTasks : Cmd Msg
-getIgnoredTasks =
-    getResult Api.getIgnoredTasks FetchedIgnoredTaskList
+getSpecialTasks : Cmd Msg
+getSpecialTasks =
+    getResult Api.getSpecialTasks FetchedSpecialTaskList

@@ -55,14 +55,16 @@ dateInCurrentMonth date currentDate =
 
 hoursForDate : DateEntries -> Model -> List Float
 hoursForDate dateEntries model =
-    List.map (\entry -> entryHours entry model.ignoredTasks)
+    List.map (\entry -> entryHours entry model.specialTasks)
         dateEntries.entries
 
 
-entryHours : Entry -> List HarvestTask -> Float
-entryHours entry ignoredTasks =
-    if List.any (\t -> t.id == entry.taskId) ignoredTasks then
+entryHours : Entry -> SpecialTasks -> Float
+entryHours entry specialTasks =
+    if List.any (\t -> t.id == entry.taskId) specialTasks.ignore then
         0
+    else if List.any (\t -> t.id == entry.taskId) specialTasks.subtract then
+        -entry.hours
     else
         entry.hours
 

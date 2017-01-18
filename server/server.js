@@ -30,7 +30,7 @@ app.use(session({
     })
 }));
 
-const forceSsl = function(req, res, next) {
+const forceSsl = function (req, res, next) {
     if (req.headers['x-forwarded-proto'] !== 'https') {
         return res.redirect(['https://', req.get('Host'), req.url].join(''));
     }
@@ -42,11 +42,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(forceSsl);
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function (user, done) {
     done(null, user);
 });
 
-passport.deserializeUser(function(user, done) {
+passport.deserializeUser(function (user, done) {
     done(null, user);
 });
 
@@ -60,7 +60,7 @@ passport.use(
             callbackURL: process.env.CALLBACK_URL
         },
         // TODO: handle refresh tokens
-        function(accessToken, refreshToken, profile, done) {
+        function (accessToken, refreshToken, profile, done) {
             request
                 .get(`${Api.harvestUrl}/account/who_am_i`)
                 .type('json')
@@ -102,18 +102,18 @@ app.all('*', ensureAuthenticated);
 
 app.use('/', express.static(__dirname + '/static'));
 
-app.get('/user', function(req, res) {
+app.get('/user', function (req, res) {
     if (req.isAuthenticated()) {
         const sessionUser = req.session.passport.user;
         User.findOne(
             { id: sessionUser.id },
             (err, doc) => {
-                if(err) {
+                if (err) {
                     console.error(err);
                 }
 
                 let previousBalance = 0;
-                if(doc && doc.previousBalance) {
+                if (doc && doc.previousBalance) {
                     previousBalance = doc.previousBalance;
                 }
 
@@ -127,28 +127,34 @@ app.get('/user', function(req, res) {
     }
 });
 
-app.get('/holidays', function(req, res) {
+app.get('/holidays', function (req, res) {
     const options = {
         root: __dirname + '/static'
     };
     res.sendFile('finnish_holidays.json', options);
 });
 
-app.get('/entries', function(req, res) {
+app.get('/entries', function (req, res) {
     Api.fetchHourEntries(req, res)
         .then(entries => res.send(entries));
 });
 
-app.get('/ignored_tasks', function(req, res) {
-    res.send(process.env.IGNORE_TASK_IDS
+function idStringToTasks(taskIds) {
+    return taskIds
         .split(',')
         .map(taskId => {
             return { taskId: parseInt(taskId) }
         })
-    );
+}
+
+app.get('/special_tasks', function (req, res) {
+    res.send({
+        ignore: idStringToTasks(process.env.IGNORE_TASK_IDS),
+        subtract: idStringToTasks(process.env.SUBTRACT_TASK_IDS)
+    });
 });
 
-app.post('/balance', function(req, res) {
+app.post('/balance', function (req, res) {
     if (req.isAuthenticated()) {
         const sessionUser = req.session.passport.user;
         upsertUser(sessionUser.id, req.body.balance);
@@ -162,7 +168,7 @@ const upsertUser = (id, balance) => {
         { previousBalance: balance },
         { new: true, upsert: true },
         (err, doc) => {
-            if(err) {
+            if (err) {
                 console.error(err);
             }
         }
@@ -173,6 +179,6 @@ const port = process.env.PORT || 8080;
 app.listen(port);
 console.log('Server listening in port: ' + port);
 
-process.on('uncaughtException', function(error) {
+process.on('uncaughtException', function (error) {
     console.log(error.stack);
 });
