@@ -11,20 +11,15 @@ import Date.Extra.TimeUnit as TimeUnit
 import Model exposing (..)
 
 
-type alias DateHours =
-    { date : Date
-    , hours : Float
-    }
-
-
 enteredHoursVsTotal : Model -> Float
 enteredHoursVsTotal model =
     let
+        dateEntries =
+            List.map (\dateEntries -> dateHours dateEntries model)
+                model.entries
+
         enteredHours =
-            List.sum
-                (List.concatMap (\dateEntries -> hoursForDate dateEntries model)
-                    model.entries
-                )
+            List.sum (List.map .normalHours dateEntries)
     in
         enteredHours - totalHoursForYear model + model.previousBalance
 
@@ -36,11 +31,12 @@ hourBalanceOfCurrentMonth model =
             List.filter (\entry -> dateInCurrentMonth entry.date model.currentDate)
                 model.entries
 
+        dateEntries =
+            List.map (\dateEntries -> dateHours dateEntries model)
+                currentMonthEntries
+
         enteredHours =
-            List.sum
-                (List.concatMap (\dateEntries -> hoursForDate dateEntries model)
-                    currentMonthEntries
-                )
+            List.sum (List.map .normalHours dateEntries)
     in
         enteredHours - (totalHoursForMonth model)
 
@@ -53,18 +49,63 @@ dateInCurrentMonth date currentDate =
         (lastOfMonthDate currentDate)
 
 
-hoursForDate : DateEntries -> Model -> List Float
-hoursForDate dateEntries model =
-    List.map (\entry -> entryHours entry model.specialTasks)
-        dateEntries.entries
+dateHours : DateEntries -> Model -> DateHours
+dateHours dateEntries model =
+    dateHrs (Just dateEntries.entries) model (DateHours dateEntries.date 0 0)
+
+
+dateHrs : Maybe (List Entry) -> Model -> DateHours -> DateHours
+dateHrs entries model dateHourz =
+    case entries of
+        Nothing ->
+            dateHourz
+
+        Just entryList ->
+            let
+                normalHours =
+                    List.sum
+                        (List.map
+                            (\entry ->
+                                if
+                                    List.any (\t -> t.id == entry.taskId)
+                                        (List.append model.specialTasks.kiky model.specialTasks.ignore)
+                                then
+                                    0
+                                else
+                                    entry.hours
+                            )
+                            entryList
+                        )
+
+                kikyHours =
+                    List.sum
+                        (List.map
+                            (\entry ->
+                                if List.any (\t -> t.id == entry.taskId) model.specialTasks.kiky then
+                                    entry.hours
+                                else
+                                    0
+                            )
+                            entryList
+                        )
+
+                dateHours' =
+                    DateHours dateHourz.date
+                        (dateHourz.normalHours + normalHours)
+                        (dateHourz.kikyHours + kikyHours)
+
+                --                    { dateHourz
+                --                        | normalHours = dateHourz.normalHours + normalHours
+                --                        , kikyHours = dateHourz.kikyHours + kikyHours
+                --                    }
+            in
+                dateHrs (List.tail entryList) model dateHours'
 
 
 entryHours : Entry -> SpecialTasks -> Float
 entryHours entry specialTasks =
     if List.any (\t -> t.id == entry.taskId) specialTasks.ignore then
         0
-    else if List.any (\t -> t.id == entry.taskId) specialTasks.subtract then
-        -entry.hours
     else
         entry.hours
 
@@ -182,22 +223,28 @@ dateRange model startDate endDate dateList =
         dateRange model
             (add Period.Hour 3 (add Period.Day 1 (startOfDate startDate)))
             endDate
-            ({ date = startDate, hours = (sumDateHours model startDate) } :: dateList)
+            (sumDateHours model startDate
+                :: dateList
+            )
 
 
 {-| Total entered hours for a date.
 -}
-sumDateHours : Model -> Date -> Float
+sumDateHours : Model -> Date -> DateHours
 sumDateHours model date =
     let
         dateEntries =
-            List.filter (\dateEntries -> isSameDate date dateEntries.date)
-                model.entries
+            List.head
+                (List.filter (\dateEntries -> isSameDate date dateEntries.date)
+                    model.entries
+                )
     in
-        List.sum
-            (List.concatMap (\dateEntries -> hoursForDate dateEntries model)
-                dateEntries
-            )
+        case dateEntries of
+            Nothing ->
+                DateHours date 0 0
+
+            Just entries ->
+                dateHours entries model
 
 
 {-| Day of week of the first day of the month as Int, from 0 (Mon) to 6 (Sun).

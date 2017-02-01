@@ -53,5 +53,12 @@ type alias HarvestTask =
 
 type alias SpecialTasks =
     { ignore : List HarvestTask
-    , subtract : List HarvestTask
+    , kiky : List HarvestTask
+    }
+
+
+type alias DateHours =
+    { date : Date
+    , normalHours : Float
+    , kikyHours : Float
     }

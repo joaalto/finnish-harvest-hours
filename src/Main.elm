@@ -44,7 +44,7 @@ initialModel =
     , holidays = []
     , specialTasks =
         { ignore = []
-        , subtract = []
+        , kiky = []
         }
     , previousBalanceString = ""
     , previousBalance = 0
