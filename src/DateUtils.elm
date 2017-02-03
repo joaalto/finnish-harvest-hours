@@ -21,7 +21,7 @@ enteredHoursVsTotal model =
         enteredHours =
             List.sum (List.map .normalHours dateEntries)
     in
-        enteredHours - totalHoursForYear model + model.previousBalance
+        (Debug.log "hrs" enteredHours) - (Debug.log "total" (totalHoursForYear model + model.previousBalance))
 
 
 hourBalanceOfCurrentMonth : Model -> Float
@@ -51,55 +51,37 @@ dateInCurrentMonth date currentDate =
 
 dateHours : DateEntries -> Model -> DateHours
 dateHours dateEntries model =
-    dateHrs (Just dateEntries.entries) model (DateHours dateEntries.date 0 0)
+    let
+        normalHours =
+            List.sum
+                (List.map
+                    (\entry ->
+                        if
+                            List.any (\t -> t.id == entry.taskId)
+                                (List.append model.specialTasks.kiky model.specialTasks.ignore)
+                        then
+                            0
+                        else
+                            entry.hours
+                    )
+                    dateEntries.entries
+                )
 
-
-dateHrs : Maybe (List Entry) -> Model -> DateHours -> DateHours
-dateHrs entries model dateHourz =
-    case entries of
-        Nothing ->
-            dateHourz
-
-        Just entryList ->
-            let
-                normalHours =
-                    List.sum
-                        (List.map
-                            (\entry ->
-                                if
-                                    List.any (\t -> t.id == entry.taskId)
-                                        (List.append model.specialTasks.kiky model.specialTasks.ignore)
-                                then
-                                    0
-                                else
-                                    entry.hours
-                            )
-                            entryList
-                        )
-
-                kikyHours =
-                    List.sum
-                        (List.map
-                            (\entry ->
-                                if List.any (\t -> t.id == entry.taskId) model.specialTasks.kiky then
-                                    entry.hours
-                                else
-                                    0
-                            )
-                            entryList
-                        )
-
-                dateHours' =
-                    DateHours dateHourz.date
-                        (dateHourz.normalHours + normalHours)
-                        (dateHourz.kikyHours + kikyHours)
-
-                --                    { dateHourz
-                --                        | normalHours = dateHourz.normalHours + normalHours
-                --                        , kikyHours = dateHourz.kikyHours + kikyHours
-                --                    }
-            in
-                dateHrs (List.tail entryList) model dateHours'
+        kikyHours =
+            List.sum
+                (List.map
+                    (\entry ->
+                        if List.any (\t -> t.id == entry.taskId) model.specialTasks.kiky then
+                            entry.hours
+                        else
+                            0
+                    )
+                    dateEntries.entries
+                )
+    in
+        DateHours dateEntries.date
+            normalHours
+            kikyHours
 
 
 entryHours : Entry -> SpecialTasks -> Float
