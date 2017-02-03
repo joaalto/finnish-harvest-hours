@@ -14,14 +14,33 @@ import Model exposing (..)
 enteredHoursVsTotal : Model -> Float
 enteredHoursVsTotal model =
     let
-        dateEntries =
+        dateHourList =
             List.map (\dateEntries -> dateHours dateEntries model)
                 model.entries
 
         enteredHours =
-            List.sum (List.map .normalHours dateEntries)
+            List.foldl plus
+                (NormalHours 0)
+                (List.map .normalHours dateHourList)
     in
-        (Debug.log "hrs" enteredHours) - (Debug.log "total" (totalHoursForYear model + model.previousBalance))
+        (Debug.log "hrs" (hoursToFloat (sumHours dateHourList))) - (Debug.log "total" (totalHoursForYear model + model.previousBalance))
+
+
+sumHours : List DateHours -> NormalHours
+sumHours dateHours =
+    List.foldl plus
+        (NormalHours 0)
+        (List.map .normalHours dateHours)
+
+
+plus : NormalHours -> NormalHours -> NormalHours
+plus (NormalHours a) (NormalHours b) =
+    NormalHours (a + b)
+
+
+hoursToFloat : NormalHours -> Float
+hoursToFloat (NormalHours float) =
+    float
 
 
 hourBalanceOfCurrentMonth : Model -> Float
@@ -31,14 +50,16 @@ hourBalanceOfCurrentMonth model =
             List.filter (\entry -> dateInCurrentMonth entry.date model.currentDate)
                 model.entries
 
-        dateEntries =
+        dateHourList =
             List.map (\dateEntries -> dateHours dateEntries model)
                 currentMonthEntries
 
         enteredHours =
-            List.sum (List.map .normalHours dateEntries)
+            List.foldl plus
+                (NormalHours 0)
+                (List.map .normalHours dateHourList)
     in
-        enteredHours - (totalHoursForMonth model)
+        hoursToFloat enteredHours - (totalHoursForMonth model)
 
 
 dateInCurrentMonth : Date -> Date -> Bool
@@ -62,7 +83,11 @@ dateHours dateEntries model =
                         then
                             0
                         else
-                            entry.hours
+                            let
+                                log =
+                                    Debug.log "entry" entry
+                            in
+                                entry.hours
                     )
                     dateEntries.entries
                 )
@@ -80,8 +105,8 @@ dateHours dateEntries model =
                 )
     in
         DateHours dateEntries.date
-            normalHours
-            kikyHours
+            (NormalHours normalHours)
+            (KikyHours kikyHours)
 
 
 entryHours : Entry -> SpecialTasks -> Float
@@ -223,7 +248,7 @@ sumDateHours model date =
     in
         case dateEntries of
             Nothing ->
-                DateHours date 0 0
+                DateHours date (NormalHours 0) (KikyHours 0)
 
             Just entries ->
                 dateHours entries model

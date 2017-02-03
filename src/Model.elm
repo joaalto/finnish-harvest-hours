@@ -59,6 +59,14 @@ type alias SpecialTasks =
 
 type alias DateHours =
     { date : Date
-    , normalHours : Float
-    , kikyHours : Float
+    , normalHours : NormalHours
+    , kikyHours : KikyHours
     }
+
+
+type NormalHours
+    = NormalHours Float
+
+
+type KikyHours
+    = KikyHours Float
