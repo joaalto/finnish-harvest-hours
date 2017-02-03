@@ -17,13 +17,22 @@ enteredHoursVsTotal model =
         dateHourList =
             List.map (\dateEntries -> dateHours dateEntries model)
                 model.entries
-
-        enteredHours =
-            List.foldl plus
-                (NormalHours 0)
-                (List.map .normalHours dateHourList)
     in
         (hoursToFloat (sumHours dateHourList)) - (totalHoursForYear model) + model.previousBalance
+
+
+hourBalanceOfCurrentMonth : Model -> Float
+hourBalanceOfCurrentMonth model =
+    let
+        currentMonthEntries =
+            List.filter (\entry -> dateInCurrentMonth entry.date model.currentDate)
+                model.entries
+
+        dateHourList =
+            List.map (\dateEntries -> dateHours dateEntries model)
+                currentMonthEntries
+    in
+        (hoursToFloat (sumHours dateHourList)) - (totalHoursForMonth model)
 
 
 sumHours : List DateHours -> NormalHours
@@ -41,25 +50,6 @@ plus (NormalHours a) (NormalHours b) =
 hoursToFloat : NormalHours -> Float
 hoursToFloat (NormalHours float) =
     float
-
-
-hourBalanceOfCurrentMonth : Model -> Float
-hourBalanceOfCurrentMonth model =
-    let
-        currentMonthEntries =
-            List.filter (\entry -> dateInCurrentMonth entry.date model.currentDate)
-                model.entries
-
-        dateHourList =
-            List.map (\dateEntries -> dateHours dateEntries model)
-                currentMonthEntries
-
-        enteredHours =
-            List.foldl plus
-                (NormalHours 0)
-                (List.map .normalHours dateHourList)
-    in
-        hoursToFloat enteredHours - (totalHoursForMonth model)
 
 
 dateInCurrentMonth : Date -> Date -> Bool
