@@ -83,11 +83,7 @@ dateHours dateEntries model =
                         then
                             0
                         else
-                            let
-                                log =
-                                    Debug.log "entry" entry
-                            in
-                                entry.hours
+                            entry.hours
                     )
                     dateEntries.entries
                 )
