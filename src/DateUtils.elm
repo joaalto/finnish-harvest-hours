@@ -23,7 +23,7 @@ enteredHoursVsTotal model =
                 (NormalHours 0)
                 (List.map .normalHours dateHourList)
     in
-        (Debug.log "hrs" (hoursToFloat (sumHours dateHourList))) - (Debug.log "total" (totalHoursForYear model + model.previousBalance))
+        (hoursToFloat (sumHours dateHourList)) - (totalHoursForYear model) + model.previousBalance
 
 
 sumHours : List DateHours -> NormalHours
