@@ -12,6 +12,7 @@ type alias Model =
     , currentDate : Date
     , entries : List DateEntries
     , totalHours : Maybe Float
+    , kikyHours : Maybe Float
     , hourBalanceOfCurrentMonth : Maybe Float
     , user : User
     , holidays : List Holiday
@@ -57,11 +58,20 @@ type alias SpecialTasks =
     }
 
 
-type alias DateHours =
-    { date : Date
-    , normalHours : NormalHours
+type alias Hrs a =
+    { a
+        | hours : Hours
+    }
+
+
+type alias Hours =
+    { normalHours : NormalHours
     , kikyHours : KikyHours
     }
+
+
+type alias DateHours =
+    Hrs { date : Date }
 
 
 type NormalHours
