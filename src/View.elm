@@ -130,7 +130,7 @@ weekRow model dateEntries =
             (\day ->
                 td [ class (dayCellClass model day) ]
                     [ div [] [ text (dateFormat day.date) ]
-                    , div [ class "hours" ] [ text (hourString (hoursToFloat day)) ]
+                    , div [ class "hours" ] [ text (hourString (normalHoursToFloat day)) ]
                     ]
             )
             dateEntries

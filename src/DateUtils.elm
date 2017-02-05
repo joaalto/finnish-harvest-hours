@@ -18,7 +18,7 @@ enteredHoursVsTotal model =
             List.map (\dateEntries -> calculateDailyHours dateEntries model)
                 model.entries
     in
-        (hoursToFloat (sumHours dateHourList)) - (totalHoursForYear model) + model.previousBalance
+        (normalHoursToFloat (sumHours dateHourList)) - (totalHoursForYear model) + model.previousBalance
 
 
 hourBalanceOfCurrentMonth : Model -> Float
@@ -32,7 +32,7 @@ hourBalanceOfCurrentMonth model =
             List.map (\dateEntries -> calculateDailyHours dateEntries model)
                 currentMonthEntries
     in
-        (hoursToFloat (sumHours dateHourList)) - (totalHoursForMonth model)
+        (normalHoursToFloat (sumHours dateHourList)) - (totalHoursForMonth model)
 
 
 sumHours : List (Hrs a) -> Hrs {}
@@ -62,8 +62,8 @@ plusKiky (KikyHours a) (KikyHours b) =
     KikyHours (a + b)
 
 
-hoursToFloat : Hrs h -> Float
-hoursToFloat { hours } =
+normalHoursToFloat : Hrs a -> Float
+normalHoursToFloat { hours } =
     let
         (NormalHours float) =
             hours.normalHours
