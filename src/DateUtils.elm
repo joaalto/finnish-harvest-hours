@@ -35,20 +35,18 @@ hourBalanceOfCurrentMonth model =
         (normalHoursToFloat (sumHours dateHourList)) - (totalHoursForMonth model)
 
 
-sumHours : List (Hrs a) -> Hrs {}
+sumHours : List (Hours a) -> Hours {}
 sumHours dateHours =
     List.foldl addDailyHours
-        { hours = { normalHours = (NormalHours 0), kikyHours = (KikyHours 0) } }
+        { normalHours = (NormalHours 0), kikyHours = (KikyHours 0) }
         dateHours
 
 
-addDailyHours : Hrs a -> Hrs b -> Hrs {}
+addDailyHours : Hours a -> Hours b -> Hours {}
 addDailyHours a b =
-    { hours =
-        { normalHours =
-            (plus a.hours.normalHours b.hours.normalHours)
-        , kikyHours = (plusKiky a.hours.kikyHours b.hours.kikyHours)
-        }
+    { normalHours =
+        (plus a.normalHours b.normalHours)
+    , kikyHours = (plusKiky a.kikyHours b.kikyHours)
     }
 
 
@@ -62,11 +60,11 @@ plusKiky (KikyHours a) (KikyHours b) =
     KikyHours (a + b)
 
 
-normalHoursToFloat : Hrs a -> Float
-normalHoursToFloat { hours } =
+normalHoursToFloat : Hours a -> Float
+normalHoursToFloat { normalHours } =
     let
         (NormalHours float) =
-            hours.normalHours
+            normalHours
     in
         float
 
@@ -110,10 +108,8 @@ calculateDailyHours dateEntries model =
                 )
     in
         { date = dateEntries.date
-        , hours =
-            { normalHours = (NormalHours normalHours)
-            , kikyHours = (KikyHours kikyHours)
-            }
+        , normalHours = (NormalHours normalHours)
+        , kikyHours = (KikyHours kikyHours)
         }
 
 
@@ -257,10 +253,8 @@ sumDateHours model date =
         case dateEntries of
             Nothing ->
                 { date = date
-                , hours =
-                    { normalHours = NormalHours 0
-                    , kikyHours = KikyHours 0
-                    }
+                , normalHours = NormalHours 0
+                , kikyHours = KikyHours 0
                 }
 
             Just entries ->
