@@ -70,7 +70,7 @@ decodeTasks =
                     ("taskId" := int)
                 )
         )
-        ("subtract"
+        ("kiky"
             := list
                 (object1 HarvestTask
                     ("taskId" := int)

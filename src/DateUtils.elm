@@ -11,22 +11,22 @@ import Date.Extra.TimeUnit as TimeUnit
 import Model exposing (..)
 
 
-type alias DateHours =
-    { date : Date
-    , hours : Float
-    }
-
-
-enteredHoursVsTotal : Model -> Float
-enteredHoursVsTotal model =
+calculateHourBalance : Model -> Hours {}
+calculateHourBalance model =
     let
-        enteredHours =
-            List.sum
-                (List.concatMap (\dateEntries -> hoursForDate dateEntries model)
-                    model.entries
-                )
+        dateHourList =
+            List.map (\dateEntries -> calculateDailyHours dateEntries model)
+                model.entries
+
+        totalHours =
+            sumHours dateHourList
+
+        normalHourBalance =
+            .normalHours totalHours
+                - (totalHoursForYear model)
+                + model.previousBalance
     in
-        enteredHours - totalHoursForYear model + model.previousBalance
+        { totalHours | normalHours = normalHourBalance }
 
 
 hourBalanceOfCurrentMonth : Model -> Float
@@ -36,13 +36,26 @@ hourBalanceOfCurrentMonth model =
             List.filter (\entry -> dateInCurrentMonth entry.date model.currentDate)
                 model.entries
 
-        enteredHours =
-            List.sum
-                (List.concatMap (\dateEntries -> hoursForDate dateEntries model)
-                    currentMonthEntries
-                )
+        dateHourList =
+            List.map (\dateEntries -> calculateDailyHours dateEntries model)
+                currentMonthEntries
     in
-        enteredHours - (totalHoursForMonth model)
+        .normalHours (sumHours dateHourList) - (totalHoursForMonth model)
+
+
+sumHours : List (Hours a) -> Hours {}
+sumHours dateHours =
+    List.foldl addDailyHours
+        { normalHours = 0, kikyHours = 0 }
+        dateHours
+
+
+addDailyHours : Hours a -> Hours b -> Hours {}
+addDailyHours a b =
+    { normalHours =
+        (a.normalHours + b.normalHours)
+    , kikyHours = (a.kikyHours + b.kikyHours)
+    }
 
 
 dateInCurrentMonth : Date -> Date -> Bool
@@ -53,18 +66,46 @@ dateInCurrentMonth date currentDate =
         (lastOfMonthDate currentDate)
 
 
-hoursForDate : DateEntries -> Model -> List Float
-hoursForDate dateEntries model =
-    List.map (\entry -> entryHours entry model.specialTasks)
-        dateEntries.entries
+calculateDailyHours : DateEntries -> Model -> DateHours
+calculateDailyHours dateEntries model =
+    let
+        normalHours =
+            List.sum
+                (List.map
+                    (\entry ->
+                        if
+                            List.any (\t -> t.id == entry.taskId)
+                                (List.append model.specialTasks.kiky model.specialTasks.ignore)
+                        then
+                            0
+                        else
+                            entry.hours
+                    )
+                    dateEntries.entries
+                )
+
+        kikyHours =
+            List.sum
+                (List.map
+                    (\entry ->
+                        if List.any (\t -> t.id == entry.taskId) model.specialTasks.kiky then
+                            entry.hours
+                        else
+                            0
+                    )
+                    dateEntries.entries
+                )
+    in
+        { date = dateEntries.date
+        , normalHours = normalHours
+        , kikyHours = kikyHours
+        }
 
 
 entryHours : Entry -> SpecialTasks -> Float
 entryHours entry specialTasks =
     if List.any (\t -> t.id == entry.taskId) specialTasks.ignore then
         0
-    else if List.any (\t -> t.id == entry.taskId) specialTasks.subtract then
-        -entry.hours
     else
         entry.hours
 
@@ -144,67 +185,6 @@ isWeekDay date =
 startOfDate : Date -> Date
 startOfDate date =
     TimeUnit.startOfTime TimeUnit.Day date
-
-
-{-|
-  Set up calendar table data.
--}
-monthView : Model -> List (List DateHours)
-monthView model =
-    weekRows (monthDays model) []
-
-
-weekRows : List DateHours -> List (List DateHours) -> List (List DateHours)
-weekRows entryList result =
-    if (isEmpty entryList) then
-        reverse result
-    else
-        weekRows (drop 7 entryList) ((take 7 entryList) :: result)
-
-
-monthDays : Model -> List DateHours
-monthDays model =
-    dateRange model
-        (add Period.Day -(firstOfMonthDayOfWeek model) (toFirstOfMonth model.currentDate))
-        (lastOfMonthDate model.currentDate)
-        []
-
-
-{-|
-  Build a list of days with sum of entered hours.
-  Set hour at 3 hours past midnight to avoid DST problems.
--}
-dateRange : Model -> Date -> Date -> List DateHours -> List DateHours
-dateRange model startDate endDate dateList =
-    if Compare.is Compare.After startDate endDate then
-        reverse dateList
-    else
-        dateRange model
-            (add Period.Hour 3 (add Period.Day 1 (startOfDate startDate)))
-            endDate
-            ({ date = startDate, hours = (sumDateHours model startDate) } :: dateList)
-
-
-{-| Total entered hours for a date.
--}
-sumDateHours : Model -> Date -> Float
-sumDateHours model date =
-    let
-        dateEntries =
-            List.filter (\dateEntries -> isSameDate date dateEntries.date)
-                model.entries
-    in
-        List.sum
-            (List.concatMap (\dateEntries -> hoursForDate dateEntries model)
-                dateEntries
-            )
-
-
-{-| Day of week of the first day of the month as Int, from 0 (Mon) to 6 (Sun).
--}
-firstOfMonthDayOfWeek : Model -> Int
-firstOfMonthDayOfWeek model =
-    isoDayOfWeek (dayOfWeek (toFirstOfMonth model.currentDate)) - 1
 
 
 dateFormat : Date -> String

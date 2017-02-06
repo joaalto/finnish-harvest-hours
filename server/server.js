@@ -154,7 +154,7 @@ function idStringToTasks(taskIds) {
 app.get('/special_tasks', function (req, res) {
     res.send({
         ignore: idStringToTasks(process.env.IGNORE_TASK_IDS),
-        subtract: idStringToTasks(process.env.SUBTRACT_TASK_IDS)
+        kiky: idStringToTasks(process.env.KIKY_TASK_IDS)
     });
 });
 
