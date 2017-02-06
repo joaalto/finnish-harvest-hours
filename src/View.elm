@@ -39,6 +39,8 @@ view model =
                         [ i [ class "fa settings fa-calendar" ] [] ]
                     , text (String.join " " [ "Tuntisaldo:", (roundHours 2 model.totalHours) ])
                     ]
+                , div [ class "kiky" ]
+                    [ text (String.join " " [ "Kikytunnit:", (roundHours 2 model.kikyHours) ]) ]
                 , navigationPane model
                 , calendarTable model
                 ]
@@ -131,7 +133,7 @@ weekRow model dateEntries =
             (\day ->
                 td [ class (dayCellClass model day) ]
                     [ div [] [ text (dateFormat day.date) ]
-                    , div [ class "hours" ] [ text (hourString (normalHoursToFloat day)) ]
+                    , div [ class "hours" ] [ text (hourString (.normalHours day)) ]
                     ]
             )
             dateEntries

@@ -11,14 +11,22 @@ import Date.Extra.TimeUnit as TimeUnit
 import Model exposing (..)
 
 
-enteredHoursVsTotal : Model -> Float
-enteredHoursVsTotal model =
+calculateHourBalance : Model -> Hours {}
+calculateHourBalance model =
     let
         dateHourList =
             List.map (\dateEntries -> calculateDailyHours dateEntries model)
                 model.entries
+
+        totalHours =
+            sumHours dateHourList
+
+        normalHourBalance =
+            .normalHours totalHours
+                - (totalHoursForYear model)
+                + model.previousBalance
     in
-        (normalHoursToFloat (sumHours dateHourList)) - (totalHoursForYear model) + model.previousBalance
+        { totalHours | normalHours = normalHourBalance }
 
 
 hourBalanceOfCurrentMonth : Model -> Float
@@ -32,41 +40,22 @@ hourBalanceOfCurrentMonth model =
             List.map (\dateEntries -> calculateDailyHours dateEntries model)
                 currentMonthEntries
     in
-        (normalHoursToFloat (sumHours dateHourList)) - (totalHoursForMonth model)
+        .normalHours (sumHours dateHourList) - (totalHoursForMonth model)
 
 
 sumHours : List (Hours a) -> Hours {}
 sumHours dateHours =
     List.foldl addDailyHours
-        { normalHours = (NormalHours 0), kikyHours = (KikyHours 0) }
+        { normalHours = 0, kikyHours = 0 }
         dateHours
 
 
 addDailyHours : Hours a -> Hours b -> Hours {}
 addDailyHours a b =
     { normalHours =
-        (plus a.normalHours b.normalHours)
-    , kikyHours = (plusKiky a.kikyHours b.kikyHours)
+        (a.normalHours + b.normalHours)
+    , kikyHours = (a.kikyHours + b.kikyHours)
     }
-
-
-plus : NormalHours -> NormalHours -> NormalHours
-plus (NormalHours a) (NormalHours b) =
-    NormalHours (a + b)
-
-
-plusKiky : KikyHours -> KikyHours -> KikyHours
-plusKiky (KikyHours a) (KikyHours b) =
-    KikyHours (a + b)
-
-
-normalHoursToFloat : Hours a -> Float
-normalHoursToFloat { normalHours } =
-    let
-        (NormalHours float) =
-            normalHours
-    in
-        float
 
 
 dateInCurrentMonth : Date -> Date -> Bool
@@ -108,8 +97,8 @@ calculateDailyHours dateEntries model =
                 )
     in
         { date = dateEntries.date
-        , normalHours = (NormalHours normalHours)
-        , kikyHours = (KikyHours kikyHours)
+        , normalHours = normalHours
+        , kikyHours = kikyHours
         }
 
 
@@ -196,6 +185,7 @@ isWeekDay date =
 startOfDate : Date -> Date
 startOfDate date =
     TimeUnit.startOfTime TimeUnit.Day date
+
 
 dateFormat : Date -> String
 dateFormat date =

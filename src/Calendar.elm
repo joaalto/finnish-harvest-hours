@@ -64,8 +64,8 @@ sumDateHours model date =
         case dateEntries of
             Nothing ->
                 { date = date
-                , normalHours = NormalHours 0
-                , kikyHours = KikyHours 0
+                , normalHours = 0
+                , kikyHours = 0
                 }
 
             Just entries ->

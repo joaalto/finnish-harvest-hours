@@ -7,7 +7,7 @@ import Task exposing (Task)
 import Http
 import Model exposing (..)
 import Api exposing (getEntries)
-import DateUtils exposing (enteredHoursVsTotal, hourBalanceOfCurrentMonth)
+import DateUtils exposing (calculateHourBalance, hourBalanceOfCurrentMonth)
 import Date.Extra.Duration as Duration
 import Date exposing (fromTime)
 import Basics.Extra exposing (never)
@@ -81,8 +81,15 @@ update action model =
                 let
                     newModel =
                         { model | loading = False }
+
+                    hourBalance =
+                        (Debug.log "hours" (calculateHourBalance model))
                 in
-                    update UpdateHourBalanceOfCurrentMonth { newModel | totalHours = Just (enteredHoursVsTotal model) }
+                    update UpdateHourBalanceOfCurrentMonth
+                        { newModel
+                            | totalHours = Just (hourBalance.normalHours)
+                            , kikyHours = Just (hourBalance.kikyHours)
+                        }
             else
                 noFx model
 
