@@ -5,6 +5,7 @@ const request = require('superagent');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const OAuth2Strategy = require('passport-oauth2');
+const refresh = require('passport-oauth2-refresh');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const mongoose = require('mongoose');
@@ -50,36 +51,38 @@ passport.deserializeUser(function (user, done) {
     done(null, user);
 });
 
-passport.use(
-    'oauth2',
-    new OAuth2Strategy({
-            authorizationURL: `${Api.harvestUrl}/oauth2/authorize`,
-            tokenURL: `${Api.harvestUrl}/oauth2/token`,
-            clientID: process.env.CLIENT_ID,
-            clientSecret: process.env.CLIENT_SECRET,
-            callbackURL: process.env.CALLBACK_URL
-        },
-        // TODO: handle refresh tokens
-        function (accessToken, refreshToken, profile, done) {
-            request
-                .get(`${Api.harvestUrl}/account/who_am_i`)
-                .type('json')
-                .accept('json')
-                .query({
-                    access_token: accessToken
-                })
-                .end((err, res) => {
-                    const harvestUser = res.body.user;
-                    const user = {
-                        id: harvestUser.id,
-                        firstName: harvestUser.first_name,
-                        lastName: harvestUser.last_name,
-                        accessToken: accessToken
-                    };
-                    done(err, user);
-                });
-        }
-    ));
+const oauthStrategy = new OAuth2Strategy({
+        authorizationURL: `${Api.harvestUrl}/oauth2/authorize`,
+        tokenURL: `${Api.harvestUrl}/oauth2/token`,
+        clientID: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
+        callbackURL: process.env.CALLBACK_URL
+    },
+    // TODO: handle refresh tokens
+    function (accessToken, refreshToken, profile, done) {
+        request
+            .get(`${Api.harvestUrl}/account/who_am_i`)
+            .type('json')
+            .accept('json')
+            .query({
+                access_token: accessToken
+            })
+            .end((err, res) => {
+                const harvestUser = res.body.user;
+                const user = {
+                    harvestId: harvestUser.id,
+                    firstName: harvestUser.first_name,
+                    lastName: harvestUser.last_name,
+                    accessToken: accessToken,
+                    refreshToken: refreshToken
+                };
+                done(err, user);
+            });
+    }
+);
+
+passport.use('oauth2', oauthStrategy);
+refresh.use(oauthStrategy);
 
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {

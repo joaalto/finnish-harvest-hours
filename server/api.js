@@ -49,7 +49,7 @@ module.exports = {
     fetchEntries(req, res) {
         return this.get(
             req, res,
-            `/people/${getUser(req).id}/entries?from=${startDate}&to=${endDate}`)
+            `/people/${getUser(req).harvestId}/entries?from=${startDate}&to=${endDate}`)
             .then(entries => {
                 return _.map(entries, row => {
                     return {
