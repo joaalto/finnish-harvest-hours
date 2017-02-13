@@ -12,14 +12,11 @@ const mongoose = require('mongoose');
 const _ = require('lodash');
 const Api = require('./api');
 const User = require('./schema/user');
-
-const mongoUrl =
-    process.env.MONGOLAB_URI ||
-    'mongodb://localhost/saldot';
+const Consts = require('./consts')
 
 const app = express()
 
-mongoose.connect(mongoUrl);
+mongoose.connect(Consts.mongoUrl);
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -27,7 +24,8 @@ app.use(session({
     saveUninitialized: true,
     // cookie: { secure: true },
     store: new MongoStore({
-        url: mongoUrl
+        url: Consts.mongoUrl,
+        stringify: false
     })
 }));
 
