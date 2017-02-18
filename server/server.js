@@ -5,7 +5,6 @@ const request = require('superagent');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const OAuth2Strategy = require('passport-oauth2');
-const refresh = require('passport-oauth2-refresh');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const mongoose = require('mongoose');
@@ -56,7 +55,6 @@ const oauthStrategy = new OAuth2Strategy({
         clientSecret: process.env.CLIENT_SECRET,
         callbackURL: process.env.CALLBACK_URL
     },
-    // TODO: handle refresh tokens
     function (accessToken, refreshToken, profile, done) {
         request
             .get(`${Api.harvestUrl}/account/who_am_i`)
@@ -80,7 +78,6 @@ const oauthStrategy = new OAuth2Strategy({
 );
 
 passport.use('oauth2', oauthStrategy);
-refresh.use(oauthStrategy);
 
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
