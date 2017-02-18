@@ -2,8 +2,7 @@ const _ = require('lodash');
 const Promise = this.Promise || require('promise');
 const agent = require('superagent-promise')(require('superagent'), Promise);
 const Session = require('./schema/session')
-
-const harvestUrl = `https://${process.env.ORGANIZATION}.harvestapp.com`;
+const consts = require('./consts')
 
 function getUser(req) {
     return req.session.passport.user;
@@ -22,7 +21,7 @@ function findAccessToken(req, res, callback, fetchFunction) {
 }
 
 function fetchNewAccessToken(req, res, user, fetchFunction) {
-    return agent.post(harvestUrl + '/oauth2/token')
+    return agent.post(consts.harvestUrl + '/oauth2/token')
         .type('form')
         .accept('json')
         .send({
@@ -74,7 +73,7 @@ const endDate = formatDateForHarvest(new Date());
 
 
 function get(req, res, url, fetchFunction) {
-    return agent.get(harvestUrl + url)
+    return agent.get(consts.harvestUrl + url)
         .type('json')
         .accept('json')
         .query({
@@ -136,8 +135,5 @@ function fetchHourEntries(req, res) {
 
 
 module.exports = {
-    harvestUrl: harvestUrl,
-
     fetchHourEntries: fetchHourEntries
-
 };

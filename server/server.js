@@ -49,15 +49,15 @@ passport.deserializeUser(function (user, done) {
 });
 
 const oauthStrategy = new OAuth2Strategy({
-        authorizationURL: `${api.harvestUrl}/oauth2/authorize`,
-        tokenURL: `${api.harvestUrl}/oauth2/token`,
+        authorizationURL: `${consts.harvestUrl}/oauth2/authorize`,
+        tokenURL: `${consts.harvestUrl}/oauth2/token`,
         clientID: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
         callbackURL: process.env.CALLBACK_URL
     },
     function (accessToken, refreshToken, profile, done) {
         request
-            .get(`${api.harvestUrl}/account/who_am_i`)
+            .get(`${consts.harvestUrl}/account/who_am_i`)
             .type('json')
             .accept('json')
             .query({
