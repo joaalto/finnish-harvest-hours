@@ -137,7 +137,6 @@ app.get('/holidays', function (req, res) {
 
 app.get('/entries', function (req, res) {
     Api.fetchHourEntries(req, res)
-        .then(entries => res.send(entries));
 });
 
 function idStringToTasks(taskIds) {
