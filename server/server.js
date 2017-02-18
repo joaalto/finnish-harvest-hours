@@ -9,13 +9,13 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const mongoose = require('mongoose');
 const _ = require('lodash');
-const Api = require('./api');
+const api = require('./api');
 const User = require('./schema/user');
-const Consts = require('./consts')
+const consts = require('./consts')
 
 const app = express()
 
-mongoose.connect(Consts.mongoUrl);
+mongoose.connect(consts.mongoUrl);
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -23,7 +23,7 @@ app.use(session({
     saveUninitialized: true,
     // cookie: { secure: true },
     store: new MongoStore({
-        url: Consts.mongoUrl,
+        url: consts.mongoUrl,
         stringify: false
     })
 }));
@@ -49,15 +49,15 @@ passport.deserializeUser(function (user, done) {
 });
 
 const oauthStrategy = new OAuth2Strategy({
-        authorizationURL: `${Api.harvestUrl}/oauth2/authorize`,
-        tokenURL: `${Api.harvestUrl}/oauth2/token`,
+        authorizationURL: `${api.harvestUrl}/oauth2/authorize`,
+        tokenURL: `${api.harvestUrl}/oauth2/token`,
         clientID: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
         callbackURL: process.env.CALLBACK_URL
     },
     function (accessToken, refreshToken, profile, done) {
         request
-            .get(`${Api.harvestUrl}/account/who_am_i`)
+            .get(`${api.harvestUrl}/account/who_am_i`)
             .type('json')
             .accept('json')
             .query({
@@ -133,7 +133,7 @@ app.get('/holidays', function (req, res) {
 });
 
 app.get('/entries', function (req, res) {
-    Api.fetchHourEntries(req, res)
+    api.fetchHourEntries(req, res)
 });
 
 function idStringToTasks(taskIds) {
