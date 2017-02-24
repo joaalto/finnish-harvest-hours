@@ -67,5 +67,3 @@ type alias Hours a =
 
 type alias DateHours =
     Hours { date : Date }
-
-

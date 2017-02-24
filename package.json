@@ -2,7 +2,7 @@
   "name": "finnish-harvest-hours",
   "version": "0.0.1",
   "engines": {
-      "node": "6.7.0"
+    "node": "6.7.0"
   },
   "description": "Compare your total logged hours in Harvest with standard Finnish working hours",
   "main": "index.js",
@@ -22,7 +22,7 @@
     "body-parser": "^1.14.2",
     "connect-mongo": "^1.1.0",
     "express": "^4.13.4",
-    "express-session": "^1.13.0",
+    "express-session": "^1.15.0",
     "lodash": "^4.4.0",
     "mongoose": "^4.6.2",
     "passport": "^0.3.2",

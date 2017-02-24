@@ -4,13 +4,13 @@ import Material
 import String
 import List exposing (isEmpty)
 import Task exposing (Task)
-import Http
+import Http exposing (Response)
+import Navigation exposing (load)
 import Model exposing (..)
 import Api exposing (getEntries)
 import DateUtils exposing (calculateHourBalance, hourBalanceOfCurrentMonth)
 import Date.Extra.Duration as Duration
 import Date exposing (fromTime)
-import Basics.Extra exposing (never)
 import Time
 
 
@@ -18,17 +18,18 @@ type Msg
     = Login
     | GetDayEntries
     | EntryList (Result Http.Error (List DateEntries))
-    | FetchedUser (Result Http.Error (User))
+    | FetchedUser (Result Http.Error User)
     | FetchedHolidays (Result Http.Error (List Holiday))
     | UpdateHours
     | PreviousMonth
     | NextMonth
     | UpdateHourBalanceOfCurrentMonth
     | FetchedSpecialTaskList (Result Http.Error SpecialTasks)
-    | SetCurrentTime (Time.Time)
+    | SetCurrentTime Time.Time
     | UpdatePreviousBalance String
     | SavePreviousBalance Float
     | PreviousBalanceSaved (Result Http.Error (List String))
+    | NavigateTo String
     | Mdl (Material.Msg Msg)
 
 
@@ -83,7 +84,7 @@ update action model =
                         { model | loading = False }
 
                     hourBalance =
-                        (Debug.log "hours" (calculateHourBalance model))
+                        calculateHourBalance model
                 in
                     update UpdateHourBalanceOfCurrentMonth
                         { newModel
@@ -119,11 +120,17 @@ update action model =
         SavePreviousBalance balance ->
             ( model, setPreviousBalance balance )
 
-        PreviousBalanceSaved result ->
+        PreviousBalanceSaved (Ok result) ->
             update UpdateHours model
 
-        Mdl action' ->
-            Material.update action' model
+        PreviousBalanceSaved (Err err) ->
+            ( model, Cmd.none )
+
+        NavigateTo url ->
+            ( model, Navigation.load url )
+
+        Mdl action_ ->
+            Material.update Mdl action_ model
 
 
 updatePreviousBalance : Model -> String -> ( Model, Cmd Msg )
@@ -138,12 +145,12 @@ updatePreviousBalance model balance =
 
 setPreviousBalance : Float -> Cmd Msg
 setPreviousBalance balance =
-    getResult (Api.setPreviousBalance balance) PreviousBalanceSaved
+    Http.send PreviousBalanceSaved (Api.setPreviousBalance balance)
 
 
 currentTime : Cmd Msg
 currentTime =
-    Task.perform never SetCurrentTime Time.now
+    Task.perform SetCurrentTime Time.now
 
 
 noFx : Model -> ( Model, Cmd Msg )
@@ -153,31 +160,38 @@ noFx model =
 
 handleError : Model -> Http.Error -> ( Model, Cmd Msg )
 handleError model error =
-    noFx { model | httpError = Err error }
+    case error of
+        Http.BadStatus response ->
+            let
+                newModel =
+                    { model | loading = False }
+            in
+                case response.status.code of
+                    401 ->
+                        update (NavigateTo "/login") newModel
 
+                    _ ->
+                        noFx { newModel | httpError = Err error }
 
-getResult : Task Http.Error a -> (Result Http.Error a -> Msg) -> Cmd Msg
-getResult httpGet action =
-    httpGet
-        |> Task.toResult
-        |> Task.perform never action
+        _ ->
+            noFx { model | httpError = Err error }
 
 
 getEntries : Cmd Msg
 getEntries =
-    getResult Api.getEntries EntryList
+    Http.send EntryList Api.getEntries
 
 
 getUser : Cmd Msg
 getUser =
-    getResult Api.getUser FetchedUser
+    Http.send FetchedUser Api.getUser
 
 
 getHolidays : Cmd Msg
 getHolidays =
-    getResult Api.getNationalHolidays FetchedHolidays
+    Http.send FetchedHolidays Api.getNationalHolidays
 
 
 getSpecialTasks : Cmd Msg
 getSpecialTasks =
-    getResult Api.getSpecialTasks FetchedSpecialTaskList
+    Http.send FetchedSpecialTaskList Api.getSpecialTasks

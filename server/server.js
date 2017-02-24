@@ -9,24 +9,22 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const mongoose = require('mongoose');
 const _ = require('lodash');
-const Api = require('./api');
+const api = require('./api');
 const User = require('./schema/user');
-
-const mongoUrl =
-    process.env.MONGOLAB_URI ||
-    'mongodb://localhost/saldot';
-
+const consts = require('./consts')
 
 const app = express()
 
-mongoose.connect(mongoUrl);
+mongoose.connect(consts.mongoUrl);
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
+    // cookie: { secure: true },
     store: new MongoStore({
-        url: mongoUrl
+        url: consts.mongoUrl,
+        stringify: false
     })
 }));
 
@@ -50,36 +48,36 @@ passport.deserializeUser(function (user, done) {
     done(null, user);
 });
 
-passport.use(
-    'oauth2',
-    new OAuth2Strategy({
-            authorizationURL: `${Api.harvestUrl}/oauth2/authorize`,
-            tokenURL: `${Api.harvestUrl}/oauth2/token`,
-            clientID: process.env.CLIENT_ID,
-            clientSecret: process.env.CLIENT_SECRET,
-            callbackURL: process.env.CALLBACK_URL
-        },
-        // TODO: handle refresh tokens
-        function (accessToken, refreshToken, profile, done) {
-            request
-                .get(`${Api.harvestUrl}/account/who_am_i`)
-                .type('json')
-                .accept('json')
-                .query({
-                    access_token: accessToken
-                })
-                .end((err, res) => {
-                    const harvestUser = res.body.user;
-                    const user = {
-                        id: harvestUser.id,
-                        firstName: harvestUser.first_name,
-                        lastName: harvestUser.last_name,
-                        accessToken: accessToken
-                    };
-                    done(err, user);
-                });
-        }
-    ));
+const oauthStrategy = new OAuth2Strategy({
+        authorizationURL: `${consts.harvestUrl}/oauth2/authorize`,
+        tokenURL: `${consts.harvestUrl}/oauth2/token`,
+        clientID: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
+        callbackURL: process.env.CALLBACK_URL
+    },
+    function (accessToken, refreshToken, profile, done) {
+        request
+            .get(`${consts.harvestUrl}/account/who_am_i`)
+            .type('json')
+            .accept('json')
+            .query({
+                access_token: accessToken
+            })
+            .end((err, res) => {
+                const harvestUser = res.body.user;
+                const user = {
+                    harvestId: harvestUser.id,
+                    firstName: harvestUser.first_name,
+                    lastName: harvestUser.last_name,
+                    accessToken: accessToken,
+                    refreshToken: refreshToken
+                };
+                done(err, user);
+            });
+    }
+);
+
+passport.use('oauth2', oauthStrategy);
 
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
@@ -135,8 +133,7 @@ app.get('/holidays', function (req, res) {
 });
 
 app.get('/entries', function (req, res) {
-    Api.fetchHourEntries(req, res)
-        .then(entries => res.send(entries));
+    api.fetchHourEntries(req, res)
 });
 
 function idStringToTasks(taskIds) {
