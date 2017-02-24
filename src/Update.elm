@@ -11,10 +11,6 @@ import Api exposing (getEntries)
 import DateUtils exposing (calculateHourBalance, hourBalanceOfCurrentMonth)
 import Date.Extra.Duration as Duration
 import Date exposing (fromTime)
-
-
---import Basics.Extra exposing (never)
-
 import Time
 
 

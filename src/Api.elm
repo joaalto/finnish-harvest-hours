@@ -90,14 +90,8 @@ setPreviousBalance balance =
         )
 
 
-
---        (jsonBody ("""{ "balance":""" ++ (toString balance) ++ """}"""))
---httpPost : String -> Http.Body -> Task Error (List String)
-
-
 httpPost : String -> Body -> Request (List String)
 httpPost url body =
-    --    Http.send
     (Http.post url
         body
         (Json.list Json.string)
