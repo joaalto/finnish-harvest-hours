@@ -88,7 +88,7 @@ update action model =
                         { model | loading = False }
 
                     hourBalance =
-                        (Debug.log "hours" (calculateHourBalance model))
+                        calculateHourBalance model
                 in
                     update UpdateHourBalanceOfCurrentMonth
                         { newModel
@@ -167,18 +167,13 @@ handleError model error =
     case error of
         Http.BadStatus response ->
             let
-                ll =
-                    (Debug.log ">>> status" response.status)
-
                 newModel =
                     { model | loading = False }
             in
                 case response.status.code of
                     401 ->
-                        --                        ( newModel, (Cmd.batch [ (newUrl "/login"), (forward 1) ]) )
                         update (NavigateTo "/login") newModel
 
-                    --                        ( model, (Task.perform never NavigateTo "/login") )
                     _ ->
                         noFx { newModel | httpError = Err error }
 
