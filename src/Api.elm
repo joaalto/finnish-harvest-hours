@@ -1,95 +1,104 @@
 module Api exposing (..)
 
-import Http exposing (Error)
+import Http exposing (Request, Body, Error, jsonBody)
 import Json.Decode as Json exposing (..)
-import Json.Encode exposing (encode)
-import Task exposing (Task)
-import Date exposing (Date)
+import Json.Encode as Encode
+import Json.Decode.Extra exposing (date)
 import Model exposing (..)
 
 
-getUser : Task Error User
+getUser : Request User
 getUser =
-    Http.get decodeUser "/user"
+    Http.get "/user" decodeUser
 
 
 decodeUser : Json.Decoder User
 decodeUser =
-    object3 User
-        ("firstName" := string)
-        ("lastName" := string)
-        ("previousBalance" := float)
+    map3 User
+        (field "firstName" string)
+        (field "lastName" string)
+        (field "previousBalance" float)
 
 
-getEntries : Task Error (List DateEntries)
+getEntries : Request (List DateEntries)
 getEntries =
-    Http.get decodeDayEntries "/entries"
+    Http.get "/entries" decodeDayEntries
 
 
 decodeDayEntries : Json.Decoder (List DateEntries)
 decodeDayEntries =
     list
-        (object2 DateEntries
-            ("date" := customDecoder string Date.fromString)
-            ("entries" := list decodeEntry)
+        (map2 DateEntries
+            (field "date" date)
+            (field "entries" (list decodeEntry))
         )
 
 
 decodeEntry : Json.Decoder Entry
 decodeEntry =
-    object2 Entry
-        ("hours" := float)
-        ("taskId" := int)
+    map2 Entry
+        (field "hours" float)
+        (field "taskId" int)
 
 
-getNationalHolidays : Task Error (List Holiday)
+getNationalHolidays : Request (List Holiday)
 getNationalHolidays =
-    Http.get decodeHolidays "/holidays"
+    Http.get "/holidays" decodeHolidays
 
 
 decodeHolidays : Json.Decoder (List Holiday)
 decodeHolidays =
     list
-        (object2 Holiday
-            ("date" := customDecoder string Date.fromString)
-            ("name" := string)
+        (map2 Holiday
+            (field "date" date)
+            (field "name" string)
         )
 
 
-getSpecialTasks : Task Error SpecialTasks
+getSpecialTasks : Request SpecialTasks
 getSpecialTasks =
-    Http.get decodeTasks "/special_tasks"
+    Http.get "/special_tasks" decodeTasks
 
 
 decodeTasks : Json.Decoder SpecialTasks
 decodeTasks =
-    object2 SpecialTasks
-        ("ignore"
-            := list
-                (object1 HarvestTask
-                    ("taskId" := int)
+    map2 SpecialTasks
+        (field "ignore"
+            (list
+                (map HarvestTask
+                    (field "taskId" int)
                 )
+            )
         )
-        ("kiky"
-            := list
-                (object1 HarvestTask
-                    ("taskId" := int)
+        (field "kiky"
+            (list
+                (map HarvestTask
+                    (field "taskId" int)
                 )
+            )
         )
 
 
-setPreviousBalance : Float -> Task Error (List String)
+setPreviousBalance : Float -> Request (List String)
 setPreviousBalance balance =
     httpPost "/balance"
-        (Http.string ("""{ "balance":""" ++ (toString balance) ++ """}"""))
+        (jsonBody
+            (Encode.object
+                [ ( "balance", Encode.float balance )
+                ]
+            )
+        )
 
 
-httpPost : String -> Http.Body -> Task Error (List String)
+
+--        (jsonBody ("""{ "balance":""" ++ (toString balance) ++ """}"""))
+--httpPost : String -> Http.Body -> Task Error (List String)
+
+
+httpPost : String -> Body -> Request (List String)
 httpPost url body =
-    Http.send Http.defaultSettings
-        { verb = "POST"
-        , headers = [ ( "Content-type", "application/json" ) ]
-        , url = url
-        , body = body
-        }
-        |> Http.fromJson (Json.list Json.string)
+    --    Http.send
+    (Http.post url
+        body
+        (Json.list Json.string)
+    )

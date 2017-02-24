@@ -4,11 +4,11 @@ import Material
 import Model exposing (..)
 import Update exposing (Msg, update)
 import View exposing (view)
-import Html.App as Html
+import Html
 import Date exposing (..)
 
 
-main : Program Never
+main : Program Never Model Msg
 main =
     Html.program
         { init = init
