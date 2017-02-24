@@ -5,7 +5,7 @@ import String
 import List exposing (isEmpty)
 import Task exposing (Task)
 import Http exposing (Response)
-import Navigation exposing (newUrl, forward, modifyUrl)
+import Navigation exposing (load)
 import Model exposing (..)
 import Api exposing (getEntries)
 import DateUtils exposing (calculateHourBalance, hourBalanceOfCurrentMonth)
@@ -131,7 +131,7 @@ update action model =
             ( model, Cmd.none )
 
         NavigateTo url ->
-            ( model, newUrl url )
+            ( model, Navigation.load url )
 
         Mdl action_ ->
             Material.update Mdl action_ model
