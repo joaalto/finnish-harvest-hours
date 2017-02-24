@@ -37,11 +37,14 @@ function fetchNewAccessToken(req, res, user, fetchFunction) {
             return fetchFunction(req, res)
         })
         .catch(err => {
-            if (err.response.status === 401) {
-                req.session.destroy();
-                res.redirect('/login');
+            if (_.includes([400, 401], err.response.status)) {
+                req.session.destroy(() => {
+                    res.clearCookie('connect.sid', { path: '/' })
+                    res.status(401).send()
+                })
             }
-            console.error('error:', err.response);
+            console.error('Error status:', err.response.status);
+            console.error('Error:', err.response.body);
         });
 
 }

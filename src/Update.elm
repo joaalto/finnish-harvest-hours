@@ -5,6 +5,7 @@ import String
 import List exposing (isEmpty)
 import Task exposing (Task)
 import Http
+import Navigation exposing (newUrl, forward, modifyUrl)
 import Model exposing (..)
 import Api exposing (getEntries)
 import DateUtils exposing (calculateHourBalance, hourBalanceOfCurrentMonth)
@@ -29,6 +30,7 @@ type Msg
     | UpdatePreviousBalance String
     | SavePreviousBalance Float
     | PreviousBalanceSaved (Result Http.Error (List String))
+    | NavigateTo String
     | Mdl (Material.Msg Msg)
 
 
@@ -122,6 +124,9 @@ update action model =
         PreviousBalanceSaved result ->
             update UpdateHours model
 
+        NavigateTo url ->
+            ( model, newUrl url )
+
         Mdl action' ->
             Material.update action' model
 
@@ -153,7 +158,26 @@ noFx model =
 
 handleError : Model -> Http.Error -> ( Model, Cmd Msg )
 handleError model error =
-    noFx { model | httpError = Err error }
+    case error of
+        Http.BadResponse status message ->
+            let
+                ll =
+                    (Debug.log ">>> status" status)
+
+                newModel =
+                    { model | loading = False }
+            in
+                case status of
+                    401 ->
+                        --                        ( newModel, (Cmd.batch [ (newUrl "/login"), (forward 1) ]) )
+                        update (NavigateTo "/login") newModel
+
+                    --                        ( model, (Task.perform never NavigateTo "/login") )
+                    _ ->
+                        noFx { newModel | httpError = Err error }
+
+        _ ->
+            noFx { model | httpError = Err error }
 
 
 getResult : Task Http.Error a -> (Result Http.Error a -> Msg) -> Cmd Msg
