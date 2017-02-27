@@ -1,6 +1,6 @@
 module Api exposing (..)
 
-import Http exposing (Request, Body, Error, jsonBody)
+import Http exposing (Request, Body, Error, jsonBody, expectString)
 import Json.Decode as Json exposing (..)
 import Json.Encode as Encode
 import Json.Decode.Extra exposing (date)
@@ -79,7 +79,7 @@ decodeTasks =
         )
 
 
-setPreviousBalance : Float -> Request (List String)
+setPreviousBalance : Float -> Request String
 setPreviousBalance balance =
     httpPost "/balance"
         (jsonBody
@@ -90,9 +90,15 @@ setPreviousBalance balance =
         )
 
 
-httpPost : String -> Body -> Request (List String)
+httpPost : String -> Body -> Request String
 httpPost url body =
-    (Http.post url
-        body
-        (Json.list Json.string)
+    (Http.request
+        { method = "POST"
+        , headers = []
+        , url = url
+        , body = body
+        , expect = expectString
+        , timeout = Nothing
+        , withCredentials = False
+        }
     )
