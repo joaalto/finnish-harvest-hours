@@ -104,7 +104,7 @@ app.get('/user', function (req, res) {
     if (req.isAuthenticated()) {
         const sessionUser = req.session.passport.user;
         User.findOne(
-            { id: sessionUser.id },
+            { id: sessionUser.harvestId },
             (err, doc) => {
                 if (err) {
                     console.error(err);
@@ -158,7 +158,7 @@ app.get('/special_tasks', function (req, res) {
 app.post('/balance', function (req, res) {
     if (req.isAuthenticated()) {
         const sessionUser = req.session.passport.user;
-        upsertUser(sessionUser.id, req.body.balance);
+        upsertUser(sessionUser.harvestId, req.body.balance);
     }
     res.send('OK');
 });
