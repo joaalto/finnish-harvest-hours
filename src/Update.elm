@@ -28,7 +28,7 @@ type Msg
     | SetCurrentTime Time.Time
     | UpdatePreviousBalance String
     | SavePreviousBalance Float
-    | PreviousBalanceSaved (Result Http.Error (List String))
+    | PreviousBalanceSaved (Result Http.Error String)
     | NavigateTo String
     | Mdl (Material.Msg Msg)
 
@@ -124,7 +124,11 @@ update action model =
             update UpdateHours model
 
         PreviousBalanceSaved (Err err) ->
-            ( model, Cmd.none )
+            let
+                log =
+                    (Debug.log "Error saving balance:" err)
+            in
+                ( model, Cmd.none )
 
         NavigateTo url ->
             ( model, Navigation.load url )
