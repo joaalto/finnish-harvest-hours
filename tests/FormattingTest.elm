@@ -9,7 +9,7 @@ import Formatting exposing (floatToHoursAndMins)
 all : Test
 all =
     describe "Hour formatting"
-        [ test "Format Int to String with to decimals" <|
+        [ test "Format Int to String with two decimals" <|
             \() ->
                 Round.round 2 5
                     |> Expect.equal "5.00"
