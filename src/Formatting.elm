@@ -25,7 +25,7 @@ floatToHoursAndMins hours =
                             minString =
                                 Result.withDefault 0 (String.toFloat decimalString)
                                     * 0.6
-                                    |> toString
+                                    |> R.round 0
                                     |> String.padRight 2 '0'
                         in
                             String.join ":" [ hourString, minString ]
