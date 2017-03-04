@@ -22,4 +22,7 @@ all =
         , test "Format 0.333" <|
             \() ->
                 floatToHoursAndMins (Just 0.333) |> Expect.equal "0:20"
+        , test "Format 0.21" <|
+            \() ->
+                floatToHoursAndMins (Just 0.21) |> Expect.equal "0:13"
         ]
