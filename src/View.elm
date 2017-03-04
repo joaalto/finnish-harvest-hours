@@ -14,6 +14,7 @@ import Date exposing (..)
 import String
 import Model exposing (..)
 import Update exposing (..)
+import Formatting exposing (floatToHoursAndMins)
 
 
 view : Model -> Html Msg
@@ -37,10 +38,10 @@ view model =
                         , Options.cs "calendar-button"
                         ]
                         [ i [ class "fa settings fa-calendar" ] [] ]
-                    , text (String.join " " [ "Tuntisaldo:", (roundHours 2 model.totalHours) ])
+                    , text (String.join " " [ "Tuntisaldo:", (floatToHoursAndMins model.totalHours) ])
                     ]
                 , div [ class "kiky" ]
-                    [ text (String.join " " [ "Kikytunnit:", (roundHours 2 model.kikyHours) ]) ]
+                    [ text (String.join " " [ "Kikytunnit:", (floatToHoursAndMins model.kikyHours) ]) ]
                 , navigationPane model
                 , calendarTable model
                 ]
@@ -96,7 +97,7 @@ navigationPane model =
             [ text
                 (String.join " "
                     [ "Kuukauden tuntisaldo: "
-                    , roundHours 2 model.hourBalanceOfCurrentMonth
+                    , floatToHoursAndMins model.hourBalanceOfCurrentMonth
                     ]
                 )
             ]
