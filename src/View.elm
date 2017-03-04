@@ -146,7 +146,7 @@ hourString hours =
     if hours == 0 then
         ""
     else
-        Round.round 1 hours
+        floatToHoursAndMins (Just hours)
 
 
 dayCellClass : Model -> DateHours -> String
