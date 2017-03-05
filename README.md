@@ -1,4 +1,4 @@
-# finnish-harvest-hours
+# finnish-harvest-hours [![Build Status](https://travis-ci.org/joaalto/finnish-harvest-hours.svg?branch=master)](https://travis-ci.org/joaalto/finnish-harvest-hours)
 
 In Finland the standard work week is 37.5 hours. In the long term you are supposed to keep your logged hours within a reasonable margin of that standard. This app sums up the total amount of hours you have logged to [Harvest](https://www.getharvest.com/) and compares it to the standard hours, taking any national holidays into account.
 

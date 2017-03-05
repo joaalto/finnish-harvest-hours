@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+  - '6.10.0'
+  - '7.7.1'
+
+cache: 
+  yarn: true,
+  directories:
+    - test/elm-stuff/build-artifacts
+
+before_install:
+  - npm install elm --global

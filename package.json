@@ -9,7 +9,7 @@
   "scripts": {
     "start": "node server/server.js",
     "start:watch": "nodemon --exec 'npm start'",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "elm-test"
   },
   "repository": {
     "type": "git",
@@ -30,5 +30,8 @@
     "promise": "^7.1.1",
     "superagent": "^1.7.2",
     "superagent-promise": "^1.1.0"
+  },
+  "devDependencies": {
+    "elm-test": "^0.18.2"
   }
 }
