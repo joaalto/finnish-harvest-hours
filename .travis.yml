@@ -4,7 +4,9 @@ node_js:
   - '7.7.1'
 
 cache: 
-  yarn: true
+  yarn: true,
+  directories:
+    - test/elm-stuff/build-artifacts
 
 before_install:
   - npm install elm --global
