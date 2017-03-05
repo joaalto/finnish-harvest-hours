@@ -1,6 +1,7 @@
 language: node_js
 node_js:
-  - '6.1.x'
+  - '6.10.0'
+  - '7.7.1'
 
 install:
   - npm install elm --global
