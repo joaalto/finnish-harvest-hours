@@ -4,7 +4,7 @@ import Round as R exposing (round)
 
 
 {-| Take a float and return a string with hours and minutes, eg.
-   4.25 -> "4:15"
+    4.25 -> "4:15"
 -}
 floatToHoursAndMins : Maybe Float -> String
 floatToHoursAndMins hours =
