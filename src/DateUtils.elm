@@ -60,10 +60,10 @@ addDailyHours a b =
 
 dateInCurrentMonth : Date -> Date -> Bool
 dateInCurrentMonth date currentDate =
-    Compare.is3 Compare.BetweenOpenEnd
-        date
-        (lastOfPrevMonthDate currentDate)
-        (lastOfMonthDate currentDate)
+    Compare.is3 Compare.Between
+        (startOfDate date)
+        (endOfDate (lastOfPrevMonthDate currentDate))
+        (startOfDate (firstOfNextMonthDate currentDate))
 
 
 calculateDailyHours : DateEntries -> Model -> DateHours
@@ -185,6 +185,11 @@ isWeekDay date =
 startOfDate : Date -> Date
 startOfDate date =
     TimeUnit.startOfTime TimeUnit.Day date
+
+
+endOfDate : Date -> Date
+endOfDate date =
+    TimeUnit.endOfTime TimeUnit.Day date
 
 
 dateFormat : Date -> String
