@@ -1,5 +1,6 @@
 module Model exposing (..)
 
+import DatePicker
 import Material
 import Date exposing (Date, Month)
 import Http
@@ -19,6 +20,8 @@ type alias Model =
     , specialTasks : SpecialTasks
     , previousBalanceString : String
     , previousBalance : Float
+    , startDate : Maybe Date
+    , datePicker : Maybe DatePicker.DatePicker
     , mdl : Material.Model
     }
 

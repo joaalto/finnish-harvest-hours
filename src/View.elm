@@ -1,5 +1,6 @@
 module View exposing (..)
 
+import DatePicker
 import Material.Dialog as Dialog
 import Material.Button as Button
 import Material.Options as Options

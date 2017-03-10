@@ -27,27 +27,30 @@ init =
         , Update.getEntries
         , Update.getHolidays
         , Update.getSpecialTasks
+        , Update.initDatePicker
         ]
     )
 
 
 initialModel : Model
 initialModel =
-    { httpError = Ok ()
-    , loading = True
-    , today = Date.fromTime 0
-    , currentDate = Date.fromTime 0
-    , entries = []
-    , totalHours = Nothing
-    , kikyHours = Nothing
-    , hourBalanceOfCurrentMonth = Nothing
-    , user = { firstName = "", lastName = "", previousBalance = 0 }
-    , holidays = []
-    , specialTasks =
-        { ignore = []
-        , kiky = []
+        { httpError = Ok ()
+        , loading = True
+        , today = Date.fromTime 0
+        , currentDate = Date.fromTime 0
+        , entries = []
+        , totalHours = Nothing
+        , kikyHours = Nothing
+        , hourBalanceOfCurrentMonth = Nothing
+        , user = { firstName = "", lastName = "", previousBalance = 0 }
+        , holidays = []
+        , specialTasks =
+            { ignore = []
+            , kiky = []
+            }
+        , previousBalanceString = ""
+        , previousBalance = 0
+        , startDate = Nothing
+        , datePicker = Nothing
+        , mdl = Material.model
         }
-    , previousBalanceString = ""
-    , previousBalance = 0
-    , mdl = Material.model
-    }
