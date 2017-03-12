@@ -17,8 +17,11 @@ all =
         [ test "only entries within current month are added up" <|
             \() ->
                 let
-                    model =
-                        { initialModel
+                    ( model, datePickerFx ) =
+                        initialModel
+
+                    newModel =
+                        { model
                             | currentDate = (dateFromFields 2017 Mar 5 0 1 0 0)
                             , today = (dateFromFields 2017 Mar 2 0 1 0 0)
                             , entries =
@@ -33,6 +36,6 @@ all =
                                 ]
                         }
                 in
-                    hourBalanceOfCurrentMonth model
+                    hourBalanceOfCurrentMonth newModel
                         |> Expect.equal 0
         ]
