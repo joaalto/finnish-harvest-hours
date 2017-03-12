@@ -33,7 +33,6 @@ type Msg
     | NavigateTo String
     | Mdl (Material.Msg Msg)
     | ToDatePicker DatePicker.Msg
-    | InitDatePicker
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -139,43 +138,27 @@ update action model =
         Mdl action_ ->
             Material.update Mdl action_ model
 
-        InitDatePicker ->
+        ToDatePicker msg ->
             let
-                ( datePicker, datePickerFx ) =
-                    DatePicker.init defaultSettings
+                log =
+                    (Debug.log "dp" model.datePicker)
+
+                ( newDatePicker, datePickerFx, mDate ) =
+                    DatePicker.update msg model.datePicker
+
+                date =
+                    case mDate of
+                        Nothing ->
+                            model.startDate
+
+                        date ->
+                            date
             in
                 { model
-                    | startDate = Nothing
-                    , datePicker = Just datePicker
+                    | startDate = date
+                    , datePicker = newDatePicker
                 }
                     ! [ Cmd.map ToDatePicker datePickerFx ]
-
-        ToDatePicker msg ->
-            case model.datePicker of
-                Nothing ->
-                    noFx model
-
-                Just datePicker ->
-                    let
-                        log =
-                            (Debug.log "dp" datePicker)
-
-                        ( newDatePicker, datePickerFx, mDate ) =
-                            DatePicker.update msg datePicker
-
-                        date =
-                            case mDate of
-                                Nothing ->
-                                    model.startDate
-
-                                date ->
-                                    date
-                    in
-                        { model
-                            | startDate = date
-                            , datePicker = Just newDatePicker
-                        }
-                            ! [ Cmd.map ToDatePicker datePickerFx ]
 
 
 updatePreviousBalance : Model -> String -> ( Model, Cmd Msg )
@@ -240,16 +223,3 @@ getHolidays =
 getSpecialTasks : Cmd Msg
 getSpecialTasks =
     Http.send FetchedSpecialTaskList Api.getSpecialTasks
-
-
-initDatePicker : Cmd Msg
-initDatePicker =
-    let
-        ( datePicker, datePickerFx ) =
-            DatePicker.init defaultSettings
-    in
-        --        { date = Nothing
-        --        , datePicker = datePicker
-        --        }
-        --            ! [ Cmd.map ToDatePicker datePickerFx ]
-        Cmd.map ToDatePicker datePickerFx

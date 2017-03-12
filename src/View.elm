@@ -70,6 +70,11 @@ dialog model =
                 , value model.previousBalanceString
                 ]
                 []
+            , div []
+                [ DatePicker.view
+                    model.datePicker
+                    |> Html.map ToDatePicker
+                ]
             ]
         , Dialog.actions []
             [ Button.render Mdl

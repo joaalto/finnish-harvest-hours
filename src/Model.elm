@@ -21,7 +21,7 @@ type alias Model =
     , previousBalanceString : String
     , previousBalance : Float
     , startDate : Maybe Date
-    , datePicker : Maybe DatePicker.DatePicker
+    , datePicker : DatePicker.DatePicker
     , mdl : Material.Model
     }
 
