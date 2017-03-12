@@ -8,7 +8,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server/server.js",
-    "start:watch": "nodemon --watch server --exec 'npm start'",
+    "start:watch": "nodemon --watch 'server/**/*.js' server/server.js",
     "test": "elm-test",
     "bundle:css": "lessc styles/main.less server/static/styles/main.css",
     "watch:less": "chokidar --initial 'styles' -c 'yarn bundle:css'"
@@ -36,6 +36,7 @@
   "devDependencies": {
     "chokidar-cli": "^1.2.0",
     "elm-test": "^0.18.2",
-    "less": "^2.7.2"
+    "less": "^2.7.2",
+    "nodemon": "^1.11.0"
   }
 }
