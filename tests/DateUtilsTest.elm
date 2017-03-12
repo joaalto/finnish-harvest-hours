@@ -1,5 +1,6 @@
 module DateUtilsTest exposing (all)
 
+import Init exposing (initialModel)
 import Test exposing (..)
 import Expect
 import Date exposing (Month(..), Date)
@@ -35,25 +36,3 @@ all =
                     hourBalanceOfCurrentMonth model
                         |> Expect.equal 0
         ]
-
-
-initialModel : Model
-initialModel =
-    { httpError = Ok ()
-    , loading = True
-    , today = Date.fromTime 0
-    , currentDate = Date.fromTime 0
-    , entries = []
-    , totalHours = Nothing
-    , kikyHours = Nothing
-    , hourBalanceOfCurrentMonth = Nothing
-    , user = { firstName = "", lastName = "", previousBalance = 0 }
-    , holidays = []
-    , specialTasks =
-        { ignore = []
-        , kiky = []
-        }
-    , previousBalanceString = ""
-    , previousBalance = 0
-    , mdl = Material.model
-    }
