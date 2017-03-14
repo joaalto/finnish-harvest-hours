@@ -115,7 +115,7 @@ spinnerClass model =
 
 calendarTable : Model -> Html Msg
 calendarTable model =
-    table [ class "calendar" ]
+    table [ class "month-view-table" ]
         [ thead []
             [ tr []
                 []
