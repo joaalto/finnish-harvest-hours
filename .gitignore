@@ -6,4 +6,4 @@ heroku_logs
 .env
 tmp
 .idea
-main.css
+*.css
