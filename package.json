@@ -8,7 +8,10 @@
   "main": "index.js",
   "scripts": {
     "start": "node server/server.js",
-    "start:watch": "nodemon --exec 'npm start'",
+    "start:watch": "yarn watch:server & yarn watch:less",
+    "watch:server": "nodemon --watch 'server/**/*.js' server/server.js",
+    "watch:less": "chokidar --initial 'styles' -c 'yarn bundle:css'",
+    "bundle:css": "lessc styles/main.less server/static/styles/main.css",
     "test": "elm-test"
   },
   "repository": {
@@ -32,6 +35,9 @@
     "superagent-promise": "^1.1.0"
   },
   "devDependencies": {
-    "elm-test": "^0.18.2"
+    "chokidar-cli": "^1.2.0",
+    "elm-test": "^0.18.2",
+    "less": "^2.7.2",
+    "nodemon": "^1.11.0"
   }
 }
