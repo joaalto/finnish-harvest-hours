@@ -66,6 +66,12 @@ dateInCurrentMonth date currentDate =
         (startOfDate (firstOfNextMonthDate currentDate))
 
 
+isSpecialTask : Entry -> Model -> Bool
+isSpecialTask entry model =
+    List.any (\t -> t.id == entry.taskId)
+        (List.append model.specialTasks.kiky model.specialTasks.ignore)
+
+
 calculateDailyHours : DateEntries -> Model -> DateHours
 calculateDailyHours dateEntries model =
     let
@@ -73,10 +79,7 @@ calculateDailyHours dateEntries model =
             List.sum
                 (List.map
                     (\entry ->
-                        if
-                            List.any (\t -> t.id == entry.taskId)
-                                (List.append model.specialTasks.kiky model.specialTasks.ignore)
-                        then
+                        if isSpecialTask entry model then
                             0
                         else
                             entry.hours
@@ -156,6 +159,24 @@ workDays startDate endDate holidays days =
             workDays nextDay endDate holidays dayList
 
 
+isSpecialDay : Date -> Model -> Bool
+isSpecialDay date model =
+    List.any
+        (\dateEntries ->
+            isSameDate dateEntries.date date
+                && dayHasOnlySpecialTasks dateEntries model
+        )
+        model.entries
+
+
+dayHasOnlySpecialTasks : DateEntries -> Model -> Bool
+dayHasOnlySpecialTasks dateEntries model =
+    List.foldl
+        (\entry -> \bool -> (isSpecialTask entry model) && bool)
+        True
+        dateEntries.entries
+
+
 isWorkDay : Date -> List Holiday -> Bool
 isWorkDay date holidays =
     isWeekDay date && not (isHoliday date holidays)
@@ -163,11 +184,7 @@ isWorkDay date holidays =
 
 isHoliday : Date -> List Holiday -> Bool
 isHoliday date holidays =
-    List.length
-        (List.filter (\holiday -> isSameDate holiday.date date)
-            holidays
-        )
-        > 0
+    List.any (\holiday -> isSameDate holiday.date date) holidays
 
 
 isSameDate : Date -> Date -> Bool

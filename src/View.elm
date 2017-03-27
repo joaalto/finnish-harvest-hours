@@ -153,6 +153,8 @@ dayCellClass : Model -> DateHours -> String
 dayCellClass model dateHours =
     if not (isWorkDay dateHours.date model.holidays) then
         "day-off"
+    else if isSpecialDay dateHours.date model then
+        "special-day"
     else if month dateHours.date == month model.currentDate then
         "current-month"
     else
