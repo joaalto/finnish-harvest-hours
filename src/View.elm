@@ -127,17 +127,19 @@ calendarTable model =
         ]
 
 
-weekRow : Model -> List DateHours -> Html Msg
-weekRow model dateEntries =
+weekRow : Model -> List DateEntries -> Html Msg
+weekRow model dateList =
     tr []
         (List.map
-            (\day ->
-                td [ class (dayCellClass model day) ]
-                    [ div [] [ text (dateFormat day.date) ]
-                    , div [ class "hours" ] [ text (hourString (.normalHours day)) ]
+            (\dateEntries ->
+                td [ class (dayCellClass model dateEntries) ]
+                    [ div [] [ text (dateFormat dateEntries.date) ]
+                    , div [ class "hours" ]
+                        [ text (hourString (.normalHours (calculateDailyHours dateEntries model)))
+                        ]
                     ]
             )
-            dateEntries
+            dateList
         )
 
 
@@ -149,11 +151,13 @@ hourString hours =
         floatToHoursAndMins (Just hours)
 
 
-dayCellClass : Model -> DateHours -> String
-dayCellClass model dateHours =
-    if not (isWorkDay dateHours.date model.holidays) then
+dayCellClass : Model -> DateEntries -> String
+dayCellClass model dateEntries =
+    if not (isWorkDay dateEntries.date model.holidays) then
         "day-off"
-    else if month dateHours.date == month model.currentDate then
+    else if dayHasOnlySpecialTasks dateEntries model.specialTasks then
+        "special-day"
+    else if month dateEntries.date == month model.currentDate then
         "current-month"
     else
         "other-month"
