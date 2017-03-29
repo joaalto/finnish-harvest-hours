@@ -162,7 +162,7 @@ workDays startDate endDate holidays days =
 dayHasOnlySpecialTasks : DateEntries -> SpecialTasks -> Bool
 dayHasOnlySpecialTasks dateEntries specialTasks =
     List.foldl
-        (\entry -> \bool -> (isSpecialTask entry specialTasks) && bool)
+        (\entry bool -> (isSpecialTask entry specialTasks) && bool)
         (not (List.isEmpty dateEntries.entries))
         dateEntries.entries
 
