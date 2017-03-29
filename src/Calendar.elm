@@ -12,12 +12,12 @@ import DateUtils exposing (..)
 {-|
   Set up calendar table data.
 -}
-monthView : Model -> List (List DateHours)
+monthView : Model -> List (List DateEntries)
 monthView model =
     weekRows (monthDays model) []
 
 
-weekRows : List DateHours -> List (List DateHours) -> List (List DateHours)
+weekRows : List DateEntries -> List (List DateEntries) -> List (List DateEntries)
 weekRows entryList result =
     if (isEmpty entryList) then
         reverse result
@@ -25,7 +25,7 @@ weekRows entryList result =
         weekRows (drop 7 entryList) ((take 7 entryList) :: result)
 
 
-monthDays : Model -> List DateHours
+monthDays : Model -> List DateEntries
 monthDays model =
     dateRange model
         (add Period.Day -(firstOfMonthDayOfWeek model) (toFirstOfMonth model.currentDate))
@@ -37,17 +37,38 @@ monthDays model =
   Build a list of days with sum of entered hours.
   Set hour at 3 hours past midnight to avoid DST problems.
 -}
-dateRange : Model -> Date -> Date -> List DateHours -> List DateHours
+dateRange : Model -> Date -> Date -> List DateEntries -> List DateEntries
 dateRange model startDate endDate dateList =
     if Compare.is Compare.After startDate endDate then
         reverse dateList
     else
-        dateRange model
-            (add Period.Hour 3 (add Period.Day 1 (startOfDate startDate)))
-            endDate
-            (sumDateHours model startDate
-                :: dateList
-            )
+        let
+            mDateEntries =
+                singleDaysEntries model startDate
+
+            dateEntries =
+                case mDateEntries of
+                    Nothing ->
+                        { date = startDate, entries = [] }
+
+                    Just val ->
+                        val
+
+            nextDay =
+                (add Period.Hour 3 (add Period.Day 1 (startOfDate startDate)))
+        in
+            dateRange model
+                nextDay
+                endDate
+                (dateEntries :: dateList)
+
+
+singleDaysEntries : Model -> Date -> Maybe DateEntries
+singleDaysEntries model date =
+    List.head
+        (List.filter (\dateEntries -> isSameDate date dateEntries.date)
+            model.entries
+        )
 
 
 {-| Total entered hours for a date.
