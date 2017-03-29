@@ -66,10 +66,10 @@ dateInCurrentMonth date currentDate =
         (startOfDate (firstOfNextMonthDate currentDate))
 
 
-isSpecialTask : Entry -> Model -> Bool
-isSpecialTask entry model =
+isSpecialTask : Entry -> SpecialTasks -> Bool
+isSpecialTask entry specialTasks =
     List.any (\t -> t.id == entry.taskId)
-        (List.append model.specialTasks.kiky model.specialTasks.ignore)
+        (List.append specialTasks.kiky specialTasks.ignore)
 
 
 calculateDailyHours : DateEntries -> Model -> DateHours
@@ -79,7 +79,7 @@ calculateDailyHours dateEntries model =
             List.sum
                 (List.map
                     (\entry ->
-                        if isSpecialTask entry model then
+                        if isSpecialTask entry model.specialTasks then
                             0
                         else
                             entry.hours
@@ -159,21 +159,11 @@ workDays startDate endDate holidays days =
             workDays nextDay endDate holidays dayList
 
 
-isSpecialDay : Date -> Model -> Bool
-isSpecialDay date model =
-    List.any
-        (\dateEntries ->
-            isSameDate dateEntries.date date
-                && dayHasOnlySpecialTasks dateEntries model
-        )
-        model.entries
-
-
-dayHasOnlySpecialTasks : DateEntries -> Model -> Bool
-dayHasOnlySpecialTasks dateEntries model =
+dayHasOnlySpecialTasks : DateEntries -> SpecialTasks -> Bool
+dayHasOnlySpecialTasks dateEntries specialTasks =
     List.foldl
-        (\entry -> \bool -> (isSpecialTask entry model) && bool)
-        True
+        (\entry -> \bool -> (isSpecialTask entry specialTasks) && bool)
+        (not (List.isEmpty dateEntries.entries))
         dateEntries.entries
 
 

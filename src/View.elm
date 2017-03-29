@@ -155,7 +155,7 @@ dayCellClass : Model -> DateEntries -> String
 dayCellClass model dateEntries =
     if not (isWorkDay dateEntries.date model.holidays) then
         "day-off"
-    else if isSpecialDay dateEntries.date model then
+    else if dayHasOnlySpecialTasks dateEntries model.specialTasks then
         "special-day"
     else if month dateEntries.date == month model.currentDate then
         "current-month"
