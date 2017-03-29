@@ -34,6 +34,48 @@ all =
                 in
                     hourBalanceOfCurrentMonth model
                         |> Expect.equal 0
+        , test "day has only special task entries" <|
+            \() ->
+                let
+                    specialTasks =
+                        { kiky = [ { id = 123 } ]
+                        , ignore = [ { id = 234 } ]
+                        }
+
+                    dateEntries =
+                        DateEntries (dateFromFields 2017 Feb 28 0 0 0 0)
+                            [ Entry 2.5 123, Entry 7 234 ]
+                in
+                    dayHasOnlySpecialTasks dateEntries specialTasks
+                        |> Expect.true "Expected the day to have only special task entries."
+        , test "day has no task entries" <|
+            \() ->
+                let
+                    specialTasks =
+                        { kiky = [ { id = 123 } ]
+                        , ignore = [ { id = 234 } ]
+                        }
+
+                    dateEntries =
+                        DateEntries (dateFromFields 2017 Feb 28 0 0 0 0)
+                            []
+                in
+                    dayHasOnlySpecialTasks dateEntries specialTasks
+                        |> Expect.false "Expected the day to have no special task entries."
+        , test "day has special and normal task entries" <|
+            \() ->
+                let
+                    specialTasks =
+                        { kiky = [ { id = 123 } ]
+                        , ignore = [ { id = 234 } ]
+                        }
+
+                    dateEntries =
+                        DateEntries (dateFromFields 2017 Feb 28 0 0 0 0)
+                            [ Entry 2.5 123, Entry 2.5 234, Entry 2 1000 ]
+                in
+                    dayHasOnlySpecialTasks dateEntries specialTasks
+                        |> Expect.false "Expected the day to have also normal task entries."
         ]
 
 
