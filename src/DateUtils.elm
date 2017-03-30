@@ -15,7 +15,7 @@ calculateHourBalance : Model -> Hours {}
 calculateHourBalance model =
     let
         dateHourList =
-            List.map (\dateEntries -> calculateDailyHours dateEntries model)
+            List.map (\dateEntries -> calculateDailyHours dateEntries model.specialTasks)
                 model.entries
 
         totalHours =
@@ -37,7 +37,7 @@ hourBalanceOfCurrentMonth model =
                 model.entries
 
         dateHourList =
-            List.map (\dateEntries -> calculateDailyHours dateEntries model)
+            List.map (\dateEntries -> calculateDailyHours dateEntries model.specialTasks)
                 currentMonthEntries
     in
         .normalHours (sumHours dateHourList) - (totalHoursForMonth model)
@@ -72,14 +72,14 @@ isSpecialTask entry specialTasks =
         (List.append specialTasks.kiky specialTasks.ignore)
 
 
-calculateDailyHours : DateEntries -> Model -> DateHours
-calculateDailyHours dateEntries model =
+calculateDailyHours : DateEntries -> SpecialTasks -> DateHours
+calculateDailyHours dateEntries specialTasks =
     let
         normalHours =
             List.sum
                 (List.map
                     (\entry ->
-                        if isSpecialTask entry model.specialTasks then
+                        if isSpecialTask entry specialTasks then
                             0
                         else
                             entry.hours
@@ -91,7 +91,7 @@ calculateDailyHours dateEntries model =
             List.sum
                 (List.map
                     (\entry ->
-                        if List.any (\t -> t.id == entry.taskId) model.specialTasks.kiky then
+                        if List.any (\t -> t.id == entry.taskId) specialTasks.kiky then
                             entry.hours
                         else
                             0

@@ -135,7 +135,7 @@ weekRow model dateList =
                 td [ class (dayCellClass model dateEntries) ]
                     [ div [] [ text (dateFormat dateEntries.date) ]
                     , div [ class "hours" ]
-                        [ text (hourString (.normalHours (calculateDailyHours dateEntries model)))
+                        [ text (hourString (.normalHours (calculateDailyHours dateEntries model.specialTasks)))
                         ]
                     ]
             )
