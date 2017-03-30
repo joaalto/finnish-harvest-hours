@@ -105,14 +105,6 @@ calculateDailyHours dateEntries model =
         }
 
 
-entryHours : Entry -> SpecialTasks -> Float
-entryHours entry specialTasks =
-    if List.any (\t -> t.id == entry.taskId) specialTasks.ignore then
-        0
-    else
-        entry.hours
-
-
 totalHoursForMonth : Model -> Float
 totalHoursForMonth model =
     let
