@@ -8,7 +8,7 @@ import Http exposing (Response)
 import Navigation exposing (load)
 import Model exposing (..)
 import Api exposing (getEntries)
-import DateUtils exposing (calculateHourBalance, hourBalanceOfCurrentMonth)
+import DateUtils exposing (calculateHourBalance, hourBalanceOfCurrentMonth, startOfDate)
 import Date.Extra.Duration as Duration
 import Date exposing (fromTime)
 import Time
@@ -112,7 +112,11 @@ update action model =
                     handleError model error
 
         SetCurrentTime currentTime ->
-            noFx { model | currentDate = Date.fromTime currentTime, today = Date.fromTime currentTime }
+            noFx
+                { model
+                    | currentDate = startOfDate (Date.fromTime currentTime)
+                    , today = startOfDate (Date.fromTime currentTime)
+                }
 
         UpdatePreviousBalance balance ->
             updatePreviousBalance model balance
