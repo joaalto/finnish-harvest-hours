@@ -73,14 +73,13 @@ function formatDateForHarvest(date) {
 };
 
 const startDate = process.env.START_DATE;
-const endDate = formatDateForHarvest(new Date());
 
-const yearRange = _.range(
+const yearRange = () => _.range(
     startDate.substr(0, 4),
     new Date().getFullYear() + 1)
 
 const finnishHolidays = () =>
-    _.flatMap(yearRange, year => holidays.year(year))
+    _.flatMap(yearRange(), year => holidays.year(year))
         .map(h => ({
             date: `${h.year}-${padWithZero(h.month)}-${padWithZero(h.day)}`,
             name: h.description
@@ -127,7 +126,7 @@ function dayEntries(entries) {
 function fetchEntries(req, res) {
     return get(
         req, res,
-        `/people/${getUser(req).harvestId}/entries?from=${startDate}&to=${endDate}`,
+        `/people/${getUser(req).harvestId}/entries?from=${startDate}&to=${formatDateForHarvest(new Date())}`,
         fetchHourEntries)
         .then(entries => {
             return _.map(entries, row => {
