@@ -126,10 +126,7 @@ app.get('/user', function (req, res) {
 });
 
 app.get('/holidays', function (req, res) {
-    const options = {
-        root: __dirname + '/static'
-    };
-    res.sendFile('finnish_holidays.json', options);
+    res.send(api.finnishHolidays())
 });
 
 app.get('/entries', function (req, res) {

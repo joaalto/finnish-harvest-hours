@@ -567,6 +567,10 @@ find-up@^1.1.2:
     path-exists "^2.0.0"
     pinkie-promise "^2.0.0"
 
+finnish-holidays-js@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/finnish-holidays-js/-/finnish-holidays-js-1.1.0.tgz#96cecbd35963e62cd47cfea847bdf4a9ce61f4c4"
+
 firstline@^1.2.0:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/firstline/-/firstline-1.2.1.tgz#b88673c42009f8821fac2926e99720acee924fae"
