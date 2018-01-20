@@ -91,7 +91,10 @@ calculateDailyHours dateEntries model =
             List.sum
                 (List.map
                     (\entry ->
-                        if List.any (\t -> t.id == entry.taskId) model.specialTasks.kiky then
+                        if
+                            (year (dateEntries.date) == year (model.currentDate))
+                                && List.any (\t -> t.id == entry.taskId) model.specialTasks.kiky
+                        then
                             entry.hours
                         else
                             0
