@@ -2,7 +2,7 @@
   "name": "finnish-harvest-hours",
   "version": "0.0.1",
   "engines": {
-    "node": "9"
+    "node": "8"
   },
   "description": "Compare your total logged hours in Harvest with standard Finnish working hours",
   "main": "index.js",
