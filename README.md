@@ -20,7 +20,7 @@ In Finland the standard work week is 37.5 hours. In the long term you are suppos
     - `CLIENT_SECRET`: Harvest API client secret
     - `CALLBACK_URL`: Harvest API redirect URI, for local development this should be: https://localhost:5001/auth/callback
     - `ORGANIZATION`: Your organization name in Harvest
-    - `IGNORE_TASK_IDS`: A comma-separated list of any Harvest task IDs you want to exclude from the total amount
+    - `IGNORE_TASK_IDS`: A comma-separated list of any Harvest task IDs you want to exclude from the total amount (For example: Balance Leave, Bank holidays and unpaid leave)
     - `KIKY_TASK_IDS`: A comma-separated list of special KiKy task ids
     - `START_DATE`: Hour entries are calculated starting from this date. In `YYYYMMDD` format.
 

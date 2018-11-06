@@ -1,2 +1,2 @@
 web: npm run start:watch
-mongo: mongod --config /usr/local/etc/mongod.conf
+mongo: docker run --rm -p 27017:27017 --name saldot-mongo mongo

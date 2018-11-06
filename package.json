@@ -8,11 +8,12 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run bundle:css && node server/server.js",
-    "start:watch": "yarn watch:server & yarn watch:less",
     "watch:server": "nodemon --watch 'server/**/*.js' server/server.js",
     "watch:less": "chokidar --initial 'styles' -c 'yarn bundle:css'",
     "bundle:css": "lessc styles/main.less server/static/styles/main.css",
-    "test": "elm-test"
+    "test": "elm-test",
+    "start:watch": "yarn watch:elm & yarn watch:server & yarn watch:less",
+    "watch:elm": "chokidar --initial 'src/*.elm' -c './make.sh'",
   },
   "repository": {
     "type": "git",
