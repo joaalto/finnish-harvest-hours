@@ -7,12 +7,16 @@ node_js:
   - 'node'
 
 cache:
+  yarn: true
   directories:
     - tests/elm-stuff/build-artifacts
     - sysconfcpus
-    - $HOME/.cache/yarn
 
 before_install:
+  - if [ ${TRAVIS_OS_NAME} == "osx" ];
+    then brew update; brew install nvm; mkdir ~/.nvm; export NVM_DIR=~/.nvm; source $(brew --prefix nvm)/nvm.sh;
+    fi
+  - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
   - | # epic build time improvement - see https://github.com/elm-lang/elm-compiler/issues/1473#issuecomment-245704142
     if [ ! -d sysconfcpus/bin ];
     then
@@ -24,13 +28,12 @@ before_install:
     fi
 
 install:
-  - node --version
-  - npm --version
-  - npm install -g elm@latest
+  - npm install -g elm@elm0.19.0 elm-format@elm0.19.0
   - mv $(npm config get prefix)/bin/elm-make $(npm config get prefix)/bin/elm-make-old
-  - printf "#\041/bin/bash\n\necho \"Running elm-make with sysconfcpus -n 2\"\n\n$TRAVIS_BUILD_DIR/sysconfcpus/bin/sysconfcpus -n 2 elm-make-old \"\$@\"" > $(npm config get prefix)/bin/elm-make
-  - chmod +x $(npm config get prefix)/bin/elm-make
-  - yarn install
+  - printf '%s\n\n' '#!/bin/bash' 'echo "Running elm make with sysconfcpus -n 2"' '$TRAVIS_BUILD_DIR/sysconfcpus/bin/sysconfcpus -n 2 elm-make-old "$@"' > $(npm config get prefix)/bin/elm-make
+  - chmod +x $(npm config get prefix)/bin/elm
 
 script:
+  - elm-format --validate src # tests examples readme-example
+  - elm make --output=/dev/null
   - yarn test
