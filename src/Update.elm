@@ -1,36 +1,16 @@
-module Update exposing (..)
+module Update exposing (currentTime, getEntries, getHolidays, getSpecialTasks, getUser, handleError, noFx, setPreviousBalance, update, updatePreviousBalance)
 
-import Material
-import String
-import List exposing (isEmpty)
-import Task exposing (Task)
-import Http exposing (Response)
-import Navigation exposing (load)
-import Model exposing (..)
 import Api exposing (getEntries)
+import Browser.Navigation exposing (load)
+import Date exposing (Unit(..), add, today)
 import DateUtils exposing (calculateHourBalance, hourBalanceOfCurrentMonth)
-import Date.Extra.Duration as Duration
-import Date exposing (fromTime)
+import Http exposing (Response)
+import List exposing (isEmpty)
+import Material
+import Model exposing (..)
+import String
+import Task exposing (Task)
 import Time
-
-
-type Msg
-    = Login
-    | GetDayEntries
-    | EntryList (Result Http.Error (List DateEntries))
-    | FetchedUser (Result Http.Error User)
-    | FetchedHolidays (Result Http.Error (List Holiday))
-    | UpdateHours
-    | PreviousMonth
-    | NextMonth
-    | UpdateHourBalanceOfCurrentMonth
-    | FetchedSpecialTaskList (Result Http.Error SpecialTasks)
-    | SetCurrentTime Time.Time
-    | UpdatePreviousBalance String
-    | SavePreviousBalance Float
-    | PreviousBalanceSaved (Result Http.Error String)
-    | NavigateTo String
-    | Mdl (Material.Msg Msg)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -56,7 +36,7 @@ update action model =
                     update UpdateHours
                         { model
                             | user = user
-                            , previousBalanceString = toString user.previousBalance
+                            , previousBalanceString = String.fromFloat user.previousBalance
                             , previousBalance = user.previousBalance
                         }
 
@@ -86,19 +66,20 @@ update action model =
                     hourBalance =
                         calculateHourBalance model
                 in
-                    update UpdateHourBalanceOfCurrentMonth
-                        { newModel
-                            | totalHours = Just (hourBalance.normalHours)
-                            , kikyHours = Just (hourBalance.kikyHours)
-                        }
+                update UpdateHourBalanceOfCurrentMonth
+                    { newModel
+                        | totalHours = Just hourBalance.normalHours
+                        , kikyHours = Just hourBalance.kikyHours
+                    }
+
             else
                 noFx model
 
         PreviousMonth ->
-            update UpdateHourBalanceOfCurrentMonth { model | currentDate = Duration.add Duration.Month -1 model.currentDate }
+            update UpdateHourBalanceOfCurrentMonth { model | currentDate = add Months -1 model.currentDate }
 
         NextMonth ->
-            update UpdateHourBalanceOfCurrentMonth { model | currentDate = Duration.add Duration.Month 1 model.currentDate }
+            update UpdateHourBalanceOfCurrentMonth { model | currentDate = add Months 1 model.currentDate }
 
         UpdateHourBalanceOfCurrentMonth ->
             noFx { model | hourBalanceOfCurrentMonth = Just (hourBalanceOfCurrentMonth model) }
@@ -111,8 +92,8 @@ update action model =
                 Err error ->
                     handleError model error
 
-        SetCurrentTime currentTime ->
-            noFx { model | currentDate = Date.fromTime currentTime, today = Date.fromTime currentTime }
+        SetCurrentTime today ->
+            noFx { model | currentDate = today, today = today }
 
         UpdatePreviousBalance balance ->
             updatePreviousBalance model balance
@@ -126,24 +107,31 @@ update action model =
         PreviousBalanceSaved (Err err) ->
             let
                 log =
-                    (Debug.log "Error saving balance:" err)
+                    Debug.log "Error saving balance:" err
             in
-                ( model, Cmd.none )
+            noFx model
 
         NavigateTo url ->
-            ( model, Navigation.load url )
+            ( model, load url )
 
-        Mdl action_ ->
-            Material.update Mdl action_ model
+        Mdc action_ ->
+            Material.update Mdc action_ model
+
+        Cancel ->
+            noFx { model | showDialog = False }
+
+        ShowDialog ->
+            noFx { model | showDialog = True }
+
 
 
 updatePreviousBalance : Model -> String -> ( Model, Cmd Msg )
 updatePreviousBalance model balance =
     case String.toFloat balance of
-        Err error ->
+        Nothing ->
             noFx { model | previousBalanceString = balance }
 
-        Ok value ->
+        Just value ->
             noFx { model | previousBalance = value, previousBalanceString = balance }
 
 
@@ -154,7 +142,7 @@ setPreviousBalance balance =
 
 currentTime : Cmd Msg
 currentTime =
-    Task.perform SetCurrentTime Time.now
+    Date.today |> Task.perform SetCurrentTime
 
 
 noFx : Model -> ( Model, Cmd Msg )
@@ -170,12 +158,12 @@ handleError model error =
                 newModel =
                     { model | loading = False }
             in
-                case response.status.code of
-                    401 ->
-                        update (NavigateTo "/login") newModel
+            case response.status.code of
+                401 ->
+                    update (NavigateTo "/login") newModel
 
-                    _ ->
-                        noFx { newModel | httpError = Err error }
+                _ ->
+                    noFx { newModel | httpError = Err error }
 
         _ ->
             noFx { model | httpError = Err error }

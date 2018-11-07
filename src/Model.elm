@@ -1,8 +1,30 @@
-module Model exposing (..)
+module Model exposing (DateEntries, DateHours, Entry, HarvestTask, Holiday, Hours, Model, Msg(..), SpecialTasks, User)
 
-import Material
+import Browser
 import Date exposing (Date, Month)
 import Http
+import Material
+
+
+type Msg
+    = Login
+    | GetDayEntries
+    | EntryList (Result Http.Error (List DateEntries))
+    | FetchedUser (Result Http.Error User)
+    | FetchedHolidays (Result Http.Error (List Holiday))
+    | UpdateHours
+    | PreviousMonth
+    | NextMonth
+    | UpdateHourBalanceOfCurrentMonth
+    | FetchedSpecialTaskList (Result Http.Error SpecialTasks)
+    | SetCurrentTime Date
+    | UpdatePreviousBalance String
+    | SavePreviousBalance Float
+    | PreviousBalanceSaved (Result Http.Error String)
+    | NavigateTo String
+    | Mdc (Material.Msg Msg)
+    | ShowDialog
+    | Cancel
 
 
 type alias Model =
@@ -19,7 +41,8 @@ type alias Model =
     , specialTasks : SpecialTasks
     , previousBalanceString : String
     , previousBalance : Float
-    , mdl : Material.Model
+    , mdc : Material.Model Msg
+    , showDialog : Bool
     }
 
 

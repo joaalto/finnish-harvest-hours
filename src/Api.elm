@@ -1,10 +1,19 @@
-module Api exposing (..)
+module Api exposing (decodeDayEntries, decodeEntry, decodeHolidays, decodeTasks, decodeUser, getEntries, getNationalHolidays, getSpecialTasks, getUser, httpPost, setPreviousBalance)
 
-import Http exposing (Request, Body, Error, jsonBody, expectString)
+import Date exposing (fromIsoString, Date, fromCalendarDate)
+import Time exposing (Month(..))
+import Http exposing (Body, Error, Request, expectString, jsonBody)
 import Json.Decode as Json exposing (..)
 import Json.Encode as Encode
-import Json.Decode.Extra exposing (date)
 import Model exposing (..)
+
+date : Json.Decoder Date
+date =
+    Json.andThen
+        (\dateString ->
+            Json.succeed <| Result.withDefault (fromCalendarDate 1970 Jan 1) <| fromIsoString dateString
+        )
+        string
 
 
 getUser : Request User
@@ -92,7 +101,7 @@ setPreviousBalance balance =
 
 httpPost : String -> Body -> Request String
 httpPost url body =
-    (Http.request
+    Http.request
         { method = "POST"
         , headers = []
         , url = url
@@ -101,4 +110,3 @@ httpPost url body =
         , timeout = Nothing
         , withCredentials = False
         }
-    )

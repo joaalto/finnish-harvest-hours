@@ -1,13 +1,8 @@
-module DateUtils exposing (..)
+module DateUtils exposing (addDailyHours, calculateDailyHours, calculateHourBalance, dateFormat, dateInCurrentMonth, dayHasOnlySpecialTasks, entryHours, hourBalanceOfCurrentMonth, isHoliday, isSameDate, isSpecialTask, isWeekDay, isWorkDay, sumHours, totalDaysForYear, totalHoursForMonth, totalHoursForYear, workDays, lastOfMonthDate, firstOfMonthDate, isStartAfterEnd)
 
-import List exposing (head, isEmpty, reverse, drop, take)
 import Date exposing (..)
-import Date.Extra.Core exposing (..)
-import Date.Extra.Period as Period exposing (add, diff)
-import Date.Extra.Compare as Compare exposing (is, Compare2, Compare3)
-import Date.Extra.Format exposing (format)
-import Date.Extra.Config.Configs as DateConfigs
-import Date.Extra.TimeUnit as TimeUnit
+import Time exposing (Month(..), Weekday(..))
+import List exposing (drop, head, isEmpty, reverse, take)
 import Model exposing (..)
 
 
@@ -23,10 +18,10 @@ calculateHourBalance model =
 
         normalHourBalance =
             .normalHours totalHours
-                - (totalHoursForYear model)
+                - totalHoursForYear model
                 + model.previousBalance
     in
-        { totalHours | normalHours = normalHourBalance }
+    { totalHours | normalHours = normalHourBalance }
 
 
 hourBalanceOfCurrentMonth : Model -> Float
@@ -40,7 +35,7 @@ hourBalanceOfCurrentMonth model =
             List.map (\dateEntries -> calculateDailyHours dateEntries model)
                 currentMonthEntries
     in
-        .normalHours (sumHours dateHourList) - (totalHoursForMonth model)
+    .normalHours (sumHours dateHourList) - totalHoursForMonth model
 
 
 sumHours : List (Hours a) -> Hours {}
@@ -53,17 +48,17 @@ sumHours dateHours =
 addDailyHours : Hours a -> Hours b -> Hours {}
 addDailyHours a b =
     { normalHours =
-        (a.normalHours + b.normalHours)
-    , kikyHours = (a.kikyHours + b.kikyHours)
+        a.normalHours + b.normalHours
+    , kikyHours = a.kikyHours + b.kikyHours
     }
 
 
 dateInCurrentMonth : Date -> Date -> Bool
 dateInCurrentMonth date currentDate =
-    Compare.is3 Compare.Between
-        (startOfDate date)
-        (endOfDate (lastOfPrevMonthDate currentDate))
-        (startOfDate (firstOfNextMonthDate currentDate))
+    isBetween
+        (firstOfMonthDate currentDate)
+        (lastOfMonthDate currentDate)
+        date
 
 
 isSpecialTask : Entry -> SpecialTasks -> Bool
@@ -81,6 +76,7 @@ calculateDailyHours dateEntries model =
                     (\entry ->
                         if isSpecialTask entry model.specialTasks then
                             0
+
                         else
                             entry.hours
                     )
@@ -92,29 +88,38 @@ calculateDailyHours dateEntries model =
                 (List.map
                     (\entry ->
                         if
-                            (year (dateEntries.date) == year (model.currentDate))
+                            (year dateEntries.date == year model.currentDate)
                                 && List.any (\t -> t.id == entry.taskId) model.specialTasks.kiky
                         then
                             entry.hours
+
                         else
                             0
                     )
                     dateEntries.entries
                 )
     in
-        { date = dateEntries.date
-        , normalHours = normalHours
-        , kikyHours = kikyHours
-        }
+    { date = dateEntries.date
+    , normalHours = normalHours
+    , kikyHours = kikyHours
+    }
 
 
 entryHours : Entry -> SpecialTasks -> Float
 entryHours entry specialTasks =
     if List.any (\t -> t.id == entry.taskId) specialTasks.ignore then
         0
+
     else
         entry.hours
 
+lastOfMonthDate : Date -> Date
+lastOfMonthDate date =
+    (add Days -1 (add Months 1 (fromCalendarDate (year date) (month date) 1)))
+
+firstOfMonthDate : Date -> Date
+firstOfMonthDate date =
+    fromCalendarDate (year date) (month date) 1
 
 totalHoursForMonth : Model -> Float
 totalHoursForMonth model =
@@ -122,13 +127,14 @@ totalHoursForMonth model =
         endDate =
             if dateInCurrentMonth model.currentDate model.today then
                 model.today
+
             else
                 lastOfMonthDate model.currentDate
 
         dayList =
-            workDays (toFirstOfMonth model.currentDate) endDate model.holidays []
+            workDays (firstOfMonthDate model.currentDate) endDate model.holidays []
     in
-        toFloat (List.length dayList) * 7.5
+    toFloat (List.length dayList) * 7.5
 
 
 totalHoursForYear : Model -> Float
@@ -143,29 +149,34 @@ totalDaysForYear model =
         |> Maybe.map (\entry -> workDays entry.date model.today model.holidays [])
         |> Maybe.withDefault []
 
+isStartAfterEnd : Date -> Date -> Bool
+isStartAfterEnd startDate endDate =
+    (Date.compare startDate endDate) == GT
 
 workDays : Date -> Date -> List Holiday -> List Date -> List Date
 workDays startDate endDate holidays days =
-    if Compare.is Compare.After startDate endDate then
+    if isStartAfterEnd startDate endDate then
         days
+
     else
         let
             nextDay =
-                add Period.Day 1 startDate
+                add Days 1 startDate
 
             dayList =
                 if isWorkDay startDate holidays then
                     startDate :: days
+
                 else
                     days
         in
-            workDays nextDay endDate holidays dayList
+        workDays nextDay endDate holidays dayList
 
 
 dayHasOnlySpecialTasks : DateEntries -> SpecialTasks -> Bool
 dayHasOnlySpecialTasks dateEntries specialTasks =
     List.foldl
-        (\entry bool -> (isSpecialTask entry specialTasks) && bool)
+        (\entry bool -> isSpecialTask entry specialTasks && bool)
         (not (List.isEmpty dateEntries.entries))
         dateEntries.entries
 
@@ -182,26 +193,14 @@ isHoliday date holidays =
 
 isSameDate : Date -> Date -> Bool
 isSameDate date1 date2 =
-    is Compare.Same
-        (startOfDate date1)
-        (startOfDate date2)
+    (Date.compare date1 date2) == EQ
 
 
 isWeekDay : Date -> Bool
 isWeekDay date =
-    not (List.member (dayOfWeek date) [ Sat, Sun ])
-
-
-startOfDate : Date -> Date
-startOfDate date =
-    TimeUnit.startOfTime TimeUnit.Day date
-
-
-endOfDate : Date -> Date
-endOfDate date =
-    TimeUnit.endOfTime TimeUnit.Day date
+    not (List.member (weekday date) [ Sat, Sun ])
 
 
 dateFormat : Date -> String
 dateFormat date =
-    format (DateConfigs.getConfig "en_us") "%d.%m." date
+    format "dd.MM." date

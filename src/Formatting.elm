@@ -4,7 +4,7 @@ import Round as R exposing (round)
 
 
 {-| Take a float and return a string with hours and minutes, eg.
-    4.25 -> "4:15"
+4.25 -> "4:15"
 -}
 floatToHoursAndMins : Maybe Float -> String
 floatToHoursAndMins hours =
@@ -17,16 +17,16 @@ floatToHoursAndMins hours =
                 hoursAndDecimals =
                     R.round 2 val |> String.split "."
             in
-                case hoursAndDecimals of
-                    [ hourString, decimalString ] ->
-                        let
-                            minString =
-                                Result.withDefault 0 (String.toFloat decimalString)
-                                    * 0.6
-                                    |> R.round 0
-                                    |> String.padRight 2 '0'
-                        in
-                            String.join ":" [ hourString, minString ]
+            case hoursAndDecimals of
+                [ hourString, decimalString ] ->
+                    let
+                        minString =
+                            Result.withDefault 0 (Result.fromMaybe "Error parsing decimal to Float" (String.toFloat decimalString))
+                                * 0.6
+                                |> R.round 0
+                                |> String.padRight 2 '0'
+                    in
+                    String.join ":" [ hourString, minString ]
 
-                    _ ->
-                        ""
+                _ ->
+                    ""

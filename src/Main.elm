@@ -1,25 +1,26 @@
-module Main exposing (..)
+module Main exposing (init, initialModel, main)
 
+import Date exposing (fromPosix)
+import Time exposing (millisToPosix, utc)
+import Browser
 import Material
 import Model exposing (..)
-import Update exposing (Msg, update)
+import Update exposing (update)
 import View exposing (view)
-import Html
-import Date exposing (..)
 
 
-main : Program Never Model Msg
+main : Program () Model Msg
 main =
-    Html.program
+    Browser.element
         { init = init
         , update = update
         , view = view
-        , subscriptions = (always Sub.none)
+        , subscriptions = always Sub.none
         }
 
 
-init : ( Model, Cmd Msg )
-init =
+init : () ->  ( Model, Cmd Msg )
+init _ =
     ( initialModel
     , Cmd.batch
         [ Update.currentTime
@@ -35,8 +36,8 @@ initialModel : Model
 initialModel =
     { httpError = Ok ()
     , loading = True
-    , today = Date.fromTime 0
-    , currentDate = Date.fromTime 0
+    , today = fromPosix utc (millisToPosix 0)
+    , currentDate = fromPosix utc (millisToPosix 0)
     , entries = []
     , totalHours = Nothing
     , kikyHours = Nothing
@@ -49,5 +50,6 @@ initialModel =
         }
     , previousBalanceString = ""
     , previousBalance = 0
-    , mdl = Material.model
+    , mdc = Material.defaultModel
+    , showDialog = False
     }

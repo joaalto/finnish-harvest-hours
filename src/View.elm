@@ -1,47 +1,52 @@
-module View exposing (..)
+module View exposing (calendarTable, dayCellClass, dialog, hourString, navigationPane, roundHours, spinnerClass, view, weekRow)
 
-import Material.Dialog as Dialog
-import Material.Button as Button
-import Material.Options as Options
-import Round
-import List
+import Calendar exposing (monthView)
+import Date exposing (..)
+import DateUtils exposing (..)
+import Formatting exposing (floatToHoursAndMins)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import DateUtils exposing (..)
-import Calendar exposing (monthView)
-import Date exposing (..)
-import String
+import List
+import Material.Button as Button
+import Material
+import Material.Dialog as Dialog
+import Material.Options as Options
 import Model exposing (..)
+import Round
+import String
 import Update exposing (..)
-import Formatting exposing (floatToHoursAndMins)
 
 
 view : Model -> Html Msg
 view model =
     case model.httpError of
         Err err ->
-            div [ style [ ( "color", "red" ) ] ]
-                [ text (toString err) ]
+            div [ style "color" "red" ]
+                [ text (Debug.toString err) ]
 
         Ok _ ->
-            div [ class "main" ]
+            Options.styled div
+            [
+                Options.cs "main"
+            ]
                 [ div []
-                    [ dialog model ]
+                    [ dialog "dialog-options" model ]
                 , div [ class "header" ]
                     [ span [ class "name" ]
                         [ text (String.join " " [ model.user.firstName, model.user.lastName ]) ]
-                    , Button.render Mdl
-                        [ 1 ]
-                        model.mdl
-                        [ Dialog.openOn "click"
+                    , Button.view Mdc
+                        "dialog-options-show"
+                        model.mdc
+                        [ Button.unelevated
+                        , Button.onClick ShowDialog
                         , Options.cs "calendar-button"
                         ]
                         [ i [ class "fa settings fa-calendar" ] [] ]
-                    , text (String.join " " [ "Tuntisaldo:", (floatToHoursAndMins model.totalHours) ])
+                    , text (String.join " " [ "Tuntisaldo:", floatToHoursAndMins model.totalHours ])
                     ]
                 , div [ class "kiky" ]
-                    [ text (String.join " " [ "Kikytunnit:", (floatToHoursAndMins model.kikyHours) ]) ]
+                    [ text (String.join " " [ "Kikytunnit:", floatToHoursAndMins model.kikyHours ]) ]
                 , navigationPane model
                 , calendarTable model
                 ]
@@ -57,27 +62,42 @@ roundHours decimals hours =
             String.join " " [ Round.round decimals val, "h" ]
 
 
-dialog : Model -> Html Msg
-dialog model =
-    Dialog.view []
-        [ Dialog.title [] [ h3 [] [ text "Aseta vanha saldo" ] ]
-        , Dialog.content []
-            [ input
-                [ class "balance-input"
-                , onInput UpdatePreviousBalance
-                , onBlur (SavePreviousBalance model.previousBalance)
-                , value model.previousBalanceString
+dialog : Material.Index -> Model -> Html Msg
+dialog index model =
+    Dialog.view Mdc
+        index
+        model.mdc
+        [Dialog.open |> Options.when model.showDialog
+        , Dialog.onClose Cancel
+        ]
+        [ Dialog.surface []
+            [ Dialog.header []
+                [ Options.styled Html.h3
+                    [ Dialog.title
+                    ]
+                    [ text "Aseta vanha saldo"
+                    ]
                 ]
-                []
-            ]
-        , Dialog.actions []
-            [ Button.render Mdl
-                [ 0 ]
-                model.mdl
-                [ Dialog.closeOn "click"
-                , Options.cs "close-button"
+            , Dialog.body []
+                [ input
+                    [ class "balance-input"
+                    , onInput UpdatePreviousBalance
+                    , onBlur (SavePreviousBalance model.previousBalance)
+                    , value model.previousBalanceString
+                    ]
+                    []
                 ]
-                [ text "Sulje" ]
+            , Dialog.footer []
+                [ Button.view Mdc
+                    "dialog-close-dialog"
+                    model.mdc
+                    [ Dialog.cancel
+                    , Button.unelevated
+                    , Options.cs "close-button"
+                    , Options.onClick Cancel
+                    ]
+                    [ text "Sulje" ]
+                ]
             ]
         ]
 
@@ -86,11 +106,23 @@ navigationPane : Model -> Html Msg
 navigationPane model =
     div [ class "navigation" ]
         [ div []
-            [ button [ onClick PreviousMonth, class "nav-button float-left" ]
+            [ Button.view Mdc
+                "button-previous-month"
+                model.mdc
+                [ Button.unelevated
+                , Button.dense
+                , Options.onClick PreviousMonth
+                , Options.cs "nav-button float-left" ]
                 [ i [ class "fa fa-arrow-left" ] [] ]
             ]
         , div []
-            [ button [ onClick NextMonth, class "nav-button float-left" ]
+            [ Button.view Mdc
+                "button-next-month"
+                model.mdc
+                [ Button.unelevated
+                , Button.dense
+                , Options.onClick NextMonth
+                , Options.cs "nav-button float-left" ]
                 [ i [ class "fa fa-arrow-right" ] [] ]
             ]
         , div [ class "monthly-balance float-left" ]
@@ -109,6 +141,7 @@ spinnerClass : Model -> String
 spinnerClass model =
     if model.loading then
         "fa fa-spinner fa-pulse spinner"
+
     else
         ""
 
@@ -147,6 +180,7 @@ hourString : Float -> String
 hourString hours =
     if hours == 0 then
         ""
+
     else
         floatToHoursAndMins (Just hours)
 
@@ -155,9 +189,12 @@ dayCellClass : Model -> DateEntries -> String
 dayCellClass model dateEntries =
     if not (isWorkDay dateEntries.date model.holidays) then
         "day-off"
+
     else if dayHasOnlySpecialTasks dateEntries model.specialTasks then
         "special-day"
+
     else if month dateEntries.date == month model.currentDate then
         "current-month"
+
     else
         "other-month"

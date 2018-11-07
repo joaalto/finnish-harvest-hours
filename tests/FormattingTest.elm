@@ -1,9 +1,9 @@
 module FormattingTest exposing (all)
 
-import Test exposing (..)
 import Expect
-import Round exposing (round)
 import Formatting exposing (floatToHoursAndMins)
+import Round exposing (round)
+import Test exposing (..)
 
 
 all : Test

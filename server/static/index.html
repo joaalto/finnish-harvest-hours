@@ -1,18 +1,24 @@
 <head>
   <title>Tuntisaldo</title>
-  <script src="index.js" charset="utf-8"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css" rel="stylesheet">
+  <link href="styles/material-components-web.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="styles/main.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
   <link rel="icon" type="image/x-icon" href="favicon.ico"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.4.4/dialog-polyfill.min.js"></script>
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.4.4/dialog-polyfill.min.css" />
-  <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
 </head>
-<body>
+<body class="mdc-typography">
+  <script src="elm-mdc.js" charset="utf-8"></script>
+  <script src="index.js" charset="utf-8"></script>
+  <div id="elm"></div>
   <script type="text/javascript">
     window.addEventListener("DOMContentLoaded", function (){
-      var app = Elm.Main.fullscreen();
-      app.ports.currentTime.send(Date.now());
+      var app = Elm.Main.init({
+        node: document.getElementById('elm')
+      });
     });
   </script>
 </body>

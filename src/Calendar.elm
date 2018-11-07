@@ -1,16 +1,14 @@
-module Calendar exposing (..)
+module Calendar exposing (dateRange, firstOfMonthDayOfWeek, monthDays, monthView, singleDaysEntries, sumDateHours, weekRows)
 
-import List exposing (head, isEmpty, reverse, drop, take)
-import Date exposing (..)
-import Date.Extra.Period as Period exposing (add, diff)
-import Date.Extra.Core exposing (..)
-import Date.Extra.Compare as Compare exposing (is, Compare2, Compare3)
-import Model exposing (..)
+import Date exposing (Unit(..), Date, weekdayNumber, add)
+import Time exposing (Month(..), utc)
+import Time.Extra as Time
 import DateUtils exposing (..)
+import List exposing (drop, head, isEmpty, reverse, take)
+import Model exposing (..)
 
 
-{-|
-  Set up calendar table data.
+{-| Set up calendar table data.
 -}
 monthView : Model -> List (List DateEntries)
 monthView model =
@@ -19,28 +17,28 @@ monthView model =
 
 weekRows : List DateEntries -> List (List DateEntries) -> List (List DateEntries)
 weekRows entryList result =
-    if (isEmpty entryList) then
+    if isEmpty entryList then
         reverse result
+
     else
-        weekRows (drop 7 entryList) ((take 7 entryList) :: result)
+        weekRows (drop 7 entryList) (take 7 entryList :: result)
 
 
 monthDays : Model -> List DateEntries
 monthDays model =
     dateRange model
-        (add Period.Day -(firstOfMonthDayOfWeek model) (toFirstOfMonth model.currentDate))
+        (Date.add Days -(firstOfMonthDayOfWeek model.currentDate) (firstOfMonthDate model.currentDate))
         (lastOfMonthDate model.currentDate)
         []
 
 
-{-|
-  Build a list of days with sum of entered hours.
-  Set hour at 3 hours past midnight to avoid DST problems.
+{-| Build a list of days with sum of entered hours.
 -}
 dateRange : Model -> Date -> Date -> List DateEntries -> List DateEntries
 dateRange model startDate endDate dateList =
-    if Compare.is Compare.After startDate endDate then
+    if isStartAfterEnd startDate endDate then
         reverse dateList
+
     else
         let
             mDateEntries =
@@ -55,12 +53,12 @@ dateRange model startDate endDate dateList =
                         val
 
             nextDay =
-                (add Period.Hour 3 (add Period.Day 1 (startOfDate startDate)))
+                add Days 1 startDate
         in
-            dateRange model
-                nextDay
-                endDate
-                (dateEntries :: dateList)
+        dateRange model
+            nextDay
+            endDate
+            (dateEntries :: dateList)
 
 
 singleDaysEntries : Model -> Date -> Maybe DateEntries
@@ -78,23 +76,23 @@ sumDateHours model date =
     let
         dateEntries =
             List.head
-                (List.filter (\dateEntries -> isSameDate date dateEntries.date)
+                (List.filter (\entries -> isSameDate date entries.date)
                     model.entries
                 )
     in
-        case dateEntries of
-            Nothing ->
-                { date = date
-                , normalHours = 0
-                , kikyHours = 0
-                }
+    case dateEntries of
+        Nothing ->
+            { date = date
+            , normalHours = 0
+            , kikyHours = 0
+            }
 
-            Just entries ->
-                calculateDailyHours entries model
+        Just entries ->
+            calculateDailyHours entries model
 
 
 {-| Day of week of the first day of the month as Int, from 0 (Mon) to 6 (Sun).
 -}
-firstOfMonthDayOfWeek : Model -> Int
-firstOfMonthDayOfWeek model =
-    isoDayOfWeek (dayOfWeek (toFirstOfMonth model.currentDate)) - 1
+firstOfMonthDayOfWeek : Date -> Int
+firstOfMonthDayOfWeek date =
+    (weekdayNumber (firstOfMonthDate date)) - 1
