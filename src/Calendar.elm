@@ -1,11 +1,11 @@
 module Calendar exposing (dateRange, firstOfMonthDayOfWeek, monthDays, monthView, singleDaysEntries, sumDateHours, weekRows)
 
-import Date exposing (Unit(..), Date, weekdayNumber, add)
-import Time exposing (Month(..), utc)
-import Time.Extra as Time
+import Date exposing (Date, Unit(..), add, weekdayNumber)
 import DateUtils exposing (..)
 import List exposing (drop, head, isEmpty, reverse, take)
 import Model exposing (..)
+import Time exposing (Month(..), utc)
+import Time.Extra as Time
 
 
 {-| Set up calendar table data.
@@ -95,4 +95,4 @@ sumDateHours model date =
 -}
 firstOfMonthDayOfWeek : Date -> Int
 firstOfMonthDayOfWeek date =
-    (weekdayNumber (firstOfMonthDate date)) - 1
+    weekdayNumber (firstOfMonthDate date) - 1

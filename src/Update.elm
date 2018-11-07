@@ -124,7 +124,6 @@ update action model =
             noFx { model | showDialog = True }
 
 
-
 updatePreviousBalance : Model -> String -> ( Model, Cmd Msg )
 updatePreviousBalance model balance =
     case String.toFloat balance of

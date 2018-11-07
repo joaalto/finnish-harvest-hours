@@ -1,9 +1,9 @@
-module DateUtils exposing (addDailyHours, calculateDailyHours, calculateHourBalance, dateFormat, dateInCurrentMonth, dayHasOnlySpecialTasks, entryHours, hourBalanceOfCurrentMonth, isHoliday, isSameDate, isSpecialTask, isWeekDay, isWorkDay, sumHours, totalDaysForYear, totalHoursForMonth, totalHoursForYear, workDays, lastOfMonthDate, firstOfMonthDate, isStartAfterEnd)
+module DateUtils exposing (addDailyHours, calculateDailyHours, calculateHourBalance, dateFormat, dateInCurrentMonth, dayHasOnlySpecialTasks, entryHours, firstOfMonthDate, hourBalanceOfCurrentMonth, isHoliday, isSameDate, isSpecialTask, isStartAfterEnd, isWeekDay, isWorkDay, lastOfMonthDate, sumHours, totalDaysForYear, totalHoursForMonth, totalHoursForYear, workDays)
 
 import Date exposing (..)
-import Time exposing (Month(..), Weekday(..))
 import List exposing (drop, head, isEmpty, reverse, take)
 import Model exposing (..)
+import Time exposing (Month(..), Weekday(..))
 
 
 calculateHourBalance : Model -> Hours {}
@@ -113,13 +113,16 @@ entryHours entry specialTasks =
     else
         entry.hours
 
+
 lastOfMonthDate : Date -> Date
 lastOfMonthDate date =
-    (add Days -1 (add Months 1 (fromCalendarDate (year date) (month date) 1)))
+    add Days -1 (add Months 1 (fromCalendarDate (year date) (month date) 1))
+
 
 firstOfMonthDate : Date -> Date
 firstOfMonthDate date =
     fromCalendarDate (year date) (month date) 1
+
 
 totalHoursForMonth : Model -> Float
 totalHoursForMonth model =
@@ -149,9 +152,11 @@ totalDaysForYear model =
         |> Maybe.map (\entry -> workDays entry.date model.today model.holidays [])
         |> Maybe.withDefault []
 
+
 isStartAfterEnd : Date -> Date -> Bool
 isStartAfterEnd startDate endDate =
-    (Date.compare startDate endDate) == GT
+    Date.compare startDate endDate == GT
+
 
 workDays : Date -> Date -> List Holiday -> List Date -> List Date
 workDays startDate endDate holidays days =
@@ -193,7 +198,7 @@ isHoliday date holidays =
 
 isSameDate : Date -> Date -> Bool
 isSameDate date1 date2 =
-    (Date.compare date1 date2) == EQ
+    Date.compare date1 date2 == EQ
 
 
 isWeekDay : Date -> Bool

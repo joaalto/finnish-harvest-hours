@@ -8,8 +8,8 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import List
-import Material.Button as Button
 import Material
+import Material.Button as Button
 import Material.Dialog as Dialog
 import Material.Options as Options
 import Model exposing (..)
@@ -27,9 +27,8 @@ view model =
 
         Ok _ ->
             Options.styled div
-            [
-                Options.cs "main"
-            ]
+                [ Options.cs "main"
+                ]
                 [ div []
                     [ dialog "dialog-options" model ]
                 , div [ class "header" ]
@@ -67,7 +66,7 @@ dialog index model =
     Dialog.view Mdc
         index
         model.mdc
-        [Dialog.open |> Options.when model.showDialog
+        [ Dialog.open |> Options.when model.showDialog
         , Dialog.onClose Cancel
         ]
         [ Dialog.surface []
@@ -112,7 +111,8 @@ navigationPane model =
                 [ Button.unelevated
                 , Button.dense
                 , Options.onClick PreviousMonth
-                , Options.cs "nav-button float-left" ]
+                , Options.cs "nav-button float-left"
+                ]
                 [ i [ class "fa fa-arrow-left" ] [] ]
             ]
         , div []
@@ -122,7 +122,8 @@ navigationPane model =
                 [ Button.unelevated
                 , Button.dense
                 , Options.onClick NextMonth
-                , Options.cs "nav-button float-left" ]
+                , Options.cs "nav-button float-left"
+                ]
                 [ i [ class "fa fa-arrow-right" ] [] ]
             ]
         , div [ class "monthly-balance float-left" ]

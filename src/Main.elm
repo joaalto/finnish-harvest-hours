@@ -1,10 +1,10 @@
 module Main exposing (init, initialModel, main)
 
-import Date exposing (fromPosix)
-import Time exposing (millisToPosix, utc)
 import Browser
+import Date exposing (fromPosix)
 import Material
 import Model exposing (..)
+import Time exposing (millisToPosix, utc)
 import Update exposing (update)
 import View exposing (view)
 
@@ -19,7 +19,7 @@ main =
         }
 
 
-init : () ->  ( Model, Cmd Msg )
+init : () -> ( Model, Cmd Msg )
 init _ =
     ( initialModel
     , Cmd.batch

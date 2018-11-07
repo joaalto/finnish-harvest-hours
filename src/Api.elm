@@ -1,11 +1,12 @@
 module Api exposing (decodeDayEntries, decodeEntry, decodeHolidays, decodeTasks, decodeUser, getEntries, getNationalHolidays, getSpecialTasks, getUser, httpPost, setPreviousBalance)
 
-import Date exposing (fromIsoString, Date, fromCalendarDate)
-import Time exposing (Month(..))
+import Date exposing (Date, fromCalendarDate, fromIsoString)
 import Http exposing (Body, Error, Request, expectString, jsonBody)
 import Json.Decode as Json exposing (..)
 import Json.Encode as Encode
 import Model exposing (..)
+import Time exposing (Month(..))
+
 
 date : Json.Decoder Date
 date =
