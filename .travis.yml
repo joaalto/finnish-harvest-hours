@@ -36,5 +36,5 @@ install:
 
 script:
   - elm-format --validate src # tests examples readme-example
-  - elm make --output=/dev/null
+  - ./make.sh
   - yarn test
