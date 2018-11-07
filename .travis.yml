@@ -11,6 +11,7 @@ cache:
   directories:
     - tests/elm-stuff/build-artifacts
     - sysconfcpus
+    - $HOME/.elm
 
 before_install:
   - if [ ${TRAVIS_OS_NAME} == "osx" ];
