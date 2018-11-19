@@ -739,10 +739,10 @@ elm-format@^0.8.1:
   dependencies:
     binwrap "^0.2.0"
 
-elm-test@^0.19.0-beta12:
-  version "0.19.0-beta12"
-  resolved "https://registry.yarnpkg.com/elm-test/-/elm-test-0.19.0-beta12.tgz#40e83a0fd7037aeba1ea92b5f76e3b0196fe9def"
-  integrity sha512-I73zE/csKIKgnVQeMniD6dbiPstX4AyTavr5Z6XmvG9lJW4hicLd2lwZR4D5NN7oMth7m2FzEPpwwZ6P64+IMA==
+elm-test@^0.19.0-rev3:
+  version "0.19.0-rev3"
+  resolved "https://registry.yarnpkg.com/elm-test/-/elm-test-0.19.0-rev3.tgz#48134f76627b30ae58f97c9cf1a1d127b0ff81b0"
+  integrity sha512-+zcutibM0LOG6uT48bMsSGzyPnptgenxBUjNMJFRYuddTrOFVH1dFCKUu512lsvihBUJixaxjIG+DjQbWlpO/Q==
   dependencies:
     chalk "2.1.0"
     chokidar "1.7.0"
