@@ -17,7 +17,7 @@ suite =
         [
             describe "dateRange"
                 [
-                     test "foo" <|
+                     test "should include correct entries for specifed date range" <|
                         \() ->
                             let
                                 model =
