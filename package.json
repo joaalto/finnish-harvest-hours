@@ -33,7 +33,7 @@
     "finnish-holidays-js": "^1.1.0",
     "less": "^3.8.1",
     "lodash": "^4.17.11",
-    "mongoose": "^5.3.9",
+    "mongoose": "^5.3.12",
     "passport": "^0.4.0",
     "passport-oauth2": "^1.4.0",
     "promise": "^8.0.2",
