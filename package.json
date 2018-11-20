@@ -7,9 +7,10 @@
   "description": "Compare your total logged hours in Harvest with standard Finnish working hours",
   "main": "index.js",
   "scripts": {
-    "start": "npm run bundle:css && node server/server.js",
+    "server":"pulp build && cp -r src/server/* output/Server && cp .env output && pulp --watch run -m Server",
+    "start": "npm run bundle:css && node src/server/server.js",
     "start:watch": "yarn watch:server & yarn watch:less",
-    "watch:server": "nodemon --watch 'server/**/*.js' server/server.js",
+    "watch:server": "nodemon --watch 'server/**/*.js' src/server/server.js",
     "watch:less": "chokidar --initial 'styles' -c 'yarn bundle:css'",
     "bundle:css": "lessc styles/main.less server/static/styles/main.css",
     "test": "elm-test"
@@ -23,8 +24,9 @@
   "homepage": "https://github.com/joaalto/finnish-harvest-hours",
   "dependencies": {
     "body-parser": "^1.14.2",
+    "browserify": "^16.1.0",
     "connect-mongo": "^1.1.0",
-    "express": "^4.13.4",
+    "express": "^4.16.2",
     "express-session": "^1.15.0",
     "finnish-holidays-js": "^1.1.0",
     "less": "^2.7.2",
@@ -34,7 +36,8 @@
     "passport-oauth2": "^1.1.2",
     "promise": "^7.1.1",
     "superagent": "^1.7.2",
-    "superagent-promise": "^1.1.0"
+    "superagent-promise": "^1.1.0",
+    "xhr2": "^0.1.4"
   },
   "devDependencies": {
     "chokidar-cli": "^1.2.0",

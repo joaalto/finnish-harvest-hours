@@ -1,2 +1,2 @@
-web: npm run start:watch
-mongo: mongod --config /usr/local/etc/mongod.conf
+web: npm run server
+# mongo: mongod --config /usr/local/etc/mongod.conf

@@ -1,9 +1,8 @@
-const _ = require('lodash');
-const Promise = this.Promise || require('promise');
-const agent = require('superagent-promise')(require('superagent'), Promise);
-const holidays = require('finnish-holidays-js');
-const Session = require('./schema/session')
-const consts = require('./consts')
+var _ = require('lodash');
+var Promise = this.Promise || require('promise');
+var agent = require('superagent-promise')(require('superagent'), Promise);
+var Session = require('./schema/session')
+var vars = require('./consts')
 
 function getUser(req) {
     return req.session.passport.user;
@@ -16,13 +15,13 @@ function refreshAccessToken(req, res, fetchFunction) {
 function findAccessToken(req, res, callback, fetchFunction) {
     Session.findOne(
         { 'session.passport.user.harvestId': req.session.passport.user.harvestId },
-        (err, result) => {
+        function(err, result) {
             callback(req, res, result.session.passport.user, fetchFunction)
         })
 }
 
 function fetchNewAccessToken(req, res, user, fetchFunction) {
-    return agent.post(consts.harvestUrl + '/oauth2/token')
+    return agent.post(vars.harvestUrl + '/oauth2/token')
         .type('form')
         .accept('json')
         .send({
@@ -32,14 +31,14 @@ function fetchNewAccessToken(req, res, user, fetchFunction) {
             refresh_token: user.refreshToken,
         })
         .end()
-        .then(resp => {
+        .then(function(resp) {
             updateAccessToken(user, resp.body)
             req.session.passport.user.accessToken = resp.body.access_token
             return fetchFunction(req, res)
         })
-        .catch(err => {
+        .catch(function(err) {
             if (_.includes([400, 401], err.response.status)) {
-                req.session.destroy(() => {
+                req.session.destroy(function() {
                     res.clearCookie('connect.sid', { path: '/' })
                     res.status(401).send()
                 })
@@ -54,7 +53,7 @@ function updateAccessToken(user, tokenResponse) {
     Session.update(
         { 'session.passport.user.harvestId': user.harvestId },
         { 'session.passport.user.accessToken': tokenResponse.access_token },
-        (err, raw) => {
+        function(err, raw) {
             if (err) {
                 console.log('Error updating token:', err)
             } else {
@@ -72,29 +71,20 @@ function formatDateForHarvest(date) {
     return `${date.getFullYear()}${padWithZero(date.getMonth() + 1)}${padWithZero(date.getDate())}`;
 };
 
-const startDate = process.env.START_DATE;
+var startDate = process.env.START_DATE;
+var endDate = formatDateForHarvest(new Date());
 
-const yearRange = () => _.range(
-    startDate.substr(0, 4),
-    new Date().getFullYear() + 1)
-
-const finnishHolidays = () =>
-    _.flatMap(yearRange(), year => holidays.year(year))
-        .map(h => ({
-            date: `${h.year}-${padWithZero(h.month)}-${padWithZero(h.day)}`,
-            name: h.description
-        }))
 
 function get(req, res, url, fetchFunction) {
-    return agent.get(consts.harvestUrl + url)
+    return agent.get(vars.harvestUrl + url)
         .type('json')
         .accept('json')
         .query({
             access_token: getUser(req).accessToken
         })
         .end()
-        .then(resp => resp.body)
-        .catch(err => {
+        .then(function(resp){ return  resp.body})
+        .catch(function(err) {
             if (_.get(err, 'response.status') === 401) {
                 refreshAccessToken(req, res, fetchFunction)
                 return Promise.reject('Refreshing access token.')
@@ -107,10 +97,10 @@ function get(req, res, url, fetchFunction) {
 function dayEntries(entries) {
     return _(entries)
         .groupBy('date')
-        .mapValues(dayEntries => {
+        .mapValues(function(dayEntries) {
             return {
                 date: dayEntries[0].date,
-                entries: dayEntries.map(entry => {
+                entries: dayEntries.map(function(entry) {
                     return {
                         hours: entry.hours,
                         taskId: entry.taskId
@@ -128,8 +118,8 @@ function fetchEntries(req, res) {
         req, res,
         `/people/${getUser(req).harvestId}/entries?from=${startDate}&to=${formatDateForHarvest(new Date())}`,
         fetchHourEntries)
-        .then(entries => {
-            return _.map(entries, row => {
+        .then(function(entries) {
+            return _.map(entries, function(row) {
                 return {
                     date: row.day_entry.spent_at,
                     hours: row.day_entry.hours,
@@ -141,12 +131,11 @@ function fetchEntries(req, res) {
 
 function fetchHourEntries(req, res) {
     return fetchEntries(req, res)
-        .then(entries => {
+        .then(function(entries) {
             res.send(dayEntries(entries))
         });
 }
 
 module.exports = {
-    fetchHourEntries: fetchHourEntries,
-    finnishHolidays: finnishHolidays
+    fetchHourEntries: fetchHourEntries
 };

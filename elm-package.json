@@ -4,7 +4,7 @@
     "repository": "https://github.com/joaalto/finnish-harvest-hours.git",
     "license": "None",
     "source-directories": [
-        "src"
+        "src/client"
     ],
     "exposed-modules": [],
     "dependencies": {

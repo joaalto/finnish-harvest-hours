@@ -1,0 +1,21 @@
+{
+  "name": "finnish-harvest-hours",
+  "set": "psc-0.12.0-20180902",
+  "source": "https://github.com/joaalto/package-sets.git",
+  "depends": [
+    "aff",
+    "affjax",
+    "argonaut",
+    "argonaut-codecs",
+    "console",
+    "effect",
+    "express",
+    "foreign-generic",
+    "formatters",
+    "http-methods",
+    "node-process",
+    "now",
+    "prelude",
+    "psci-support"
+  ]
+}
