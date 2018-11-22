@@ -4,14 +4,16 @@ import Affjax (ResponseFormatError)
 import Affjax as Ax
 import Affjax.ResponseFormat as ResponseFormat
 import Data.Argonaut (Json)
-import Data.Date (Date, year)
+import Data.Date (Date)
+import Data.DateTime (DateTime)
 import Data.Either (Either(..))
+import Data.Formatter.DateTime (formatDateTime)
 import Data.Function.Uncurried (runFn1)
 import Effect (Effect)
 import Effect.Aff.Class (liftAff)
 import Effect.Class (liftEffect)
 import Effect.Console (logShow)
-import Effect.Now (nowDate)
+import Effect.Now (nowDateTime)
 import Helpers (getUserImpl, harvestUrl, startDate)
 import Node.Express.Handler (Handler, HandlerM(..), next)
 import Node.Express.Response (sendJson)
@@ -20,13 +22,19 @@ import Prelude (bind, discard, pure, show, ($), (<>))
 
 type Entry = { date :: Date, hours :: Number, taskId :: Int }
 
--- TODO: format this from today's date
-endDate = "2018-11-19"
+dateFormat :: DateTime -> Either String String
+dateFormat = formatDateTime "YYYY-MM-DD"
+
+today :: Effect String
+today = do
+  now <- nowDateTime
+  pure $ case dateFormat now of
+    Left _ -> ""
+    Right s -> s
 
 entriesQuery :: Request -> Effect String
 entriesQuery req = do
-  today <- nowDate
-  logShow $ year today
+  endDate <- today
   user <- liftEffect $ runFn1 getUserImpl req
   liftEffect $ logShow $ "user:" <> show user
   pure $ harvestUrl <>
