@@ -10,8 +10,8 @@ const MongoStore = require('connect-mongo')(session);
 const mongoose = require('mongoose');
 const _ = require('lodash');
 const api = require('./api');
-const User = require('./schema/user');
 const consts = require('./consts')
+const userService = require('./user')
 
 const app = express()
 
@@ -110,15 +110,14 @@ app.get('/user', function (req, res) {
                     console.error(err);
                 }
 
-                let previousBalance = 0;
-                if (doc && doc.previousBalance) {
-                    previousBalance = doc.previousBalance;
-                }
+                const previousBalance = doc && doc.previousBalance ? doc.previousBalance : 0;
+                const variantPeriods = doc && doc.variantPeriods ? doc.variantPeriods : [];
 
                 res.send({
                     firstName: sessionUser.firstName,
                     lastName: sessionUser.lastName,
-                    previousBalance: previousBalance
+                    previousBalance: previousBalance,
+                    variantPeriods: variantPeriods
                 });
             }
         );
@@ -155,23 +154,19 @@ app.get('/special_tasks', function (req, res) {
 app.post('/balance', function (req, res) {
     if (req.isAuthenticated()) {
         const sessionUser = req.session.passport.user;
-        upsertUser(sessionUser.harvestId, req.body.balance);
+        userService.upsertUserBalance(sessionUser.harvestId, req.body.balance);
     }
     res.send('OK');
 });
 
-const upsertUser = (id, balance) => {
-    User.findOneAndUpdate(
-        { id: id },
-        { previousBalance: balance },
-        { new: true, upsert: true },
-        (err, doc) => {
-            if (err) {
-                console.error(err);
-            }
-        }
-    );
-}
+app.post('/variant-periods', function (req, res) {
+  if (req.isAuthenticated()) {
+    const sessionUser = req.session.passport.user;
+    userService.upsertUserVariantPeriods(sessionUser.harvestId, req.body.variantPeriods);
+  }
+  res.send('OK');
+});
+
 
 const port = process.env.PORT || 8080;
 app.listen(port);

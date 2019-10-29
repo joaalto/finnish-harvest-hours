@@ -10,6 +10,7 @@ import Date.Extra.Config.Configs as DateConfigs
 import Date.Extra.TimeUnit as TimeUnit
 import Model exposing (..)
 
+defaultDailyHours = 7.5
 
 calculateHourBalance : Model -> Hours {}
 calculateHourBalance model =
@@ -107,15 +108,6 @@ calculateDailyHours dateEntries model =
         , kikyHours = kikyHours
         }
 
-
-entryHours : Entry -> SpecialTasks -> Float
-entryHours entry specialTasks =
-    if List.any (\t -> t.id == entry.taskId) specialTasks.ignore then
-        0
-    else
-        entry.hours
-
-
 totalHoursForMonth : Model -> Float
 totalHoursForMonth model =
     let
@@ -128,12 +120,12 @@ totalHoursForMonth model =
         dayList =
             workDays (toFirstOfMonth model.currentDate) endDate model.holidays []
     in
-        toFloat (List.length dayList) * 7.5
+        toFloat (List.length dayList) * defaultDailyHours
 
 
 totalHoursForYear : Model -> Float
 totalHoursForYear model =
-    toFloat (List.length (totalDaysForYear model)) * 7.5
+    toFloat (List.length (totalDaysForYear model)) * defaultDailyHours
 
 
 totalDaysForYear : Model -> List Date

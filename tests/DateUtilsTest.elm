@@ -89,7 +89,7 @@ initialModel =
     , totalHours = Nothing
     , kikyHours = Nothing
     , hourBalanceOfCurrentMonth = Nothing
-    , user = { firstName = "", lastName = "", previousBalance = 0 }
+    , user = { firstName = "", lastName = "", previousBalance = 0, variantPeriods = [] }
     , holidays = []
     , specialTasks =
         { ignore = []

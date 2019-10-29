@@ -27,6 +27,7 @@ type alias User =
     { firstName : String
     , lastName : String
     , previousBalance : Float
+    , variantPeriods: List VariantPeriod
     }
 
 
@@ -67,3 +68,9 @@ type alias Hours a =
 
 type alias DateHours =
     Hours { date : Date }
+
+type alias VariantPeriod =
+    { start: Maybe Date
+    , end: Maybe Date
+    , dailyHours: Float
+    }
