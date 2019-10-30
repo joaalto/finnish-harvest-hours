@@ -10,8 +10,9 @@ const MongoStore = require('connect-mongo')(session);
 const mongoose = require('mongoose');
 const _ = require('lodash');
 const api = require('./api');
-const consts = require('./consts')
-const userService = require('./user')
+const consts = require('./consts');
+const userService = require('./user');
+const User = require('./schema/user');
 
 const app = express()
 
