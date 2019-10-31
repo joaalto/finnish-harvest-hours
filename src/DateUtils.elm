@@ -1,9 +1,9 @@
 module DateUtils exposing (..)
 
-import List exposing (head, isEmpty, reverse, drop, take)
+import List
 import Date exposing (..)
 import Date.Extra.Core exposing (..)
-import Date.Extra.Period as Period exposing (add, diff)
+import Date.Extra.Period as Period exposing (add)
 import Date.Extra.Compare as Compare exposing (is, Compare2, Compare3)
 import Date.Extra.Format exposing (format)
 import Date.Extra.Config.Configs as DateConfigs
@@ -24,7 +24,7 @@ calculateHourBalance model =
 
         normalHourBalance =
             .normalHours totalHours
-                - (totalHoursForYear model)
+                - (totalWorkHours model)
                 + model.previousBalance
     in
         { totalHours | normalHours = normalHourBalance }
@@ -123,13 +123,13 @@ totalHoursForMonth model =
         toFloat (List.length dayList) * defaultDailyHours
 
 
-totalHoursForYear : Model -> Float
-totalHoursForYear model =
-    toFloat (List.length (totalDaysForYear model)) * defaultDailyHours
+totalWorkHours : Model -> Float
+totalWorkHours model =
+    toFloat (List.length (totalWorkDays model)) * defaultDailyHours
 
 
-totalDaysForYear : Model -> List Date
-totalDaysForYear model =
+totalWorkDays : Model -> List Date
+totalWorkDays model =
     model.entries
         |> List.head
         |> Maybe.map (\entry -> workDays entry.date model.today model.holidays [])
