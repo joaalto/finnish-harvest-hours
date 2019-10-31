@@ -25,6 +25,7 @@ calculateHourBalance model =
         normalHourBalance =
             .normalHours totalHours
                 - (totalWorkHours model)
+                + (hoursForVariantPeriods model)
                 + model.previousBalance
     in
         { totalHours | normalHours = normalHourBalance }
@@ -42,6 +43,46 @@ hourBalanceOfCurrentMonth model =
                 currentMonthEntries
     in
         .normalHours (sumHours dateHourList) - (totalHoursForMonth model)
+
+
+hoursForVariantPeriod : Model -> VariantPeriod -> Float
+hoursForVariantPeriod model variantPeriod =
+    let
+        dailyDifference = defaultDailyHours - variantPeriod.dailyHours
+
+        firstWorkDate =
+            model.entries
+                |> List.head
+                |> Maybe.map .date
+                |> Maybe.withDefault model.today
+
+        givenStartDate = Maybe.withDefault firstWorkDate variantPeriod.start
+
+        startDate =
+            if Compare.is Compare.After firstWorkDate givenStartDate then
+                firstWorkDate
+            else
+                givenStartDate
+
+        givenEndDate = Maybe.withDefault model.today variantPeriod.end
+
+        endDate =
+            if Compare.is Compare.After givenEndDate model.today then
+                model.today
+            else
+                givenEndDate
+        dayList =
+            workDays startDate endDate model.holidays []
+
+    in
+        toFloat (List.length dayList) * dailyDifference
+
+
+hoursForVariantPeriods : Model -> Float
+hoursForVariantPeriods model =
+    List.sum (
+        List.map (\variantPeriods -> hoursForVariantPeriod model variantPeriods)
+                  model.user.variantPeriods)
 
 
 sumHours : List (Hours a) -> Hours {}
@@ -152,7 +193,6 @@ workDays startDate endDate holidays days =
                     days
         in
             workDays nextDay endDate holidays dayList
-
 
 dayHasOnlySpecialTasks : DateEntries -> SpecialTasks -> Bool
 dayHasOnlySpecialTasks dateEntries specialTasks =
