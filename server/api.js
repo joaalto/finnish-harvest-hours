@@ -7,7 +7,7 @@ const consts = require('./consts')
 
 function getUser(req) {
     return req.session.passport.user;
-};
+}
 
 function refreshAccessToken(req, res, fetchFunction) {
     findAccessToken(req, res, fetchNewAccessToken, fetchFunction)
@@ -66,11 +66,11 @@ function updateAccessToken(user, tokenResponse) {
 
 function padWithZero(n) {
     return _.padStart(n, 2, '0');
-};
+}
 
 function formatDateForHarvest(date) {
     return `${date.getFullYear()}${padWithZero(date.getMonth() + 1)}${padWithZero(date.getDate())}`;
-};
+}
 
 const startDate = process.env.START_DATE;
 

@@ -1,6 +1,6 @@
 module Formatting exposing (floatToHoursAndMins)
 
-import Round as R exposing (round)
+import Round as R
 
 
 {-| Take a float and return a string with hours and minutes, eg.
