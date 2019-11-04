@@ -76,6 +76,43 @@ all =
                 in
                     dayHasOnlySpecialTasks dateEntries specialTasks
                         |> Expect.false "Expected the day to have also normal task entries."
+        , test "can use variantPeriods" <|
+            \() ->
+                let
+                    -- FIXME This only works when variant period start and end are specified at start/end of given date.
+                   variantPeriods =
+                       [ VariantPeriod
+                           (Just (dateFromFields 2017 Mar 2 0 0 0 0))
+                           (Just (dateFromFields 2017 Mar 3 23 59 0 0))
+                           5
+                       , VariantPeriod
+                           (Just (dateFromFields 2017 Mar 8 0 0 0 0))
+                           (Just (dateFromFields 2017 Mar 8 23 59 0 0))
+                           6
+                       ]
+
+                   model =
+                       { initialModel
+                           | currentDate = (dateFromFields 2017 Mar 8 22 59 0 0)
+                           , today = (dateFromFields 2017 Mar 8 22 59 0 0)
+                           , entries =
+                               [ DateEntries (dateFromFields 2017 Mar 2 22 59 0 0)
+                                   [ Entry 2.5 123, Entry 2.5 234 ]
+                               , DateEntries (dateFromFields 2017 Mar 3 22 59 0 0)
+                                   [ Entry 7.5 123 ]
+                               -- 4th and 5th are the weekend
+                               -- 6th intentionally left empty, implicit 0 h
+                               , DateEntries (dateFromFields 2017 Mar 7 22 59 0 0)
+                                   [ Entry 6 123 ]
+                               , DateEntries (dateFromFields 2017 Mar 8 22 59 0 0)
+                                   [ Entry 5.5 123 ]
+                               ]
+                           , user = replaceVariantPeriods variantPeriods initialModel
+                       }
+
+                in
+                    calculateHourBalance model
+                        |> Expect.equal { normalHours = -7, kikyHours = 0 }
         ]
 
 
@@ -99,3 +136,12 @@ initialModel =
     , previousBalance = 0
     , mdl = Material.model
     }
+
+replaceVariantPeriods : List VariantPeriod -> Model -> User
+replaceVariantPeriods newVariantPeriods model =
+     let
+        oldUser = model.user
+     in
+        { oldUser | variantPeriods = newVariantPeriods}
+
+

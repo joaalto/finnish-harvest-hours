@@ -5,12 +5,12 @@ import String
 import List exposing (isEmpty)
 import Task exposing (Task)
 import Http exposing (Response)
-import Navigation exposing (load)
+import Navigation
 import Model exposing (..)
 import Api exposing (getEntries)
 import DateUtils exposing (calculateHourBalance, hourBalanceOfCurrentMonth)
 import Date.Extra.Duration as Duration
-import Date exposing (fromTime)
+import Date
 import Time
 
 
