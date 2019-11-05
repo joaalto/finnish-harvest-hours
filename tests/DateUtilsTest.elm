@@ -110,6 +110,31 @@ all =
                 in
                     calculateHourBalance model
                         |> Expect.equal { normalHours = -7, kikyHours = 0 }
+        , test "computes correct total balance for a variant period without end date" <|
+            \() ->
+                let
+                    variantPeriods =
+                        [ VariantPeriod
+                            (dateFromFields 2017 Mar 2 0 0 0 0)
+                            Nothing
+                            7
+                        ]
+                    model =
+                        { initialModel
+                            | currentDate = (dateFromFields 2017 Mar 3 22 59 0 0)
+                            , today = (dateFromFields 2017 Mar 3 22 59 0 0)
+                            , entries =
+                                [ DateEntries (dateFromFields 2017 Mar 2 22 59 0 0)
+                                    [ Entry 2.5 123, Entry 2.5 234 ]
+                                , DateEntries (dateFromFields 2017 Mar 3 22 59 0 0)
+                                    [ Entry 7 123 ]
+                                ]
+                            , user = replaceVariantPeriods variantPeriods initialModel
+                        }
+                in
+                    calculateHourBalance model
+                        |> Expect.equal { normalHours = -2, kikyHours = 0 }
+
         , test "computes correct monthly balance for first month of employment" <|
             \() ->
                 let
