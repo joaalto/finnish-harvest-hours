@@ -23,7 +23,7 @@ decodeUser =
 decodeVariantPeriod : Json.Decoder VariantPeriod
 decodeVariantPeriod =
     map3 VariantPeriod
-        (field "start" (maybe date))
+        (field "start" date)
         (field "end" (maybe date))
         (field "dailyHours" float)
 

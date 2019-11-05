@@ -57,13 +57,11 @@ hoursForVariantPeriod model variantPeriod =
                 |> Maybe.map .date
                 |> Maybe.withDefault model.today
 
-        givenStartDate = Maybe.withDefault firstWorkDate variantPeriod.start
-
         startDate =
-            if Compare.is Compare.After firstWorkDate givenStartDate then
+            if Compare.is Compare.After firstWorkDate variantPeriod.start then
                 firstWorkDate
             else
-                givenStartDate
+                variantPeriod.start
 
         givenEndDate = Maybe.withDefault model.today variantPeriod.end
 
@@ -93,22 +91,18 @@ isVariantPeriodInMonth currentDate variantPeriod =
         firstOfMonth = toFirstOfMonth currentDate
         lastOfMonth = lastOfMonthDate currentDate
 
-        startDate = case variantPeriod.start of
-            Nothing -> firstOfMonth
-            Just start -> start
-
         endDate = case variantPeriod.end of
             Nothing -> currentDate
             Just end -> end
 
         isStartInMonth =
-            dateInCurrentMonth startDate currentDate
+            dateInCurrentMonth variantPeriod.start currentDate
 
         isEndInMonth =
             dateInCurrentMonth endDate currentDate
 
         lastsWholeMonth =
-            (Compare.is Compare.After firstOfMonth startDate) &&
+            (Compare.is Compare.After firstOfMonth variantPeriod.start) &&
             (Compare.is Compare.After endDate lastOfMonth)
 
     in
@@ -123,13 +117,11 @@ monthlyHoursForVariantPeriod model variantPeriod =
 
         firstOfMonth = startOfMonth model
 
-        startDate = case variantPeriod.start of
-            Nothing -> firstOfMonth
-            Just start ->
-                if Compare.is Compare.After firstOfMonth start then
-                    firstOfMonth
-                else
-                    start
+        startDate =
+            if Compare.is Compare.After firstOfMonth variantPeriod.start then
+                firstOfMonth
+            else
+                variantPeriod.start
 
         endDate = case variantPeriod.end of
             Nothing -> model.currentDate

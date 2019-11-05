@@ -80,11 +80,11 @@ all =
                     -- Variant period start and end must be at the start and end of the date respectively.
                    variantPeriods =
                        [ VariantPeriod
-                           (Just (dateFromFields 2017 Mar 2 0 0 0 0))
+                           (dateFromFields 2017 Mar 2 0 0 0 0)
                            (Just (dateFromFields 2017 Mar 3 23 59 0 0))
                            5
                        , VariantPeriod
-                           (Just (dateFromFields 2017 Mar 8 0 0 0 0))
+                           (dateFromFields 2017 Mar 8 0 0 0 0)
                            (Just (dateFromFields 2017 Mar 8 23 59 0 0))
                            6
                        ]
@@ -133,11 +133,11 @@ all =
                      -- Variant period start and end must be at the start and end of the date respectively.
                     variantPeriods =
                         [ VariantPeriod
-                            (Just (dateFromFields 2017 Mar 2 23 59 0 0))
+                            (dateFromFields 2017 Mar 2 23 59 0 0)
                             (Just (dateFromFields 2017 Mar 3 23 59 0 0))
                             5
                         , VariantPeriod
-                            (Just (dateFromFields 2017 Mar 8 0 0 0 0))
+                            (dateFromFields 2017 Mar 8 0 0 0 0)
                             Nothing
                             6
                         ]

@@ -70,7 +70,7 @@ type alias DateHours =
     Hours { date : Date }
 
 type alias VariantPeriod =
-    { start: Maybe Date
+    { start: Date
     , end: Maybe Date
     , dailyHours: Float
     }
