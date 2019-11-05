@@ -7,8 +7,6 @@ import Date.Extra.Create exposing (dateFromFields)
 import Material
 import Model exposing (..)
 import DateUtils exposing (..)
-import Date.Extra.Core exposing (toFirstOfMonth, lastOfPrevMonthDate)
-
 
 all : Test
 all =
@@ -79,7 +77,7 @@ all =
         , test "can use variantPeriods" <|
             \() ->
                 let
-                    -- FIXME This only works when variant period start and end are specified at start/end of given date.
+                    -- Variant period start and end must be at the start and end of the date respectively.
                    variantPeriods =
                        [ VariantPeriod
                            (Just (dateFromFields 2017 Mar 2 0 0 0 0))
@@ -109,10 +107,62 @@ all =
                                ]
                            , user = replaceVariantPeriods variantPeriods initialModel
                        }
-
                 in
                     calculateHourBalance model
                         |> Expect.equal { normalHours = -7, kikyHours = 0 }
+        , test "computes correct monthly balance for first month of employment" <|
+            \() ->
+                let
+                    model =
+                        { initialModel
+                            | currentDate = (dateFromFields 2017 Mar 7 20 1 0 0)
+                            , today = (dateFromFields 2017 Mar 7 20 1 0 0)
+                            , entries =
+                                [ DateEntries (dateFromFields 2017 Mar 6 10 59 0 0)
+                                    [ Entry 5 123, Entry 2.5 234 ]
+                                , DateEntries (dateFromFields 2017 Mar 7 10 59 0 0)
+                                    [ Entry 2.5 123, Entry 5 234 ]
+                                ]
+                        }
+                in
+                    hourBalanceOfCurrentMonth model
+                        |> Expect.equal 0
+        , test "computes correct monthly balance for variant periods starting or ending during month" <|
+            \() ->
+                let
+                     -- Variant period start and end must be at the start and end of the date respectively.
+                    variantPeriods =
+                        [ VariantPeriod
+                            (Just (dateFromFields 2017 Mar 2 23 59 0 0))
+                            (Just (dateFromFields 2017 Mar 3 23 59 0 0))
+                            5
+                        , VariantPeriod
+                            (Just (dateFromFields 2017 Mar 8 0 0 0 0))
+                            Nothing
+                            6
+                        ]
+
+                    model =
+                        { initialModel
+                            | currentDate = (dateFromFields 2017 Mar 8 22 59 0 0)
+                            , today = (dateFromFields 2017 Mar 8 22 59 0 0)
+                            , entries =
+                                [ DateEntries (dateFromFields 2017 Mar 2 22 59 0 0)
+                                    [ Entry 2.5 123, Entry 2.5 234 ]
+                                , DateEntries (dateFromFields 2017 Mar 3 22 59 0 0)
+                                    [ Entry 7.5 123 ]
+                                -- 4th and 5th are the weekend
+                                -- 6th intentionally left empty, implicit 0 h
+                                , DateEntries (dateFromFields 2017 Mar 7 22 59 0 0)
+                                    [ Entry 6 123 ]
+                                , DateEntries (dateFromFields 2017 Mar 8 22 59 0 0)
+                                    [ Entry 5.5 123 ]
+                                ]
+                            , user = replaceVariantPeriods variantPeriods initialModel
+                        }
+                in
+                    hourBalanceOfCurrentMonth model
+                        |> Expect.equal -7
         ]
 
 
@@ -143,5 +193,3 @@ replaceVariantPeriods newVariantPeriods model =
         oldUser = model.user
      in
         { oldUser | variantPeriods = newVariantPeriods}
-
-

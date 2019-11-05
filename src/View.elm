@@ -3,7 +3,6 @@ module View exposing (..)
 import Material.Dialog as Dialog
 import Material.Button as Button
 import Material.Options as Options
-import Round
 import List
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -45,16 +44,6 @@ view model =
                 , navigationPane model
                 , calendarTable model
                 ]
-
-
-roundHours : Int -> Maybe Float -> String
-roundHours decimals hours =
-    case hours of
-        Nothing ->
-            ""
-
-        Just val ->
-            String.join " " [ Round.round decimals val, "h" ]
 
 
 dialog : Model -> Html Msg
