@@ -155,7 +155,6 @@ all =
         , test "computes correct monthly balance for variant periods starting or ending during month" <|
             \() ->
                 let
-                     -- Variant period start and end must be at the start and end of the date respectively.
                     variantPeriods =
                         [ VariantPeriod
                             (dateFromFields 2017 Mar 2 23 59 0 0)
@@ -188,6 +187,31 @@ all =
                 in
                     hourBalanceOfCurrentMonth model
                         |> Expect.equal -7
+        , test "compute correct monthly balance for variant period spanning the whole month" <|
+            \() ->
+                let
+                    variantPeriods =
+                        [ VariantPeriod
+                            (dateFromFields 2017 Jan 1 0 0 0 0)
+                            Nothing
+                            6
+                        ]
+
+                    model =
+                        { initialModel
+                            | currentDate = (dateFromFields 2017 Mar 7 20 1 0 0)
+                            , today = (dateFromFields 2017 Mar 7 20 1 0 0)
+                            , entries =
+                                [ DateEntries (dateFromFields 2017 Mar 6 10 59 0 0)
+                                    [ Entry 5 123, Entry 2 234 ]
+                                , DateEntries (dateFromFields 2017 Mar 7 10 59 0 0)
+                                    [ Entry 5 123, Entry 2 234 ]
+                                ]
+                            , user = replaceVariantPeriods variantPeriods initialModel
+                        }
+                in
+                    hourBalanceOfCurrentMonth model
+                     |> Expect.equal 2
         ]
 
 
