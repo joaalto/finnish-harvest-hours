@@ -9,7 +9,7 @@ In Finland the standard work week is 37.5 hours. In the long term you are suppos
 - [Elm](http://elm-lang.org/) 0.18.0    
 - [Elm-test](http://package.elm-lang.org/packages/elm-community/elm-test/latest) 0.18
 - Heroku toolbelt: https://toolbelt.heroku.com/
-- Node JS with ES6 support
+- Node JS with ES6 support. Probably only runs on Node 8 at the moment.
 - MongoDB (for storing user data and sessions)
 - local-ssl-proxy: `npm install -g local-ssl-proxy`  
 - nodemon: `npm install -g nodemon`
@@ -30,9 +30,16 @@ In Finland the standard work week is 37.5 hours. In the long term you are suppos
 
 Go to https://localhost:5001/
 
+Or, if you have problems with starting MongoDB with `./run-local` or you have your own local database running already, you can also run
+```./make.sh && \
+     local-ssl-proxy --source 5001 --target 5000 & \
+     heroku local
+``` 
+
+
 ### Running tests
 
-`elm-test`
+`yarn test`
 
 ### Requirements for deployment to Heroku
 
