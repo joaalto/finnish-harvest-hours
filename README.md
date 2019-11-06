@@ -6,8 +6,8 @@ In Finland the standard work week is 37.5 hours. In the long term you are suppos
 
 ### Requirements for local development
 
-- [Elm](http://elm-lang.org/) 0.18.0
-- [Elm-test](http://package.elm-lang.org/packages/elm-community/elm-test/latest)
+- [Elm](http://elm-lang.org/) 0.18.0    
+- [Elm-test](http://package.elm-lang.org/packages/elm-community/elm-test/latest) 0.18
 - Heroku toolbelt: https://toolbelt.heroku.com/
 - Node JS with ES6 support
 - MongoDB (for storing user data and sessions)
@@ -41,4 +41,3 @@ Go to https://localhost:5001/
 - the following Heroku buildpacks:
     - https://github.com/srid/heroku-buildpack-elm
     - heroku/nodejs
-
