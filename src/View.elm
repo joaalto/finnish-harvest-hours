@@ -13,7 +13,7 @@ import Date exposing (..)
 import String
 import Model exposing (..)
 import Update exposing (..)
-import Formatting exposing (floatToHoursAndMins)
+import Formatting exposing (floatToHoursAndMins, dateToString)
 
 
 view : Model -> Html Msg
@@ -56,6 +56,11 @@ dialog model =
                 , value model.previousBalanceString
                 ]
                 []
+            , h4 [ ] [ text "Non-standard working periods" ]
+            , p [] [
+                text "Contact your Saldot administrator to configure parental leaves, part-time work and other longer duration arrangements."
+                , variantTable model
+                ]
             ]
         , Dialog.actions []
             [ Button.render Mdl
@@ -148,3 +153,28 @@ dayCellClass model dateEntries =
         "current-month"
     else
         "other-month"
+
+variantRow : VariantPeriod -> Html Msg
+variantRow variant =
+    tr []
+        [ td [] [ text (dateToString (Just variant.start)) ]
+        , td [] [ text (dateToString variant.end) ]
+        , td [] [ text (toString variant.dailyHours) ]
+        ]
+
+variantTable : Model -> Html Msg
+variantTable model =
+    if (List.length model.user.variantPeriods) > 0 then
+        div [ class "variant-table" ] [
+            table [  ]
+                [ thead []
+                    [ th [] [ text "Start" ]
+                    , th [] [ text "End" ]
+                    , th [] [ text "Hours / day" ]
+                    ]
+                , tbody []
+                    (List.map variantRow model.user.variantPeriods)
+                ]
+        ]
+    else
+        span [] []
