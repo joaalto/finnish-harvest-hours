@@ -37,10 +37,8 @@ view model =
                         , Options.cs "calendar-button"
                         ]
                         [ i [ class "fa settings fa-calendar" ] [] ]
-                    , text (String.join " " [ "Tuntisaldo:", (floatToHoursAndMins model.totalHours) ])
+                    , text (String.join " " [ "Total hour balance:", (floatToHoursAndMins model.totalHours) ])
                     ]
-                , div [ class "kiky" ]
-                    [ text (String.join " " [ "Kikytunnit:", (floatToHoursAndMins model.kikyHours) ]) ]
                 , navigationPane model
                 , calendarTable model
                 ]
@@ -49,7 +47,7 @@ view model =
 dialog : Model -> Html Msg
 dialog model =
     Dialog.view []
-        [ Dialog.title [] [ h3 [] [ text "Aseta vanha saldo" ] ]
+        [ Dialog.title [] [ h3 [] [ text "Set base hour saldo" ] ]
         , Dialog.content []
             [ input
                 [ class "balance-input"
@@ -66,7 +64,7 @@ dialog model =
                 [ Dialog.closeOn "click"
                 , Options.cs "close-button"
                 ]
-                [ text "Sulje" ]
+                [ text "Close" ]
             ]
         ]
 
@@ -85,7 +83,7 @@ navigationPane model =
         , div [ class "monthly-balance float-left" ]
             [ text
                 (String.join " "
-                    [ "Kuukauden tuntisaldo: "
+                    [ "Monthly hour balance: "
                     , floatToHoursAndMins model.hourBalanceOfCurrentMonth
                     ]
                 )

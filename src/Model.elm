@@ -4,7 +4,9 @@ import Material
 import Date exposing (Date, Month)
 import Http
 
-
+{- kiky UI elements have been removed as unnecessary but cruft remains in 
+   at least model and styles
+-}
 type alias Model =
     { httpError : Result Http.Error ()
     , loading : Bool
