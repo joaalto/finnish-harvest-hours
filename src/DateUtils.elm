@@ -1,15 +1,16 @@
 module DateUtils exposing (..)
 
-import List exposing (head, isEmpty, reverse, drop, take)
+import List
 import Date exposing (..)
 import Date.Extra.Core exposing (..)
-import Date.Extra.Period as Period exposing (add, diff)
+import Date.Extra.Period as Period exposing (add)
 import Date.Extra.Compare as Compare exposing (is, Compare2, Compare3)
 import Date.Extra.Format exposing (format)
 import Date.Extra.Config.Configs as DateConfigs
 import Date.Extra.TimeUnit as TimeUnit
 import Model exposing (..)
 
+defaultDailyHours = 7.5
 
 calculateHourBalance : Model -> Hours {}
 calculateHourBalance model =
@@ -23,7 +24,8 @@ calculateHourBalance model =
 
         normalHourBalance =
             .normalHours totalHours
-                - (totalHoursForYear model)
+                - (totalWorkHours model)
+                + (hoursForVariantPeriods model)
                 + model.previousBalance
     in
         { totalHours | normalHours = normalHourBalance }
@@ -40,7 +42,114 @@ hourBalanceOfCurrentMonth model =
             List.map (\dateEntries -> calculateDailyHours dateEntries model)
                 currentMonthEntries
     in
-        .normalHours (sumHours dateHourList) - (totalHoursForMonth model)
+        .normalHours (sumHours dateHourList)
+            - (totalHoursForMonth model)
+            + (monthlyHoursForVariantPeriods model)
+
+hoursForVariantPeriod : Model -> VariantPeriod -> Float
+hoursForVariantPeriod model variantPeriod =
+    let
+        dailyDifference = defaultDailyHours - variantPeriod.dailyHours
+
+        firstWorkDate =
+            model.entries
+                |> List.head
+                |> Maybe.map .date
+                |> Maybe.withDefault model.today
+
+        startDate =
+            if Compare.is Compare.After firstWorkDate variantPeriod.start then
+                firstWorkDate
+            else
+                variantPeriod.start
+
+        givenEndDate = Maybe.withDefault model.today variantPeriod.end
+
+        endDate =
+            if Compare.is Compare.After givenEndDate model.today then
+                model.today
+            else
+                givenEndDate
+
+        dayList =
+            workDays startDate endDate model.holidays []
+
+    in
+        toFloat (List.length dayList) * dailyDifference
+
+
+hoursForVariantPeriods : Model -> Float
+hoursForVariantPeriods model =
+    List.sum (
+        List.map (\variantPeriods -> hoursForVariantPeriod model variantPeriods)
+                  model.user.variantPeriods)
+
+
+isVariantPeriodInMonth : Date -> VariantPeriod -> Bool
+isVariantPeriodInMonth currentDate variantPeriod =
+    let
+        firstOfMonth = toFirstOfMonth currentDate
+        lastOfMonth = lastOfMonthDate currentDate
+
+        endDate = case variantPeriod.end of
+            Nothing -> currentDate
+            Just end -> end
+
+        isStartInMonth =
+            dateInCurrentMonth variantPeriod.start currentDate
+
+        isEndInMonth =
+            dateInCurrentMonth endDate currentDate
+
+        lastsWholeMonth =
+            (Compare.is Compare.After firstOfMonth variantPeriod.start) &&
+            (Compare.is Compare.After endDate lastOfMonth)
+
+    in
+        isStartInMonth || isEndInMonth || lastsWholeMonth
+
+{-| Assuming here that this variantPeriod has already been checked to actually overlap the current month.
+-}
+monthlyHoursForVariantPeriod : Model -> VariantPeriod -> Float
+monthlyHoursForVariantPeriod model variantPeriod =
+    let
+        dailyDifference = defaultDailyHours - variantPeriod.dailyHours
+
+        firstOfMonth = startOfMonth model
+
+        startDate =
+            if Compare.is Compare.After firstOfMonth variantPeriod.start then
+                firstOfMonth
+            else
+                variantPeriod.start
+
+        endDate = case variantPeriod.end of
+            Nothing -> model.currentDate
+            Just end ->
+                if Compare.is Compare.After end model.currentDate then
+                    model.currentDate
+                else
+                    end
+
+        dayList =
+            workDays startDate endDate model.holidays []
+
+    in
+        toFloat (List.length dayList) * dailyDifference
+
+
+monthlyHoursForVariantPeriods : Model -> Float
+monthlyHoursForVariantPeriods model =
+    let
+        variantPeriodsInMonth = List.filter
+            (\variantPeriod -> isVariantPeriodInMonth model.currentDate variantPeriod)
+            model.user.variantPeriods
+
+        hoursForPeriods = List.map
+            (\variantPeriod -> monthlyHoursForVariantPeriod model variantPeriod)
+            variantPeriodsInMonth
+    in
+        List.sum(hoursForPeriods)
 
 
 sumHours : List (Hours a) -> Hours {}
@@ -107,15 +216,6 @@ calculateDailyHours dateEntries model =
         , kikyHours = kikyHours
         }
 
-
-entryHours : Entry -> SpecialTasks -> Float
-entryHours entry specialTasks =
-    if List.any (\t -> t.id == entry.taskId) specialTasks.ignore then
-        0
-    else
-        entry.hours
-
-
 totalHoursForMonth : Model -> Float
 totalHoursForMonth model =
     let
@@ -126,18 +226,36 @@ totalHoursForMonth model =
                 lastOfMonthDate model.currentDate
 
         dayList =
-            workDays (toFirstOfMonth model.currentDate) endDate model.holidays []
+            workDays (startOfMonth model) endDate model.holidays []
     in
-        toFloat (List.length dayList) * 7.5
+        toFloat (List.length dayList) * defaultDailyHours
+
+startOfMonth : Model -> Date
+startOfMonth model =
+    let
+        firstEmploymentDate =
+            model.entries
+                |> List.head
+                |> Maybe.map .date
+
+    in
+        case firstEmploymentDate of
+            Nothing ->
+                toFirstOfMonth model.currentDate
+            Just firstDate ->
+                if dateInCurrentMonth model.currentDate firstDate then
+                    firstDate
+                else
+                    toFirstOfMonth model.currentDate
 
 
-totalHoursForYear : Model -> Float
-totalHoursForYear model =
-    toFloat (List.length (totalDaysForYear model)) * 7.5
+totalWorkHours : Model -> Float
+totalWorkHours model =
+    toFloat (List.length (totalWorkDays model)) * defaultDailyHours
 
 
-totalDaysForYear : Model -> List Date
-totalDaysForYear model =
+totalWorkDays : Model -> List Date
+totalWorkDays model =
     model.entries
         |> List.head
         |> Maybe.map (\entry -> workDays entry.date model.today model.holidays [])
@@ -160,7 +278,6 @@ workDays startDate endDate holidays days =
                     days
         in
             workDays nextDay endDate holidays dayList
-
 
 dayHasOnlySpecialTasks : DateEntries -> SpecialTasks -> Bool
 dayHasOnlySpecialTasks dateEntries specialTasks =

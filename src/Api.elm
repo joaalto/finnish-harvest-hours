@@ -14,11 +14,18 @@ getUser =
 
 decodeUser : Json.Decoder User
 decodeUser =
-    map3 User
+    map4 User
         (field "firstName" string)
         (field "lastName" string)
         (field "previousBalance" float)
+        (field "variantPeriods" (list decodeVariantPeriod))
 
+decodeVariantPeriod : Json.Decoder VariantPeriod
+decodeVariantPeriod =
+    map3 VariantPeriod
+        (field "start" date)
+        (field "end" (maybe date))
+        (field "dailyHours" float)
 
 getEntries : Request (List DateEntries)
 getEntries =

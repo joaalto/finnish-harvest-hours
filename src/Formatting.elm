@@ -1,6 +1,9 @@
-module Formatting exposing (floatToHoursAndMins)
+module Formatting exposing (floatToHoursAndMins, dateToString)
 
-import Round as R exposing (round)
+import Round as R
+import Date exposing (Date)
+import Date.Extra.Config.Config_fi_fi exposing (config)
+import Date.Extra.Format as Format exposing (format)
 
 
 {-| Take a float and return a string with hours and minutes, eg.
@@ -30,3 +33,13 @@ floatToHoursAndMins hours =
 
                     _ ->
                         ""
+
+{-| Take a Date and return a string with day, month and year;
+    aDate -> "31.01.2019"
+-}
+dateToString : Maybe Date -> String
+dateToString date =
+    case date of
+        Nothing -> "∞"
+
+        Just d -> format config "%d.%m.%Y" d

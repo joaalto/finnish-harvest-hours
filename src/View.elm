@@ -3,7 +3,6 @@ module View exposing (..)
 import Material.Dialog as Dialog
 import Material.Button as Button
 import Material.Options as Options
-import Round
 import List
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -14,7 +13,7 @@ import Date exposing (..)
 import String
 import Model exposing (..)
 import Update exposing (..)
-import Formatting exposing (floatToHoursAndMins)
+import Formatting exposing (floatToHoursAndMins, dateToString)
 
 
 view : Model -> Html Msg
@@ -38,29 +37,17 @@ view model =
                         , Options.cs "calendar-button"
                         ]
                         [ i [ class "fa settings fa-calendar" ] [] ]
-                    , text (String.join " " [ "Tuntisaldo:", (floatToHoursAndMins model.totalHours) ])
+                    , text (String.join " " [ "Total hour balance:", (floatToHoursAndMins model.totalHours) ])
                     ]
-                , div [ class "kiky" ]
-                    [ text (String.join " " [ "Kikytunnit:", (floatToHoursAndMins model.kikyHours) ]) ]
                 , navigationPane model
                 , calendarTable model
                 ]
 
 
-roundHours : Int -> Maybe Float -> String
-roundHours decimals hours =
-    case hours of
-        Nothing ->
-            ""
-
-        Just val ->
-            String.join " " [ Round.round decimals val, "h" ]
-
-
 dialog : Model -> Html Msg
 dialog model =
     Dialog.view []
-        [ Dialog.title [] [ h3 [] [ text "Aseta vanha saldo" ] ]
+        [ Dialog.title [] [ h3 [] [ text "Set base hour saldo" ] ]
         , Dialog.content []
             [ input
                 [ class "balance-input"
@@ -69,6 +56,11 @@ dialog model =
                 , value model.previousBalanceString
                 ]
                 []
+            , h4 [ ] [ text "Non-standard working periods" ]
+            , p [] [
+                text "Contact your Saldot administrator to configure parental leaves, part-time work and other longer duration arrangements."
+                , variantTable model
+                ]
             ]
         , Dialog.actions []
             [ Button.render Mdl
@@ -77,7 +69,7 @@ dialog model =
                 [ Dialog.closeOn "click"
                 , Options.cs "close-button"
                 ]
-                [ text "Sulje" ]
+                [ text "Close" ]
             ]
         ]
 
@@ -96,7 +88,7 @@ navigationPane model =
         , div [ class "monthly-balance float-left" ]
             [ text
                 (String.join " "
-                    [ "Kuukauden tuntisaldo: "
+                    [ "Monthly hour balance: "
                     , floatToHoursAndMins model.hourBalanceOfCurrentMonth
                     ]
                 )
@@ -161,3 +153,28 @@ dayCellClass model dateEntries =
         "current-month"
     else
         "other-month"
+
+variantRow : VariantPeriod -> Html Msg
+variantRow variant =
+    tr []
+        [ td [] [ text (dateToString (Just variant.start)) ]
+        , td [] [ text (dateToString variant.end) ]
+        , td [] [ text (toString variant.dailyHours) ]
+        ]
+
+variantTable : Model -> Html Msg
+variantTable model =
+    if (List.length model.user.variantPeriods) > 0 then
+        div [ class "variant-table" ] [
+            table [  ]
+                [ thead []
+                    [ th [] [ text "Start" ]
+                    , th [] [ text "End" ]
+                    , th [] [ text "Hours / day" ]
+                    ]
+                , tbody []
+                    (List.map variantRow model.user.variantPeriods)
+                ]
+        ]
+    else
+        span [] []

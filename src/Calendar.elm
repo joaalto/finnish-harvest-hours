@@ -1,10 +1,10 @@
 module Calendar exposing (..)
 
-import List exposing (head, isEmpty, reverse, drop, take)
+import List exposing (isEmpty, reverse, drop, take)
 import Date exposing (..)
-import Date.Extra.Period as Period exposing (add, diff)
+import Date.Extra.Period as Period exposing (add)
 import Date.Extra.Core exposing (..)
-import Date.Extra.Compare as Compare exposing (is, Compare2, Compare3)
+import Date.Extra.Compare as Compare exposing (Compare2, Compare3)
 import Model exposing (..)
 import DateUtils exposing (..)
 
@@ -69,29 +69,6 @@ singleDaysEntries model date =
         (List.filter (\dateEntries -> isSameDate date dateEntries.date)
             model.entries
         )
-
-
-{-| Total entered hours for a date.
--}
-sumDateHours : Model -> Date -> DateHours
-sumDateHours model date =
-    let
-        dateEntries =
-            List.head
-                (List.filter (\dateEntries -> isSameDate date dateEntries.date)
-                    model.entries
-                )
-    in
-        case dateEntries of
-            Nothing ->
-                { date = date
-                , normalHours = 0
-                , kikyHours = 0
-                }
-
-            Just entries ->
-                calculateDailyHours entries model
-
 
 {-| Day of week of the first day of the month as Int, from 0 (Mon) to 6 (Sun).
 -}

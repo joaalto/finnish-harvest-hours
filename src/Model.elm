@@ -4,7 +4,9 @@ import Material
 import Date exposing (Date, Month)
 import Http
 
-
+{- kiky UI elements have been removed as unnecessary but cruft remains in 
+   at least model and styles
+-}
 type alias Model =
     { httpError : Result Http.Error ()
     , loading : Bool
@@ -27,6 +29,7 @@ type alias User =
     { firstName : String
     , lastName : String
     , previousBalance : Float
+    , variantPeriods: List VariantPeriod
     }
 
 
@@ -67,3 +70,9 @@ type alias Hours a =
 
 type alias DateHours =
     Hours { date : Date }
+
+type alias VariantPeriod =
+    { start: Date
+    , end: Maybe Date
+    , dailyHours: Float
+    }
