@@ -12,7 +12,7 @@
     "watch:server": "nodemon --watch 'server/**/*.js' server/server.js",
     "watch:less": "chokidar --initial 'styles' -c 'yarn bundle:css'",
     "bundle:css": "lessc styles/main.less server/static/styles/main.css",
-    "test": "elm-test"
+    "test": "yarn elm-test"
   },
   "repository": {
     "type": "git",

@@ -8,4 +8,4 @@ cache:
     - test/elm-stuff/build-artifacts
 
 before_install:
-  - npm install elm --global
+  - yarn global add elm
