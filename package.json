@@ -23,7 +23,7 @@
   "homepage": "https://github.com/joaalto/finnish-harvest-hours",
   "dependencies": {
     "body-parser": "^1.14.2",
-    "connect-mongo": "^1.1.0",
+    "connect-mongo": "^3.2.0",
     "express": "^4.13.4",
     "express-session": "^1.15.0",
     "finnish-holidays-js": "^1.1.0",
