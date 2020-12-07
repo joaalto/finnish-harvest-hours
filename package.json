@@ -28,7 +28,7 @@
     "express-session": "^1.15.0",
     "finnish-holidays-js": "^1.1.0",
     "less": "^2.7.2",
-    "lodash": "^4.4.0",
+    "lodash": "^4.17.19",
     "mongoose": "^5.11.4",
     "passport": "^0.3.2",
     "passport-oauth2": "^1.1.2",
