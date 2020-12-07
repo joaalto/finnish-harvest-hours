@@ -29,7 +29,7 @@
     "finnish-holidays-js": "^1.1.0",
     "less": "^2.7.2",
     "lodash": "^4.4.0",
-    "mongoose": "^4.6.2",
+    "mongoose": "^5.11.4",
     "passport": "^0.3.2",
     "passport-oauth2": "^1.1.2",
     "promise": "^7.1.1",
