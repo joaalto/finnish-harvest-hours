@@ -16,7 +16,7 @@ const User = require('./schema/user');
 
 const app = express()
 
-mongoose.connect(consts.mongoUrl);
+mongoose.connect(consts.mongoUrl, { useNewUrlParser: true });
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -161,11 +161,11 @@ app.post('/balance', function (req, res) {
 });
 
 app.post('/variant-periods', function (req, res) {
-  if (req.isAuthenticated()) {
-    const sessionUser = req.session.passport.user;
-    userService.upsertUserVariantPeriods(sessionUser.harvestId, req.body.variantPeriods);
-  }
-  res.send('OK');
+    if (req.isAuthenticated()) {
+        const sessionUser = req.session.passport.user;
+        userService.upsertUserVariantPeriods(sessionUser.harvestId, req.body.variantPeriods);
+    }
+    res.send('OK');
 });
 
 
